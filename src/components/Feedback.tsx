@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { MessageSquare } from 'lucide-react';
-import { FeedbackItem } from '../types';
+import type { FeedbackItem } from '../types';
 
 const Feedback: React.FC = () => {
   const [feedbacks] = useState<FeedbackItem[]>([

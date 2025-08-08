@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import PropertyForm from '../components/PropertyForm';
-import { Property } from '../types';
+import type { Property } from '../types';
 import { Building2, MapPin, IndianRupee, Trash2 } from 'lucide-react';
 
 const Properties = () => {

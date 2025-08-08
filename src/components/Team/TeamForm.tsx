@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { TeamMember } from '../../types/index';
+import type { TeamMember } from '../../types/index';
 
 interface Props {
   initialData?: TeamMember;

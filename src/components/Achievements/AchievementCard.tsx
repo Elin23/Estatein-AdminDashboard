@@ -1,4 +1,4 @@
-import { Achievement } from "../../pages/Achievements";
+import type { Achievement } from "../../pages/Achievements";
 interface AchievementCardProps {
   achievement: Achievement;
   onEdit: () => void;

@@ -3,7 +3,7 @@ import { db } from '../firebaseConfig';
 import { ref, onValue, push, set, remove } from 'firebase/database';
 import TeamForm from '../components/Team/TeamForm';
 import TeamCard from '../components/Team/TeamCard';
-import { TeamMember } from '../types/index';
+import { type TeamMember } from '../types/index';
 
 export default function Team() {
     const [members, setMembers] = useState<TeamMember[]>([]);

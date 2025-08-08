@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import LocationForm from '../components/LocationForm';
-import { Location } from '../types';
+import type { Location } from '../types';
 import { MapPin, Trash2 } from 'lucide-react';
 
 const Locations = () => {
