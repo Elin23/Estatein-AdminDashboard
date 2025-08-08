@@ -1,1 +1,37 @@
+@import url('https://fonts.googleapis.com/css2?family=Urbanist:ital,wght@0,100..900;1,100..900&display=swap');
 @import "tailwindcss";
+@custom-variant dark (&:where(.dark, .dark *));
+
+
+@theme {
+
+  --color-white90: #E4E4E7;
+  --color-white95: #F1F1F3;
+  --color-white97: #F7F7F8;
+  --color-white99: #FCFCFD;
+
+  --color-purple60: #703BF7;
+  --color-purple65: #8254F8;
+  --color-purple70: #946CF9;
+  --color-purple75: #A685FA;
+  --color-purple90: #DBCEFD;
+  --color-purple95: #EDE7FE;
+  --color-purple97: #F4F0FE;
+  --color-purple99: #FBFAFF;
+
+  --color-gray08: #141414;
+  --color-gray10: #1A1A1A;
+  --color-gray15: #262626;
+  --color-gray20: #333333;
+  --color-gray30: #4D4D4D;
+  --color-gray40: #666666;
+  --color-gray50: #808080;
+  --color-gray60: #999999;
+  --color-gray65: #F7F7F7;
+  --color-gray70: #141414;
+  --color-gray75: #D4D4D8;
+
+  --font-urbanist       : "Urbanist", sans-serif;
+  --breakpoint-lg-custom: 992px;
+  --breakpoint-huge     : 1921px;
+}

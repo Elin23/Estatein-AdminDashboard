@@ -1,13 +1,18 @@
-import { Outlet } from "react-router-dom"
-import Navbar from "./components/Navbar"
+// src/App.jsx
+import { RouterProvider } from 'react-router-dom';
+import { ThemeProvider } from './contexts/ThemeContext';
+import { AuthProvider } from './contexts/AuthContext';
+import router from './router';
 
-const App = () => {
+
+function App() {
   return (
-    <div>
-      <Navbar />
-      <Outlet />
-    </div>
-  )
+    <AuthProvider>
+      <ThemeProvider>
+        <RouterProvider router={router} />
+      </ThemeProvider>
+    </AuthProvider>
+  );
 }
 
-export default App
+export default App;
