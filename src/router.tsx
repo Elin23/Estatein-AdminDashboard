@@ -10,6 +10,7 @@ import Contact from './pages/Contact';
 import MainLayout from './layout/MainLayout';
 import Achievements from './pages/Achievements';
 import Team from './pages/Team';
+import Values from './pages/Values';
 
 const router = createBrowserRouter([
   {
@@ -31,6 +32,7 @@ const router = createBrowserRouter([
       { path: 'submissions', element: <Submissions /> },
       { path: 'contact', element: <Contact /> },
       { path: 'team', element: <Team /> },
+      { path: 'values', element: <Values /> },
     ],
   },
 ]);
