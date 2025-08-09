@@ -1,78 +1,166 @@
-import React, { useState } from 'react';
-import LocationForm from '../components/LocationForm';
-import type { Location } from '../types';
-import { MapPin, Trash2 } from 'lucide-react';
+import { useState, useEffect } from "react";
+import { db } from "../firebaseConfig";
+import { push, ref, set, onValue, remove, update } from "firebase/database";
+import LocationForm from "../components/LocationForm";
+import LocationCard from "../components/Cards/LocationCard";
+
+interface LocationData {
+  branch: string;
+  address: string;
+  details: string;
+  email: string;
+  phone: string;
+  city: string;
+  category: string;
+  createdAt: number;
+}
 
 const Locations = () => {
-  const [locations, setLocations] = useState<Location[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState("");
+  const [locations, setLocations] = useState<
+    { id: string; data: LocationData }[]
+  >([]);
   const [showForm, setShowForm] = useState(false);
+  const [editId, setEditId] = useState<string | null>(null);
+  const [fetchError, setFetchError] = useState<string | null>(null);
 
-  const handleAddLocation = (locationData: Omit<Location, 'id' | 'createdAt'>) => {
-    const newLocation: Location = {
-      ...locationData,
-      id: Date.now().toString(),
-      createdAt: new Date(),
+  // Fetch data with error handling
+  useEffect(() => {
+    const locationsRef = ref(db, "locations");
+    const unsubscribe = onValue(
+      locationsRef,
+      (snapshot) => {
+        if (snapshot.exists()) {
+          const data = snapshot.val();
+          const formatted = Object.entries(data).map(([id, value]) => ({
+            id,
+            data: value as LocationData,
+          }));
+          setLocations(formatted);
+          setFetchError(null);
+        } else {
+          setLocations([]);
+          setFetchError(null);
+        }
+      },
+      (error) => {
+        console.error("Fetch error:", error);
+        setFetchError("Failed to load locations. Please try again.");
+      }
+    );
+    return () => unsubscribe();
+  }, []);
+
+  const handleSubmit = async (
+    propertyData: Omit<LocationData, "createdAt">
+  ) => {
+    setLoading(true);
+    setMessage("");
+
+    const fullData: LocationData = {
+      ...propertyData,
+      createdAt: Date.now(),
     };
-    setLocations([newLocation, ...locations]);
-    setShowForm(false);
+
+    try {
+      if (editId) {
+        await update(ref(db, `locations/${editId}`), fullData);
+        setMessage("✅ Location updated successfully!");
+      } else {
+        const newRef = push(ref(db, "locations"));
+        await set(newRef, fullData);
+        setMessage("✅ Location added successfully!");
+      }
+      setEditId(null);
+      setShowForm(false);
+    } catch (error) {
+      console.error("Submit error:", error);
+      setMessage("❌ Failed to save data.");
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const handleDeleteLocation = (id: string) => {
-    setLocations(locations.filter(location => location.id !== id));
+  const handleDelete = async (id: string) => {
+    if (confirm("Are you sure you want to delete this location?")) {
+      try {
+        await remove(ref(db, `locations/${id}`));
+        setMessage("✅ Location deleted successfully!");
+      } catch (error) {
+        console.error("Delete error:", error);
+        setMessage("❌ Failed to delete location.");
+      }
+    }
+  };
+
+  const handleEdit = (loc: { id: string; data: LocationData }) => {
+    setEditId(loc.id);
+    setShowForm(true);
+    setMessage(""); // Clear any previous message
   };
 
   return (
-    <div className="p-6">
+    <div className="max-w-5xl mx-auto p-6">
+      {/* Top bar */}
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold text-gray-800">Locations</h1>
+        <h1 className="text-3xl font-bold text-gray-700 dark:text-gray-200">
+          Locations
+        </h1>
         <button
-          onClick={() => setShowForm(!showForm)}
-          className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+          onClick={() => {
+            setShowForm((prev) => !prev);
+            if (showForm) {
+              setEditId(null);
+            }
+            setMessage(""); // Clear message on toggle
+          }}
+          className="bg-[#703BF7] text-white px-4 py-2 rounded-lg hover:bg-[#5b2fc4]"
         >
-          {showForm ? 'Cancel' : 'Add New Location'}
+          {showForm ? "Close Form" : "+ Add Location"}
         </button>
       </div>
 
+      {/* Error from fetch */}
+      {fetchError && <p className="text-red-500 mb-4">{fetchError}</p>}
+
+      {/* FORM */}
       {showForm && (
-        <div className="mb-6">
-          <LocationForm onSubmit={handleAddLocation} />
-        </div>
+        <>
+          <LocationForm
+            initialData={
+              editId
+                ? locations.find((loc) => loc.id === editId)?.data
+                : undefined
+            }
+            onSubmit={handleSubmit}
+            onCancel={() => {
+              setShowForm(false);
+              setEditId(null);
+              setMessage("");
+            }}
+            loading={loading}
+          />
+          {message && <p className="text-sm mt-2 text-center">{message}</p>}
+        </>
       )}
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {locations.map((location) => (
-          <div key={location.id} className="bg-white rounded-lg shadow-md p-6">
-            <div className="flex items-start justify-between">
-              <div className="flex items-center">
-                <MapPin className="w-6 h-6 text-blue-500 mr-3" />
-                <div>
-                  <h3 className="text-lg font-semibold text-gray-800">{location.name}</h3>
-                  <p className="text-sm text-gray-600">{location.state}</p>
-                </div>
-              </div>
-              <button
-                onClick={() => handleDeleteLocation(location.id)}
-                className="text-red-600 hover:text-red-800 transition-colors"
-              >
-                <Trash2 className="w-5 h-5" />
-              </button>
-            </div>
-            <div className="mt-4">
-              <p className="text-sm text-gray-500">
-                Added on {location.createdAt.toLocaleDateString()}
-              </p>
-            </div>
-          </div>
+      {/* DISPLAY CARDS */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        {locations.map(({ id, data }) => (
+          <LocationCard
+            key={id}
+            data={data}
+            onEdit={() => handleEdit({ id, data })}
+            onDelete={() => handleDelete(id)}
+          />
         ))}
+        {locations.length === 0 && (
+          <p className="text-gray-500 text-center col-span-full">
+            No locations available.
+          </p>
+        )}
       </div>
-
-      {locations.length === 0 && !showForm && (
-        <div className="text-center py-12">
-          <MapPin className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-          <h3 className="text-lg font-medium text-gray-900">No locations yet</h3>
-          <p className="mt-1 text-gray-500">Get started by adding a new location.</p>
-        </div>
-      )}
     </div>
   );
 };
