@@ -12,6 +12,7 @@ export interface Achievement {
 
 function Achievements() {
   const [achievements, setAchievements] = useState<Achievement[]>([]);
+  const [loading, setLoading] = useState(true);
   const [editingAchievement, setEditingAchievement] = useState<Achievement | null>(null);
   const [showForm, setShowForm] = useState(false);
 
@@ -28,6 +29,7 @@ function Achievements() {
       } else {
         setAchievements([]);
       }
+      setLoading(false); 
     });
     return () => unsubscribe();
   }, []);
@@ -83,14 +85,18 @@ function Achievements() {
       )}
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
-        {achievements.map((achievement) => (
-          <AchievementCard
-            key={achievement.id}
-            achievement={achievement}
-            onEdit={() => handleEditClick(achievement)}
-            onDelete={() => handleDelete(achievement.id)}
-          />
-        ))}
+        {loading
+          ? Array.from({ length: 3 }).map((_, idx) => (
+              <AchievementCard key={idx} loading />
+            ))
+          : achievements.map((achievement) => (
+              <AchievementCard
+                key={achievement.id}
+                achievement={achievement}
+                onEdit={() => handleEditClick(achievement)}
+                onDelete={() => handleDelete(achievement.id)}
+              />
+            ))}
       </div>
     </div>
   );
