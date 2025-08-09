@@ -53,10 +53,7 @@ const LoginForm = ({
       type="submit"
       className="group relative w-full flex justify-center py-3 px-4 rounded-lg text-white bg-gradient-to-r from-purple70 to-purple60 hover:scale-[1.02] transition"
     >
-      <span className="absolute left-0 inset-y-0 flex items-center pl-3">
-        {isLogin ? <LogIn className="h-5 w-5" /> : <UserPlus className="h-5 w-5" />}
-      </span>
-      {isLogin ? 'Sign in' : 'Create Account'}
+      Login
     </button>
   </form>
 );
