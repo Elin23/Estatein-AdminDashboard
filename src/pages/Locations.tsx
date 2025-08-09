@@ -116,11 +116,11 @@ const handleDeleteConfirmed = async () => {
   };
 
   return (
-    <div className="max-w-5xl mx-auto p-6">
+    <div className=" p-6">
       {/* Top bar */}
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold text-gray-700 dark:text-gray-200">
-          Our Values
+          Locations
         </h1>
         <button
           onClick={() => {
