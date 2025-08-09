@@ -7,7 +7,7 @@ interface LocationCardProps {
 }
 function LocationCard({ data, onEdit, onDelete }: LocationCardProps) {
   return (
-    <div className="bg-white dark:bg-gray-800 shadow-md rounded-xl p-4 border border-gray-200 hover:shadow-lg transition">
+    <div className="bg-white dark:bg-gray-800 shadow-md rounded-xl p-4 border border-gray-200 hover:shadow-lg transition w-full">
       <h3 className="text-xl font-semibold text-purple60">{data.branch}</h3>
       <p className="text-gray-800 dark:text-white">{data.address}</p>
       <span className="inline-block mt-2 px-2 py-1 bg-[#703BF7]/20 dark:bg-purple60/20  text-gray-800 dark:text-white text-xs rounded">
