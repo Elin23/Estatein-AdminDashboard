@@ -15,7 +15,7 @@ export interface Property {
 export type PropertyFormData = Omit<Property, 'id' | 'createdAt'>;
 
 // Contact Types
-export interface Contact {
+export interface ContactType {
   id: string;
   name: string;
   email: string;
