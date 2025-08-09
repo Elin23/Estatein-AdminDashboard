@@ -1,6 +1,6 @@
 // Location data structure (matches Firebase fields)
 export interface LocationData {
-  id?: string; // Optional, only exists when fetched from Firestore
+  id?: string; 
   branch: string;
   address: string;
   details: string;

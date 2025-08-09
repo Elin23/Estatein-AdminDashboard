@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
 import { db } from "../firebaseConfig";
 import { push, ref, set, onValue, remove, update } from "firebase/database";
-import LocationForm from "../components/LocationForm";
-import LocationCard from "../components/Cards/LocationCard";
+import LocationForm from "../components/Location/LocationForm";
+import LocationCard from "../components/Location/LocationCard";
+import Modal from "../components/UI/Modal";
 
 interface LocationData {
   branch: string;
@@ -24,6 +25,12 @@ const Locations = () => {
   const [showForm, setShowForm] = useState(false);
   const [editId, setEditId] = useState<string | null>(null);
   const [fetchError, setFetchError] = useState<string | null>(null);
+
+  const [modalOpen, setModalOpen] = useState(false);
+  const [modalMessage, setModalMessage] = useState("");
+  const [modalTitle, setModalTitle] = useState("");
+  const [locationToDelete, setLocationToDelete] = useState<string | null>(null);
+
 
   // Fetch data with error handling
   useEffect(() => {
@@ -53,13 +60,13 @@ const Locations = () => {
   }, []);
 
   const handleSubmit = async (
-    propertyData: Omit<LocationData, "createdAt">
+    locationData: Omit<LocationData, "createdAt">
   ) => {
     setLoading(true);
     setMessage("");
 
     const fullData: LocationData = {
-      ...propertyData,
+      ...locationData,
       createdAt: Date.now(),
     };
 
@@ -82,22 +89,30 @@ const Locations = () => {
     }
   };
 
-  const handleDelete = async (id: string) => {
-    if (confirm("Are you sure you want to delete this location?")) {
-      try {
-        await remove(ref(db, `locations/${id}`));
-        setMessage("✅ Location deleted successfully!");
-      } catch (error) {
-        console.error("Delete error:", error);
-        setMessage("❌ Failed to delete location.");
-      }
-    }
-  };
+const confirmDelete = (id: string) => {
+  setLocationToDelete(id);
+  setModalTitle("Confirm Delete");
+  setModalMessage("Are you sure you want to delete this location?");
+  setModalOpen(true);
+};
+
+const handleDeleteConfirmed = async () => {
+  if (!locationToDelete) return;
+  try {
+    await remove(ref(db, `locations/${locationToDelete}`));
+    setMessage("✅ Location deleted successfully!");
+  } catch (error) {
+    setMessage("❌ Failed to delete location.");
+  } finally {
+    setModalOpen(false);
+    setLocationToDelete(null);
+  }
+};
 
   const handleEdit = (loc: { id: string; data: LocationData }) => {
     setEditId(loc.id);
     setShowForm(true);
-    setMessage(""); // Clear any previous message
+    setMessage("");
   };
 
   return (
@@ -105,7 +120,7 @@ const Locations = () => {
       {/* Top bar */}
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold text-gray-700 dark:text-gray-200">
-          Locations
+          Our Values
         </h1>
         <button
           onClick={() => {
@@ -113,11 +128,11 @@ const Locations = () => {
             if (showForm) {
               setEditId(null);
             }
-            setMessage(""); // Clear message on toggle
+            setMessage("");
           }}
-          className="bg-[#703BF7] text-white px-4 py-2 rounded-lg hover:bg-[#5b2fc4]"
+          className="bg-purple60 text-white px-4 py-2 rounded-lg hover:bg-[#5b2fc4]"
         >
-          {showForm ? "Close Form" : "+ Add Location"}
+          {showForm ? "Close Form" : "+ Add Value"}
         </button>
       </div>
 
@@ -146,21 +161,34 @@ const Locations = () => {
       )}
 
       {/* DISPLAY CARDS */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        {locations.map(({ id, data }) => (
-          <LocationCard
-            key={id}
-            data={data}
-            onEdit={() => handleEdit({ id, data })}
-            onDelete={() => handleDelete(id)}
-          />
-        ))}
-        {locations.length === 0 && (
-          <p className="text-gray-500 text-center col-span-full">
-            No locations available.
-          </p>
-        )}
-      </div>
+      {!showForm && (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-4">
+          {locations.map(({ id, data }) => (
+            <LocationCard
+              key={id}
+              data={data}
+              onEdit={() => handleEdit({ id, data })}
+              onDelete={() => confirmDelete(id)}
+            />
+          ))}
+          {locations.length === 0 && (
+            <p className="text-gray-500 text-center col-span-full">
+              No locations available.
+            </p>
+          )}
+        </div>
+      )}
+
+      <Modal
+        isOpen={modalOpen}
+        title={modalTitle}
+        message={modalMessage}
+        onClose={() => setModalOpen(false)}
+        onConfirm={handleDeleteConfirmed}
+        showConfirm={true}
+        confirmText="Delete"
+        cancelText="Cancel"
+      />
     </div>
   );
 };

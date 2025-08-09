@@ -1,0 +1,51 @@
+import type { LocationData } from "../../types/forms";
+import { Mail, Phone, MapPin } from "lucide-react";
+interface LocationCardProps {
+  data: LocationData;
+  onEdit: () => void;
+  onDelete: () => void;
+}
+function LocationCard({ data, onEdit, onDelete }: LocationCardProps) {
+  return (
+    <div className="bg-white shadow-md rounded-xl p-4 border border-gray-200 hover:shadow-lg transition">
+      <h3 className="text-xl font-semibold text-purple60">{data.branch}</h3>
+      <p className="text-gray-800 dark:text-white">{data.address}</p>
+      <span className="inline-block mt-2 px-2 py-1 bg-[#703BF7]/20 purple60 text-xs rounded">
+        {data.category}
+      </span>
+      <p className="mt-2 text-sm">{data.details}</p>
+      <div className="mt-3 border-t pt-2 text-sm items-start flex flex-col space-y-2">
+        <p className="flex space-x-2 text-gray-800 dark:text-white items-center">
+          <Mail /> <span>{data.email}</span>
+        </p>
+
+        <p className="flex space-x-2 text-gray-800 dark:text-white items-center">
+          <Phone />
+          <span>{data.phone}</span>
+        </p>
+        <p className="flex space-x-2 text-gray-800 dark:text-white items-center">
+          <MapPin />
+          <span>{data.city}</span>
+        </p>
+      </div>
+
+      {/* Actions */}
+      <div className="mt-4 flex gap-2">
+        <button
+          className="px-3 py-1 bg-purple60 text-white rounded hover:bg-purple60/80"
+          onClick={onEdit}
+        >
+          Edit
+        </button>
+        <button
+          className="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600"
+          onClick={onDelete}
+        >
+          Delete
+        </button>
+      </div>
+    </div>
+  );
+}
+
+export default LocationCard;
