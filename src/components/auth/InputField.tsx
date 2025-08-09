@@ -1,8 +1,7 @@
-import React from 'react';
-import { LucideIcon } from 'lucide-react';
+import React, { type ComponentType, type SVGProps } from 'react';
 
 interface InputFieldProps {
-  icon: LucideIcon;
+   icon: ComponentType<SVGProps<SVGSVGElement>>;
   type: string;
   value: string;
   onChange: (value: string) => void;
