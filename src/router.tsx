@@ -9,7 +9,9 @@ import Submissions from './pages/Submissions';
 import MainLayout from './layout/MainLayout';
 import Achievements from './pages/Achievements';
 import Team from './pages/Team';
-import Contact from './pages/Contact';
+import Values from './pages/Values';
+import Contact  from './pages/Contact';
+
 
 const router = createBrowserRouter([
   {
@@ -31,6 +33,7 @@ const router = createBrowserRouter([
       { path: 'submissions', element: <Submissions /> },
       { path: 'contact', element: <Contact /> },
       { path: 'team', element: <Team /> },
+      { path: 'values', element: <Values /> },
     ],
   },
 ]);
