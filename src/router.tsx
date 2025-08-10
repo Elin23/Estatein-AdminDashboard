@@ -11,6 +11,7 @@ import Achievements from './pages/Achievements';
 import Team from './pages/Team';
 import Values from './pages/Values';
 import Contact  from './pages/Contact';
+import SocialLinks from './components/SocialMedia/SocialLinks';
 
 
 const router = createBrowserRouter([
@@ -34,6 +35,7 @@ const router = createBrowserRouter([
       { path: 'contact', element: <Contact /> },
       { path: 'team', element: <Team /> },
       { path: 'values', element: <Values /> },
+      { path: 'social', element: <SocialLinks /> },
     ],
   },
 ]);
