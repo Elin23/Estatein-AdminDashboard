@@ -12,6 +12,7 @@ import Team from "./pages/Team"
 import Values from "./pages/Values"
 import Contact from "./pages/Contact"
 import Testimonials from "./pages/Testimonials"
+import Steps from "./pages/Steps"
 
 const router = createBrowserRouter([
   {
@@ -35,6 +36,8 @@ const router = createBrowserRouter([
       { path: "contact", element: <Contact /> },
       { path: "team", element: <Team /> },
       { path: "values", element: <Values /> },
+      { path: "steps", element: <Steps /> },
+
     ],
   },
 ])
