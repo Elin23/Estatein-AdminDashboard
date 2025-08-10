@@ -1,4 +1,3 @@
-// hooks/useLocations.ts
 import { useState, useEffect } from "react";
 import { db } from "../firebaseConfig";
 import { push, ref, set, onValue, remove, update } from "firebase/database";
@@ -49,7 +48,7 @@ export const useLocations = () => {
     return () => unsubscribe();
   }, []);
 
-  // add/update
+
   const saveLocation = async (
     locationData: Omit<LocationData, "createdAt">,
     id?: string

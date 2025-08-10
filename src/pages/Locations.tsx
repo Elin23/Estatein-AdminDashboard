@@ -9,7 +9,7 @@ import { useState } from "react";
 const Locations = () => {
   const { locations, loading, error, saveLocation, deleteLocation } =
     useLocations();
-  const { currentPage, setCurrentPage, totalPages, paginatedItems } =
+  const { totalPages,  } =
     usePagination(locations);
 
   const [showForm, setShowForm] = useState(false);
@@ -43,7 +43,11 @@ const Locations = () => {
           initialData={
             editId ? locations.find((l) => l.id === editId)?.data : undefined
           }
-          onSubmit={(data) => saveLocation(data, editId || undefined)}
+          onSubmit={async (data) => {
+            await saveLocation(data, editId || undefined);
+            setShowForm(false); 
+            setEditId(null); 
+          }}
           onCancel={() => setShowForm(false)}
           loading={loading}
         />
@@ -51,25 +55,20 @@ const Locations = () => {
 
       {!showForm && (
         <>
-          <div className="grid grid-cols-3 gap-6">
-            {paginatedItems.map(({ id, data }) => (
-              <LocationCard
-                key={id}
-                data={data}
-                onEdit={() => handleEdit(id)}
-                onDelete={() => {
-                  setLocationToDelete(id);
-                  setModalOpen(true);
-                }}
-              />
-            ))}
-          </div>
-
           {totalPages > 1 && (
             <Pagination
-              currentPage={currentPage}
-              totalPages={totalPages}
-              onPageChange={setCurrentPage}
+              items={locations}
+              renderItem={({ id, data }) => (
+                <LocationCard
+                  key={id}
+                  data={data}
+                  onEdit={() => handleEdit(id)}
+                  onDelete={() => {
+                    setLocationToDelete(id);
+                    setModalOpen(true);
+                  }}
+                />
+              )}
             />
           )}
         </>
