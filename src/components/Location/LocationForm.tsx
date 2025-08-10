@@ -14,28 +14,51 @@ function LocationForm({
   onCancel,
   loading,
 }: LocationFormProps) {
+  
   const formRef = useRef<HTMLFormElement>(null);
-
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     const form = formRef.current;
     if (!form) return;
 
     const get = (name: string) =>
-      (form.elements.namedItem(name) as HTMLInputElement)?.value || "";
+      (form.elements.namedItem(name) as HTMLInputElement)?.value.trim() || "";
+
+    const branch = get("branch");
+    const address = get("address");
+    const details = get("details");
+    const email = get("email");
+    const phone = get("phone");
+    const city = get("city");
+    const category = get("category");
+
+    if (
+      !branch ||
+      !address ||
+      !details ||
+      !email ||
+      !phone ||
+      !city ||
+      !category
+    ) {
+      alert("Please fill in all fields before saving.");
+      return;
+    }
 
     onSubmit({
-      branch: get("branch"),
-      address: get("address"),
-      details: get("details"),
-      email: get("email"),
-      phone: get("phone"),
-      city: get("city"),
-      category: get("category"),
+      branch,
+      address,
+      details,
+      email,
+      phone,
+      city,
+      category,
+      createdAt: initialData?.createdAt || Date.now(), 
     });
 
     form.reset();
   };
+
 
   return (
     <form
