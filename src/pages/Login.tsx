@@ -5,9 +5,8 @@ import LoginContainer from '../components/auth/LoginContainer';
 import LoginHeader from '../components/auth/LoginHeader';
 import LoginForm from '../components/auth/LoginForm';
 
-
 const Login = () => {
-  const [isLogin] = useState(true); 
+  const [isLogin] = useState(true);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -25,8 +24,16 @@ const Login = () => {
       } else {
         setError('Registration is invitation-only.');
       }
-    } catch {
-      setError('Invalid email or password');
+    } catch (error: any) {
+      if (error.code === 'auth/user-not-found') {
+        setError('User not found');
+      } else if (error.code === 'auth/wrong-password') {
+        setError('Incorrect password');
+      } else if (error.code === 'auth/invalid-email') {
+        setError('Invalid email address');
+      } else {
+        setError('Failed to login');
+      }
     }
   };
 
@@ -34,13 +41,17 @@ const Login = () => {
     <LoginContainer>
       <LoginHeader isLogin={isLogin} />
       <LoginForm
-        isLogin={isLogin}
         email={email}
         password={password}
         setEmail={setEmail}
         setPassword={setPassword}
         handleSubmit={handleSubmit}
       />
+      {error && (
+        <div className="mt-4 text-red-600 text-center bg-red-100 p-2 rounded">
+          {error}
+        </div>
+      )}
     </LoginContainer>
   );
 };

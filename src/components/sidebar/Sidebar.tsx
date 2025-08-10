@@ -22,10 +22,14 @@ const Sidebar: React.FC = () => {
   const { logout } = useAuth();
   const navigate = useNavigate();
   
-  const handleLogout = () => {
-    logout();
+const handleLogout = async () => {
+  try {
+    await logout();
     navigate('/login');
-  };
+  } catch (error) {
+    console.error('Failed to logout:', error);
+  }
+};
 
   return (
     <div className="bg-white dark:bg-gray-800 h-screen w-64 fixed left-0 top-0 shadow-lg">
