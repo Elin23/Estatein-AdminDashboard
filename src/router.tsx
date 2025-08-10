@@ -1,5 +1,5 @@
-import { createBrowserRouter } from 'react-router-dom';
-import ProtectedRoute from './components/ProtectedRoute';
+import { createBrowserRouter } from "react-router-dom"
+import ProtectedRoute from "./components/ProtectedRoute"
 
 import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
@@ -16,11 +16,11 @@ import SocialLinks from './components/SocialMedia/SocialLinks';
 
 const router = createBrowserRouter([
   {
-    path: '/login',
+    path: "/login",
     element: <Login />,
   },
   {
-    path: '/',
+    path: "/",
     element: (
       <ProtectedRoute>
         <MainLayout />
@@ -38,6 +38,6 @@ const router = createBrowserRouter([
       { path: 'social', element: <SocialLinks /> },
     ],
   },
-]);
+])
 
-export default router;
+export default router
