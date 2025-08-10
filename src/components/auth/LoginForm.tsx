@@ -1,66 +1,42 @@
-import React, { useState } from 'react';
 import { Mail, Key } from 'lucide-react';
-import { useAuth } from '../../contexts/AuthContext';
-import { useNavigate } from 'react-router-dom';
 import InputField from './InputField';
 
-const LoginForm = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
-  const { login } = useAuth();
-  const navigate = useNavigate();
+interface Props {
+  email: string;
+  password: string;
+  setEmail: (v: string) => void;
+  setPassword: (v: string) => void;
+  handleSubmit: (e: React.FormEvent) => void;
+}
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError('');
-    try {
-      await login(email, password);
-      navigate('/');
-    } catch (err) {
-      setError('Invalid email or password');
-    }
-  };
-
-  return (
-    <form onSubmit={handleSubmit} className="space-y-6">
+const LoginForm = ({ email, password, setEmail, setPassword, handleSubmit }: Props) => (
+  <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
+    <div className="space-y-4">
       <InputField
-        icon={Mail}
         type="email"
         value={email}
         onChange={setEmail}
         placeholder="Email address"
+        Icon={Mail}
         required
       />
 
       <InputField
-        icon={Key}
         type="password"
         value={password}
         onChange={setPassword}
         placeholder="Password"
+        Icon={Key}
         required
       />
-
-      {error && (
-        <div className="text-[#703BF7] text-sm text-center bg-[#EDE7FE] p-3 rounded-lg animate-shake">
-          {error}
-        </div>
-      )}
-
-      <button
-        type="submit"
-        className="w-full py-3 px-4 text-white text-sm font-medium rounded-lg
-                 bg-[#8254F8]
-                 hover:bg-[#946CF9]
-                 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#703BF7]
-                 transform transition-all duration-150 hover:scale-[1.02]
-                 flex items-center justify-center gap-2"
-      >
-        Sign in
-      </button>
-    </form>
-  );
-};
+    </div>
+    <button
+      type="submit"
+      className="group relative w-full flex justify-center py-3 px-4 rounded-lg text-white bg-gradient-to-r from-purple70 to-purple60 hover:scale-[1.02] transition"
+    >
+      Login
+    </button>
+  </form>
+);
 
 export default LoginForm;

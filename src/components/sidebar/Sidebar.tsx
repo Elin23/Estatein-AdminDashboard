@@ -1,5 +1,5 @@
 import React from 'react';
-import { Building2, MapPin, LayoutDashboard, Grid, FormInput, InboxIcon, MessageSquare, LogOut, Aperture } from 'lucide-react';
+import { StepForward, Building2, MapPin, LayoutDashboard, Grid, FormInput, InboxIcon, MessageSquare, LogOut, Aperture, Link } from 'lucide-react';
 import {  useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import SidebarLink from './SidebarLink';
@@ -13,8 +13,10 @@ const menuItems = [
   { icon: FormInput, label: 'Our Team', path: '/team' },
   { icon: MapPin, label: 'Testimonials', path: '/testimonials' },
   { icon: InboxIcon, label: 'Submissions', path: '/submissions' },
+  { icon: StepForward, label: 'Steps', path: '/steps' },
   { icon: Aperture, label: 'Our Values', path: '/values' },
   { icon: MessageSquare, label: 'Contact', path: '/contact' },
+  { icon: Link , label: 'SocialLinks', path: '/social' },
 ];
 
 const Sidebar: React.FC = () => {
@@ -22,10 +24,14 @@ const Sidebar: React.FC = () => {
   const { logout } = useAuth();
   const navigate = useNavigate();
   
-  const handleLogout = () => {
-    logout();
+const handleLogout = async () => {
+  try {
+    await logout();
     navigate('/login');
-  };
+  } catch (error) {
+    console.error('Failed to logout:', error);
+  }
+};
 
   return (
     <div className="bg-white dark:bg-gray-800 h-screen w-64 fixed left-0 top-0 shadow-lg">

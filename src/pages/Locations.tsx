@@ -1,78 +1,90 @@
-import React, { useState } from 'react';
-import LocationForm from '../components/LocationForm';
-import type { Location } from '../types';
-import { MapPin, Trash2 } from 'lucide-react';
+import Pagination from "../components/UI/Pagination";
+import LocationForm from "../components/Location/LocationForm";
+import LocationCard from "../components/Location/LocationCard";
+import Modal from "../components/UI/Modal";
+import { useLocations } from "../hooks/useLocations";
+import { usePagination } from "../hooks/usePagination";
+import { useState } from "react";
 
 const Locations = () => {
-  const [locations, setLocations] = useState<Location[]>([]);
+  const { locations, loading, error, saveLocation, deleteLocation } =
+    useLocations();
+  const { totalPages,  } =
+    usePagination(locations);
+
   const [showForm, setShowForm] = useState(false);
+  const [editId, setEditId] = useState<string | null>(null);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [locationToDelete, setLocationToDelete] = useState<string | null>(null);
 
-  const handleAddLocation = (locationData: Omit<Location, 'id' | 'createdAt'>) => {
-    const newLocation: Location = {
-      ...locationData,
-      id: Date.now().toString(),
-      createdAt: new Date(),
-    };
-    setLocations([newLocation, ...locations]);
-    setShowForm(false);
-  };
-
-  const handleDeleteLocation = (id: string) => {
-    setLocations(locations.filter(location => location.id !== id));
+  const handleEdit = (id: string) => {
+    setEditId(id);
+    setShowForm(true);
   };
 
   return (
     <div className="p-6">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold text-gray-800">Locations</h1>
+      <div className="flex justify-between mb-6">
+        <h1 className="text-3xl font-bold text-gray-700 dark:text-gray-200">
+          Our Locations
+        </h1>
         <button
-          onClick={() => setShowForm(!showForm)}
-          className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+          onClick={() => setShowForm((prev) => !prev)}
+          className="bg-purple60 text-white px-4 py-2 rounded-lg hover:bg-[#5b2fc4]"
         >
-          {showForm ? 'Cancel' : 'Add New Location'}
+          {showForm ? "Close Form" : "+ Add Location"}
         </button>
       </div>
 
+      {error && <p className="text-red-500">{error}</p>}
+
       {showForm && (
-        <div className="mb-6">
-          <LocationForm onSubmit={handleAddLocation} />
-        </div>
+        <LocationForm
+          initialData={
+            editId ? locations.find((l) => l.id === editId)?.data : undefined
+          }
+          onSubmit={async (data) => {
+            await saveLocation(data, editId || undefined);
+            setShowForm(false); 
+            setEditId(null); 
+          }}
+          onCancel={() => setShowForm(false)}
+          loading={loading}
+        />
       )}
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {locations.map((location) => (
-          <div key={location.id} className="bg-white rounded-lg shadow-md p-6">
-            <div className="flex items-start justify-between">
-              <div className="flex items-center">
-                <MapPin className="w-6 h-6 text-blue-500 mr-3" />
-                <div>
-                  <h3 className="text-lg font-semibold text-gray-800">{location.name}</h3>
-                  <p className="text-sm text-gray-600">{location.state}</p>
-                </div>
-              </div>
-              <button
-                onClick={() => handleDeleteLocation(location.id)}
-                className="text-red-600 hover:text-red-800 transition-colors"
-              >
-                <Trash2 className="w-5 h-5" />
-              </button>
-            </div>
-            <div className="mt-4">
-              <p className="text-sm text-gray-500">
-                Added on {location.createdAt.toLocaleDateString()}
-              </p>
-            </div>
-          </div>
-        ))}
-      </div>
-
-      {locations.length === 0 && !showForm && (
-        <div className="text-center py-12">
-          <MapPin className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-          <h3 className="text-lg font-medium text-gray-900">No locations yet</h3>
-          <p className="mt-1 text-gray-500">Get started by adding a new location.</p>
-        </div>
+      {!showForm && (
+        <>
+          {totalPages > 1 && (
+            <Pagination
+              items={locations}
+              renderItem={({ id, data }) => (
+                <LocationCard
+                  key={id}
+                  data={data}
+                  onEdit={() => handleEdit(id)}
+                  onDelete={() => {
+                    setLocationToDelete(id);
+                    setModalOpen(true);
+                  }}
+                />
+              )}
+            />
+          )}
+        </>
       )}
+
+      <Modal
+        isOpen={modalOpen}
+        title="Confirm Delete"
+        message="Are you sure?"
+        onClose={() => setModalOpen(false)}
+        onConfirm={() => {
+          if (locationToDelete) deleteLocation(locationToDelete);
+          setModalOpen(false);
+        }}
+        showConfirm
+      />
     </div>
   );
 };

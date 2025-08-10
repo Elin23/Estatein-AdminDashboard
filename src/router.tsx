@@ -1,5 +1,5 @@
-import { createBrowserRouter } from 'react-router-dom';
-import ProtectedRoute from './components/ProtectedRoute';
+import { createBrowserRouter } from "react-router-dom"
+import ProtectedRoute from "./components/ProtectedRoute"
 
 import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
@@ -11,15 +11,16 @@ import Achievements from './pages/Achievements';
 import Team from './pages/Team';
 import Values from './pages/Values';
 import Contact  from './pages/Contact';
-
+import SocialLinks from './components/SocialMedia/SocialLinks';
+import Steps from "./pages/Steps"
 
 const router = createBrowserRouter([
   {
-    path: '/login',
+    path: "/login",
     element: <Login />,
   },
   {
-    path: '/',
+    path: "/",
     element: (
       <ProtectedRoute>
         <MainLayout />
@@ -34,8 +35,11 @@ const router = createBrowserRouter([
       { path: 'contact', element: <Contact /> },
       { path: 'team', element: <Team /> },
       { path: 'values', element: <Values /> },
+      { path: 'social', element: <SocialLinks /> },
+      { path: "steps", element: <Steps /> },
+
     ],
   },
-]);
+])
 
-export default router;
+export default router
