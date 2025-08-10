@@ -1,5 +1,5 @@
 import React from 'react';
-import { StepForward, Building2, MapPin, LayoutDashboard, Grid, FormInput, InboxIcon, MessageSquare, LogOut, Aperture } from 'lucide-react';
+import { StepForward, Building2, MapPin, LayoutDashboard, Grid, FormInput, InboxIcon, MessageSquare, LogOut, Aperture, Link } from 'lucide-react';
 import {  useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import SidebarLink from './SidebarLink';
@@ -16,6 +16,7 @@ const menuItems = [
   { icon: StepForward, label: 'Steps', path: '/steps' },
   { icon: Aperture, label: 'Our Values', path: '/values' },
   { icon: MessageSquare, label: 'Contact', path: '/contact' },
+  { icon: Link , label: 'SocialLinks', path: '/social' },
 ];
 
 const Sidebar: React.FC = () => {
