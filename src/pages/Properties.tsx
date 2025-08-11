@@ -110,7 +110,7 @@ useEffect(() => {
 
   return (
     <div className="p-6">
-      <div className="flex justify-between items-center mb-6">
+      <div className="flex justify-between items-center mb-6 huge:max-w-[1390px] mx-auto">
         <h1 className="text-2xl font-bold text-gray-800">Properties</h1>
         <button
           onClick={() => setShowForm(!showForm)}
@@ -137,9 +137,9 @@ useEffect(() => {
       {loading ? <div className='w-full h-full text-4xl text-center flex justify-center bg-blue-700 p-10 text-white'>loading...</div> 
       : 
       (
-        <div className="Properties_Container grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="Properties_Container grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 huge:max-w-[1390px] mx-auto">
           {properties.map((property) => (
-            <div key={property.id} className="bg-white rounded-lg shadow-md overflow-hidden">
+            <div key={property.id} className="bg-white rounded-lg shadow-md overflow-hidden huge:max-w-[452px]">
               {property.images?.length > 0 && (
                 <img
                   src={property.images[0]}
@@ -147,7 +147,7 @@ useEffect(() => {
                   className="w-full h-48 object-cover"
                 />
               )}
-              <div className="p-4 text_container">
+              <div className="p-4 text_container ">
                 {/* property status available or sold*/}
                 <div className="flex justify-between items-start">
                   <h3 className="text-lg font-semibold text-gray-800">{property.title}</h3>

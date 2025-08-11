@@ -40,7 +40,7 @@ const Contact = () => {
 
   if (loading)
     return (
-      <div className="max-w-4xl mx-auto mt-18">  <ContactListSkeleton count={6} />
+      <div className="max-w-[1430px] mx-auto mt-18">  <ContactListSkeleton count={6} />
         .</div>
     );
 

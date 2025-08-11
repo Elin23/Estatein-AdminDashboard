@@ -131,7 +131,7 @@ const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
   }, [editing, propertyBeingEdited]);
 
   return (
-    <form onSubmit={handleSubmit} className="eco-form animate-fade-in">
+    <form onSubmit={handleSubmit} className="eco-form animate-fade-in huge:max-w-[1430px] mx-auto">
       <h2 className="text-2xl font-bold text-gray-800 dark:text-white mb-6">Add New Property</h2>
 
       {isloading && <div className="loading_shape w-full h-full bg-gray10 text-white text-6xl font-semibold text-center animate-pulse"></div>}

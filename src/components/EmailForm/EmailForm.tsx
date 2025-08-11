@@ -35,18 +35,18 @@ export default function EmailForm({
     "mb-2 block text-sm font-medium text-gray40 dark:text-gray65";
 
   const inputBaseCls =
-    "w-full rounded-xl border border-gray20 bg-white99 px-4 py-2.5 text-gray08 outline-none transition " +
+    "w-full rounded-xl border border-gray75 bg-white99 px-4 py-2.5 text-gray08 outline-none transition " +
     "placeholder:text-gray50 focus:border-purple60 focus:ring-2 focus:ring-purple90 text-left " +
-    "dark:border-gray15 dark:bg-gray08 dark:text-white97 dark:focus:border-purple70 dark:focus:ring-purple90";
+    "dark:border-gray15 dark:bg-gray-700 dark:text-white97 dark:focus:border-purple70 dark:focus:ring-purple90";
 
   const textareaBaseCls =
-    "w-full resize-y rounded-xl border border-gray20 bg-white99 px-4 py-3 text-gray08 outline-none transition " +
+    "w-full resize-y rounded-xl border border-gray75 bg-white99 px-4 py-3 text-gray08 outline-none transition " +
     "placeholder:text-gray50 focus:border-purple60 focus:ring-2 focus:ring-purple90 text-left " +
-    "dark:border-gray15 dark:bg-gray08 dark:text-white97 dark:focus:border-purple70 dark:focus:ring-purple90";
+    "dark:border-gray15 dark:bg-gray-700 dark:text-white97 dark:focus:border-purple70 dark:focus:ring-purple90";
 
   return (
     <form
-      className="w-full space-y-4 text-left"
+      className="w-full space-y-4 text-left "
       aria-label="Email reply form"
       onSubmit={handleSubmit}
     >
@@ -94,9 +94,9 @@ export default function EmailForm({
             type="button"
             onClick={onCancel}
             disabled={loading}
-            className="inline-flex w-1/3 items-center justify-center rounded-xl border border-gray20 bg-white99 px-4 py-2.5 text-sm font-medium text-gray40 transition
+            className="inline-flex w-1/3 items-center justify-center rounded-xl border border-gray75 bg-white99 px-4 py-2.5 text-sm font-medium text-gray40 transition
                        hover:bg-white97 active:scale-[0.98] disabled:opacity-50
-                       dark:border-gray15 dark:bg-gray08 dark:text-gray65 dark:hover:bg-gray10"
+                       dark:border-gray15 dark:bg-gray-700 dark:text-gray65 dark:hover:bg-gray10"
           >
             {cancelLabel}
           </button>

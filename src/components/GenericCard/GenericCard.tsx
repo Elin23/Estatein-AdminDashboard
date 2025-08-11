@@ -51,9 +51,9 @@ export default function GenericCard({
       )}
 
       {subtitle && <h4 className="text-md font-semibold text-purple70">{subtitle}</h4>}
-      {title && <h3 className="text-lg font-bold text-white">{title}</h3>}
+      {title && <h3 className="text-lg font-bold text-gray-800 dark:text-white">{title}</h3>}
 
-      {description && <p className="dark:text-gray-300 text-white">{description}</p>}
+      {description && <p className="text-gray-800 dark:text-white">{description}</p>}
 
       <div className="mt-4 flex justify-end space-x-2">
         {onEdit && (
