@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import AchievementForm from '../components/Achievements/AchievementForm';
-import AchievementCard from '../components/Achievements/AchievementCard';
 import { db } from '../firebaseConfig';
 import { ref, onValue, push, set, update, remove } from 'firebase/database';
+import GenericCard from '../components/GenericCard/GenericCard';
 import { useSelector } from 'react-redux';
 import type { RootState } from '../redux/store';
 
@@ -32,7 +32,7 @@ function Achievements() {
       } else {
         setAchievements([]);
       }
-      setLoading(false); 
+      setLoading(false);
     });
     return () => unsubscribe();
   }, []);
@@ -66,8 +66,8 @@ function Achievements() {
 
   return (
     <div className="p-6">
-      <div className="flex justify-between items-center mb-4">
-        <h1 className="text-2xl font-bold text-black dark:text-white">Achievements</h1>
+      <div className="flex justify-between items-center mb-4 huge:max-w-[1390px] huge:mx-auto">
+        <h1 className="text-2xl font-bold text-gray-800 dark:text-white mb-6">Achievements</h1>
         {(role === "admin") && (<button
           className="bg-purple60 hover:bg-purple65  text-white px-4 py-2 rounded"
           onClick={handleAddClick}
@@ -87,19 +87,20 @@ function Achievements() {
         />
       )}
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
-        {loading
-          ? Array.from({ length: 3 }).map((_, idx) => (
-              <AchievementCard key={idx} loading />
-            ))
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4  huge:max-w-[1390px] huge:mx-auto   ">
+        {loading ? Array.from({ length: 3 }).map((_, idx) => (
+          <GenericCard key={idx} loading />
+        ))
           : achievements.map((achievement) => (
-              <AchievementCard
-                key={achievement.id}
-                achievement={achievement}
-                onEdit={() => handleEditClick(achievement)}
-                onDelete={() => handleDelete(achievement.id)}
-              />
-            ))}
+            <GenericCard
+              key={achievement.id}
+              title={achievement.title}
+              description={achievement.description}
+              onEdit={() => handleEditClick(achievement)}
+              onDelete={() => handleDelete(achievement.id)}
+              loading={loading}
+            />
+          ))}
       </div>
     </div>
   );

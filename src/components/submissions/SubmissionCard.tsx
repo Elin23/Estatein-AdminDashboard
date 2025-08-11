@@ -90,7 +90,9 @@ const SubmissionCard: React.FC<SubmissionCardProps> = ({ submission, onUpdateSta
   };
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
+
+    
+    <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 huge:max-w-[452px]">
       <div className="flex justify-between items-start">
         <div>
           <h3 className="text-lg font-semibold text-gray-800 dark:text-white">

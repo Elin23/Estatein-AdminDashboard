@@ -1,24 +1,37 @@
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import type { RootState, AppDispatch } from "../redux/store";
+import {
+  listenToLocations,
+  saveLocation,
+  deleteLocation,
+} from "../redux/slices/locationSlice";
+
 import Pagination from "../components/UI/Pagination";
 import LocationForm from "../components/Location/LocationForm";
 import LocationCard from "../components/Location/LocationCard";
 import Modal from "../components/UI/Modal";
-import { useLocations } from "../hooks/useLocations";
-import { usePagination } from "../hooks/usePagination";
-import { useState } from "react";
-import { useSelector } from "react-redux";
-import type { RootState } from "../redux/store";
 
-const Locations = () => {
+function Locations () {
   const role = useSelector((state: RootState) => state.auth.role) || '';
-  const { locations, loading, error, saveLocation, deleteLocation } =
-    useLocations();
-  const { totalPages,  } =
-    usePagination(locations);
+
+  const dispatch = useDispatch<AppDispatch>();
+
+  const {
+    items: locations,
+    loading,
+    error,
+  } = useSelector((state: RootState) => state.locations);
 
   const [showForm, setShowForm] = useState(false);
   const [editId, setEditId] = useState<string | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
   const [locationToDelete, setLocationToDelete] = useState<string | null>(null);
+
+  // Listen to DB changes once when component mounts
+  useEffect(() => {
+    dispatch(listenToLocations());
+  }, [dispatch]);
 
   const handleEdit = (id: string) => {
     setEditId(id);
@@ -47,9 +60,11 @@ const Locations = () => {
             editId ? locations.find((l) => l.id === editId)?.data : undefined
           }
           onSubmit={async (data) => {
-            await saveLocation(data, editId || undefined);
-            setShowForm(false); 
-            setEditId(null); 
+            await dispatch(
+              saveLocation({ locationData: data, id: editId || undefined })
+            );
+            setShowForm(false);
+            setEditId(null);
           }}
           onCancel={() => setShowForm(false)}
           loading={loading}
@@ -57,24 +72,20 @@ const Locations = () => {
       )}
 
       {!showForm && (
-        <>
-          {totalPages > 1 && (
-            <Pagination
-              items={locations}
-              renderItem={({ id, data }) => (
-                <LocationCard
-                  key={id}
-                  data={data}
-                  onEdit={() => handleEdit(id)}
-                  onDelete={() => {
-                    setLocationToDelete(id);
-                    setModalOpen(true);
-                  }}
-                />
-              )}
+        <Pagination
+          items={locations}
+          renderItem={({ id, data }) => (
+            <LocationCard
+              key={id}
+              data={data}
+              onEdit={() => handleEdit(id)}
+              onDelete={() => {
+                setLocationToDelete(id);
+                setModalOpen(true);
+              }}
             />
           )}
-        </>
+        />
       )}
 
       <Modal
@@ -83,7 +94,7 @@ const Locations = () => {
         message="Are you sure?"
         onClose={() => setModalOpen(false)}
         onConfirm={() => {
-          if (locationToDelete) deleteLocation(locationToDelete);
+          if (locationToDelete) dispatch(deleteLocation(locationToDelete));
           setModalOpen(false);
         }}
         showConfirm

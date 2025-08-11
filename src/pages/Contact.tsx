@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import { ref, onValue } from "firebase/database";
 import { db } from "../firebaseConfig";
-
 import ContactList from "../components/contact/ContactList";
 import type { ContactType } from "../types";
+import { ContactListSkeleton } from "../components/contact/ContactListSkeleton";
 
 const Contact = () => {
   const [contacts, setContacts] = useState<ContactType[]>([]);
@@ -40,7 +40,8 @@ const Contact = () => {
 
   if (loading)
     return (
-      <div className="text-4xl text-center mt-32">Loading contacts...</div>
+      <div className="max-w-[1430px] mx-auto mt-18">  <ContactListSkeleton count={6} />
+        .</div>
     );
 
   if (contacts.length === 0) return <div>No contacts found.</div>;
@@ -58,7 +59,14 @@ const Contact = () => {
       <h1 className="text-2xl font-bold text-gray-800 dark:text-white mb-6">
         Contact Requests
       </h1>
-      <ContactList contacts={contacts} onUpdateStatus={handleUpdateStatus} />
+      {loading ? (
+        <ContactListSkeleton count={6} />
+      ) : contacts.length === 0 ? (
+        <div>No contacts found.</div>
+      ) : (
+        <ContactList contacts={contacts} onUpdateStatus={handleUpdateStatus} />
+      )}
+
     </div>
   );
 };

@@ -119,8 +119,8 @@ function LocationForm({
             <option value="" disabled>
               Select Category
             </option>
-            <option className=" dark:text-black text-white" value="regional">Regional</option>
-            <option className=" dark:text-black text-white" value="international">International</option>
+            <option className=" text-black dark:text-white" value="regional">Regional</option>
+            <option className="text-black dark:text-white" value="international">International</option>
           </select>
         </div>
 

@@ -1,23 +1,30 @@
-import { useState, useEffect } from "react";
+
+
+import { useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import type { RootState } from "../redux/store";
+import { setCurrentPage, setItemsPerPage } from "../redux/slices/paginationSlice";
 
 export const usePagination = <T>(items: T[]) => {
-  const [currentPage, setCurrentPage] = useState(1); 
-  const [itemsPerPage, setItemsPerPage] = useState(3);
+  const dispatch = useDispatch();
+  const { currentPage, itemsPerPage } = useSelector(
+    (state: RootState) => state.pagination
+  );
 
   useEffect(() => {
     const updateItemsPerPage = () => {
-      if (window.innerWidth >= 1280) setItemsPerPage(4);
-      else if (window.innerWidth >= 1024) setItemsPerPage(3);
-      else if (window.innerWidth >= 768) setItemsPerPage(2);
-      else setItemsPerPage(1);
+      if (window.innerWidth >= 1280) dispatch(setItemsPerPage(4));
+      else if (window.innerWidth >= 1024) dispatch(setItemsPerPage(3));
+      else if (window.innerWidth >= 768) dispatch(setItemsPerPage(2));
+      else dispatch(setItemsPerPage(1));
     };
 
     updateItemsPerPage();
     window.addEventListener("resize", updateItemsPerPage);
     return () => window.removeEventListener("resize", updateItemsPerPage);
-  }, []);
+  }, [dispatch]);
 
-  const totalPages = Math.ceil(items.length / itemsPerPage);  
+  const totalPages = Math.ceil(items.length / itemsPerPage);
 
   const paginatedItems = items.slice(
     (currentPage - 1) * itemsPerPage,
@@ -25,24 +32,20 @@ export const usePagination = <T>(items: T[]) => {
   );
 
   const getPaginationNumbers = (): (number | string)[] => {
-    if (totalPages <= 4) {
-      return Array.from({ length: totalPages }, (_, i) => i + 1); 
-    }
-    if (currentPage <= 2) {
-      return [1, 2, "...", totalPages]; 
-    }
-    if (currentPage >= totalPages - 1) {
-      return [1, "...", totalPages - 1, totalPages]; 
-    }
-    return [1, "...", currentPage, "...", totalPages]; 
-   };
+    if (totalPages <= 4)
+      return Array.from({ length: totalPages }, (_, i) => i + 1);
+    if (currentPage <= 2) return [1, 2, "...", totalPages];
+    if (currentPage >= totalPages - 1)
+      return [1, "...", totalPages - 1, totalPages];
+    return [1, "...", currentPage, "...", totalPages];
+  };
 
   return {
-    currentPage, 
-    setCurrentPage, 
-    totalPages, 
-    paginatedItems, 
-    itemsPerPage, 
-    getPaginationNumbers, 
+    currentPage,
+    setCurrentPage: (page: number) => dispatch(setCurrentPage(page)),
+    totalPages,
+    paginatedItems,
+    itemsPerPage,
+    getPaginationNumbers,
   };
 };
