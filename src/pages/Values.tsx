@@ -1,77 +1,63 @@
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import type { RootState, AppDispatch } from "../redux/store";
 import ValueForm from "../components/Values/ValuesForm";
 import ValuesCard from "../components/Values/ValuesCard";
-import { ref, onValue, push, set, update, remove } from "firebase/database";
-import { db } from "../firebaseConfig";
 import type { ValueItem } from "../types/ValueItem";
 
+import {
+  listenToValues,
+  addValue,
+  updateValue,
+  deleteValue,
+} from "../redux/slices/valuesSlice";
+
+import Pagination from "../components/UI/Pagination";
+import Modal from "../components/UI/Modal";
+
 function Values() {
-  const [values, setValues] = useState<ValueItem[]>([]);
-  const [editingValue, setEditingValue] = useState<ValueItem | null>(null);
+  const dispatch = useDispatch<AppDispatch>();
+  const {
+    items: values,
+    loading,
+    error,
+  } = useSelector((state: RootState) => state.values);
+
   const [showForm, setShowForm] = useState(false);
-  const [loading, setLoading] = useState(true);
-  const [err, setErr] = useState<string | null>(null);
+  const [editingValue, setEditingValue] = useState<ValueItem | null>(null);
+
+  // For modal confirmation on delete
+  const [modalOpen, setModalOpen] = useState(false);
+  const [valueToDelete, setValueToDelete] = useState<string | null>(null);
 
   useEffect(() => {
-    setLoading(true);
-    const listRef = ref(db, "values");
-    const unsubscribe = onValue(
-      listRef,
-      (snapshot) => {
-        const obj = snapshot.val() ?? {};
-        const list: ValueItem[] = Object.entries(obj).map(([id, value]: [string, any]) => ({
-          id,
-          title: value?.title ?? "",
-          description: value?.description ?? "",
-        }));
-        setValues(list);
-        setErr(null);
-        setLoading(false);
-      },
-      (error) => {
-        setErr(error.message);
-        setLoading(false);
-      }
-    );
-    return () => unsubscribe();
-  }, []);
+    dispatch(listenToValues());
+  }, [dispatch]);
 
-  const handleAdd = useCallback(async (payload: ValueItem) => {
-    try {
-      const newRef = push(ref(db, "values"));
-      await set(newRef, { title: payload.title.trim(), description: payload.description.trim() });
-      setShowForm(false);
-      setEditingValue(null);
-    } catch (e: any) {
-      setErr(e.message ?? "Failed to add value");
-    } finally {
-    }
-  }, []);
+  const handleAdd = async (payload: Omit<ValueItem, "id">) => {
+    await dispatch(addValue(payload));
+    setShowForm(false);
+    setEditingValue(null);
+  };
 
-  const handleUpdate = useCallback(async (updatedValue: ValueItem) => {
-    try {
-      const itemRef = ref(db, `values/${updatedValue.id}`);
-      await update(itemRef, {
-        title: updatedValue.title.trim(),
-        description: updatedValue.description.trim(),
-      });
-      setShowForm(false);
-      setEditingValue(null);
-    } catch (e: any) {
-      setErr(e.message ?? "Failed to update value");
-    } finally {
-    }
-  }, []);
+  const handleUpdate = async (payload: ValueItem) => {
+    await dispatch(updateValue(payload));
+    setShowForm(false);
+    setEditingValue(null);
+  };
 
-  const handleDelete = useCallback(async (id: string) => {
-    const ok = confirm("Are you sure you want to delete this value?");
-    if (!ok) return;
-    try {
-      await remove(ref(db, `values/${id}`));
-    } catch (e: any) {
-      setErr(e.message ?? "Failed to delete value");
+  const handleDelete = async (id: string) => {
+    setValueToDelete(id);
+    setModalOpen(true);
+  };
+
+  const confirmDelete = async () => {
+    if (valueToDelete) {
+      await dispatch(deleteValue(valueToDelete));
+      setValueToDelete(null);
+      setModalOpen(false);
     }
-  }, []);
+  };
 
   const handleEditClick = (value: ValueItem) => {
     setEditingValue(value);
@@ -92,17 +78,17 @@ function Values() {
           onClick={handleAddClick}
           disabled={loading || values.length >= 4}
         >
-          + Add Value
+          {showForm ? "Close Form" : "+ Add Value"}
         </button>
       </div>
 
-      {err && (
+      {error && (
         <div className="mb-4 rounded border border-red-500/30 bg-red-500/10 p-3 text-red-200">
-          {err}
+          {error}
         </div>
       )}
 
-      {showForm && (
+      {showForm ? (
         <ValueForm
           onSubmit={editingValue ? handleUpdate : handleAdd}
           initialData={editingValue ?? undefined}
@@ -111,24 +97,32 @@ function Values() {
             setShowForm(false);
           }}
         />
-      )}
-
-      {loading ? (
+      ) : loading && values.length === 0 ? (
         <p className="text-white/80">Loading...</p>
       ) : values.length === 0 ? (
         <p className="text-white/60">No values yet. Add your first one!</p>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
-          {values.map((value) => (
+        <Pagination
+          items={values}
+          renderItem={(value: ValueItem) => (
             <ValuesCard
               key={value.id}
               value={value}
               onEdit={() => handleEditClick(value)}
               onDelete={() => handleDelete(value.id)}
             />
-          ))}
-        </div>
+          )}
+        />
       )}
+
+      <Modal
+        isOpen={modalOpen}
+        title="Confirm Delete"
+        message="Are you sure you want to delete this value?"
+        onClose={() => setModalOpen(false)}
+        onConfirm={confirmDelete}
+        showConfirm
+      />
     </div>
   );
 }

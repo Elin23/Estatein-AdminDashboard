@@ -7,11 +7,11 @@ interface ProtectedRouteProps {
 }
 
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
-  const { isAdmin } = useAuth();
+  // const { isAdmin } = useAuth();
 
-  if (!isAdmin) {
-    return <Navigate to="/login" replace />;
-  }
+  // if (!isAdmin) {
+  //   return <Navigate to="/login" replace />;
+  // }
 
   return <>{children}</>;
 };
