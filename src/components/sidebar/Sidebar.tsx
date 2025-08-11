@@ -19,7 +19,6 @@ const menuItems = [
   { icon: Aperture, label: 'Our Values', path: '/values' },
   { icon: MessageSquare, label: 'Contact', path: '/contact' },
   { icon: Link, label: 'SocialLinks', path: '/social' },
-  { icon: Link , label: 'SocialLinks', path: '/social' },
   // { icon: Building2, label: 'User Management', path: '/user-management' },
 ];
 
