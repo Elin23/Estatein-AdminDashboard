@@ -1,172 +1,212 @@
-import React, { useEffect, useState } from 'react';
-import { db } from '../firebaseConfig';
-import { ref, onValue, set, remove } from 'firebase/database';
+import { useState, useEffect } from "react";
+import {
+  getAuth,
+  createUserWithEmailAndPassword,
+  deleteUser,
+} from "firebase/auth";
+import {
+  getDatabase,
+  ref,
+  set,
+  onValue,
+  remove,
+  update,
+} from "firebase/database";
 
-interface User {
-  email: string;
-  role: 'admin' | 'support_manager' | 'user';
-  id: string;
-}
+const UserManagement = () => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [role, setRole] = useState("admin");
+  const [message, setMessage] = useState("");
+  const [users, setUsers] = useState<{ uid: string; email: string; role: string }[]>([]);
+  const [showForm, setShowForm] = useState(false);
+  const [editingUid, setEditingUid] = useState<string | null>(null);
 
-const UserManagement: React.FC = () => {
-  const [users, setUsers] = useState<User[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
-  const [email, setEmail] = useState('');
-  const [role, setRole] = useState<'admin' | 'support_manager' | 'user'>('user');
-  const [editId, setEditId] = useState<string | null>(null);
+  const auth = getAuth();
+  const db = getDatabase();
 
+  // جلب قائمة المستخدمين من Realtime Database
   useEffect(() => {
-    const usersRef = ref(db, 'users');
+    const usersRef = ref(db, "users");
     const unsubscribe = onValue(usersRef, (snapshot) => {
-      const data = snapshot.val() || {};
-      const usersList: User[] = Object.entries(data).map(([key, val]) => ({
-        id: key,
-        ...(val as Omit<User, 'id'>),
-      }));
-      setUsers(usersList);
-      setLoading(false);
-    }, (err) => {
-      setError(err.message);
-      setLoading(false);
+      const data = snapshot.val();
+      if (data) {
+        const userList = Object.entries(data).map(([uid, val]: any) => ({
+          uid,
+          email: val.email,
+          role: val.role,
+        }));
+        setUsers(userList);
+      } else {
+        setUsers([]);
+      }
     });
 
     return () => unsubscribe();
-  }, []);
+  }, [db]);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleCreateOrUpdateUser = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError('');
-    if (!email) {
-      setError('Email is required');
-      return;
-    }
+    setMessage("");
 
-    if (editId) {
-      set(ref(db, `users/${editId}`), { email, role })
-        .then(() => {
-          resetForm();
-        })
-        .catch(e => setError(e.message));
-    } else {
-      const newId = Date.now().toString();
-      set(ref(db, `users/${newId}`), { email, role })
-        .then(() => {
-          resetForm();
-        })
-        .catch(e => setError(e.message));
+    try {
+      if (editingUid) {
+        // تعديل role فقط
+        await update(ref(db, `users/${editingUid}`), { role });
+        setMessage("✅ User updated successfully!");
+        setEditingUid(null);
+      } else {
+        // إنشاء مستخدم جديد في Firebase Auth
+        const userCredential = await createUserWithEmailAndPassword(
+          auth,
+          email,
+          password
+        );
+        const uid = userCredential.user.uid;
+        // إضافة بيانات المستخدم إلى Realtime Database
+        await set(ref(db, `users/${uid}`), {
+          email,
+          role,
+        });
+        setMessage("✅ User created successfully!");
+      }
+
+      // إعادة تعيين الحقول
+      setEmail("");
+      setPassword("");
+      setRole("admin");
+      setShowForm(false);
+    } catch (error: any) {
+      console.error(error);
+      setMessage("❌ Error: " + error.message);
     }
   };
 
-  const resetForm = () => {
-    setEmail('');
-    setRole('user');
-    setEditId(null);
+  const handleDeleteUser = async (uid: string) => {
+    try {
+      // حذف المستخدم من Realtime Database
+      await remove(ref(db, `users/${uid}`));
+      // ملاحظة: حذف المستخدم من Firebase Auth يحتاج صلاحيات إدارية من السيرفر (firebase admin sdk)
+      setMessage("✅ User deleted from database!");
+    } catch (error: any) {
+      console.error(error);
+      setMessage("❌ Error deleting user: " + error.message);
+    }
   };
 
-  const handleEdit = (user: User) => {
+  const handleEditUser = (user: { uid: string; email: string; role: string }) => {
     setEmail(user.email);
     setRole(user.role);
-    setEditId(user.id);
-  };
-
-  const handleDelete = (id: string) => {
-    if (window.confirm('هل أنت متأكد من حذف المستخدم؟')) {
-      remove(ref(db, `users/${id}`)).catch(e => setError(e.message));
-    }
+    setEditingUid(user.uid);
+    setShowForm(true);
   };
 
   return (
-    <div className="p-6 bg-white99 dark:bg-gray10 min-h-screen font-urbanist text-gray08 dark:text-white90">
-      <h1 className="text-3xl mb-6 font-bold">User Management</h1>
+    <div className="p-6 bg-white shadow-lg rounded-lg max-w-3xl mx-auto">
+      <h2 className="text-2xl font-bold mb-6">User Management</h2>
 
-      <form onSubmit={handleSubmit} className="mb-6 max-w-md space-y-4">
-        <div>
-          <label htmlFor="email" className="block mb-1 font-semibold">Email</label>
+      <button
+        onClick={() => {
+          setShowForm(!showForm);
+          setEditingUid(null);
+          setEmail("");
+          setPassword("");
+          setRole("admin");
+          setMessage("");
+        }}
+        className="mb-6 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+      >
+        {showForm ? "Cancel" : "Add User"}
+      </button>
+
+      {showForm && (
+        <form
+          onSubmit={handleCreateOrUpdateUser}
+          className="mb-6 space-y-4 border p-4 rounded"
+        >
           <input
-            id="email"
             type="email"
+            placeholder="Email"
             value={email}
-            onChange={e => setEmail(e.target.value)}
-            className="w-full p-2 border border-gray-300 rounded dark:bg-gray15 dark:border-gray30 dark:text-white90"
+            disabled={!!editingUid} // منع تعديل الايميل عند التعديل
+            onChange={(e) => setEmail(e.target.value)}
+            className="w-full p-2 border rounded"
             required
           />
-        </div>
-        <div>
-          <label htmlFor="role" className="block mb-1 font-semibold">Role</label>
+
+          {!editingUid && (
+            <input
+              type="password"
+              placeholder="Password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="w-full p-2 border rounded"
+              required
+            />
+          )}
+
           <select
-            id="role"
             value={role}
-            onChange={e => setRole(e.target.value as any)}
-            className="w-full p-2 border border-gray-300 rounded dark:bg-gray15 dark:border-gray30 dark:text-white90"
+            onChange={(e) => setRole(e.target.value)}
+            className="w-full p-2 border rounded"
           >
-            <option value="user">User</option>
-            <option value="support_manager">Support Manager</option>
             <option value="admin">Admin</option>
+            <option value="support">Support</option>
+            <option value="user">User</option>
+            <option value="guest">Guest</option>
           </select>
-        </div>
-        {error && <p className="text-red-600">{error}</p>}
-        <div className="flex gap-4">
+
           <button
             type="submit"
-            className="bg-purple70 hover:bg-purple65 text-white py-2 px-4 rounded transition"
+            className="w-full bg-green-600 text-white py-2 rounded hover:bg-green-700"
           >
-            {editId ? 'Update User' : 'Add User'}
+            {editingUid ? "Update User" : "Create User"}
           </button>
-          {editId && (
-            <button
-              type="button"
-              onClick={resetForm}
-              className="py-2 px-4 border border-gray-400 rounded hover:bg-gray-200 dark:hover:bg-gray-700"
-            >
-              Cancel
-            </button>
-          )}
-        </div>
-      </form>
-
-      {loading ? (
-        <p>Loading users...</p>
-      ) : (
-        <table className="w-full text-left border-collapse">
-          <thead>
-            <tr className="bg-purple97 dark:bg-gray15">
-              <th className="p-3 border border-gray-300">Email</th>
-              <th className="p-3 border border-gray-300">Role</th>
-              <th className="p-3 border border-gray-300 text-center">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {users.length === 0 && (
-              <tr>
-                <td colSpan={3} className="text-center p-3">No users found</td>
-              </tr>
-            )}
-            {users.map(user => (
-              <tr key={user.id} className="even:bg-white99 odd:bg-purple99 dark:even:bg-gray10 dark:odd:bg-gray15">
-                <td className="p-3 border border-gray-300">{user.email}</td>
-                <td className="p-3 border border-gray-300">{user.role}</td>
-                <td className="p-3 border border-gray-300 text-center space-x-3">
-                  <button
-                    onClick={() => handleEdit(user)}
-                    className="text-purple70 hover:text-purple65"
-                    aria-label="Edit user"
-                  >
-                    ✏️
-                  </button>
-                  <button
-                    onClick={() => handleDelete(user.id)}
-                    className="text-red-600 hover:text-red-700"
-                    aria-label="Delete user"
-                  >
-                    🗑️
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        </form>
       )}
+
+      {message && (
+        <p className="mb-4 text-center font-semibold text-green-700">{message}</p>
+      )}
+
+      <table className="w-full border-collapse border border-gray-300">
+        <thead>
+          <tr className="bg-gray-100">
+            <th className="border border-gray-300 p-2">Email</th>
+            <th className="border border-gray-300 p-2">Role</th>
+            <th className="border border-gray-300 p-2">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {users.length === 0 && (
+            <tr>
+              <td colSpan={3} className="text-center p-4">
+                No users found.
+              </td>
+            </tr>
+          )}
+          {users.map(({ uid, email, role }) => (
+            <tr key={uid}>
+              <td className="border border-gray-300 p-2">{email}</td>
+              <td className="border border-gray-300 p-2">{role}</td>
+              <td className="border border-gray-300 p-2 space-x-2">
+                <button
+                  onClick={() => handleEditUser({ uid, email, role })}
+                  className="px-3 py-1 bg-yellow-400 rounded hover:bg-yellow-500"
+                >
+                  Edit
+                </button>
+                <button
+                  onClick={() => handleDeleteUser(uid)}
+                  className="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600"
+                >
+                  Delete
+                </button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 };

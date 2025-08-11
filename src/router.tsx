@@ -11,12 +11,14 @@ import Contact  from './pages/Contact';
 import Steps from "./pages/Steps"
 import Testimonials from "./pages/Testimonials";
 import SocialLinks from "./pages/SocialLinks";
+import UserManagement from "./pages/UserManagement";
+import Login from "./pages/Login";
 
 const router = createBrowserRouter([
-  // {
-  //   path: "/login",
-  //   element: <Login />,
-  // },
+  {
+    path: "/login",
+    element: <Login />,
+  },
   {
     path: "/",
     element: (
@@ -36,6 +38,7 @@ const router = createBrowserRouter([
       { path: 'values', element: <Values /> },
       { path: 'social', element: <SocialLinks /> },
       { path: "steps", element: <Steps /> },
+      { path: "user-management", element: <UserManagement /> },
 
     ],
   },
