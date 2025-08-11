@@ -23,8 +23,8 @@ function AchievementCard({ achievement, onEdit, onDelete, loading }: Achievement
 
   return (
     <div className="bg-white dark:bg-gray-800 p-4 rounded shadow">
-      <h3 className="text-lg font-bold text-white">{achievement?.title}</h3>
-      <p className="dark:text-gray-300 text-white">{achievement?.description}</p>
+      <h3 className="text-lg font-bold text-black dark:text-white">{achievement?.title}</h3>
+      <p className=" text-black dark:text-white">{achievement?.description}</p>
       <div className="mt-4 flex justify-end space-x-2">
         <button
           onClick={onEdit}
