@@ -59,7 +59,7 @@ export default function GenericCard({
       {title && <h3 className="text-lg font-bold text-gray-800 dark:text-white">{title}</h3>}
 
       {description && <p className="text-gray-800 dark:text-white">{description}</p>}
-      { (
+      {(role === "admin") && (
       <div className="mt-4 flex justify-end space-x-2">
         {onEdit && (
           <button onClick={onEdit} className="px-3 py-1 bg-purple70 text-white rounded hover:bg-purple60">
