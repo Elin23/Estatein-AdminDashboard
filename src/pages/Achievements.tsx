@@ -1,34 +1,54 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import AchievementForm from '../components/Achievements/AchievementForm';
 import AchievementCard from '../components/Achievements/AchievementCard';
-
+import { db } from '../firebaseConfig';
+import { ref, onValue, push, set, update, remove } from 'firebase/database';
 
 export interface Achievement {
-  id: number;
+  id: string;
   title: string;
   description: string;
 }
 
 function Achievements() {
   const [achievements, setAchievements] = useState<Achievement[]>([]);
+  const [loading, setLoading] = useState(true);
   const [editingAchievement, setEditingAchievement] = useState<Achievement | null>(null);
   const [showForm, setShowForm] = useState(false);
 
-  const handleAdd = (newAchievement: Achievement) => {
-    setAchievements([...achievements, newAchievement]);
+  useEffect(() => {
+    const achievementsRef = ref(db, 'achievements');
+    const unsubscribe = onValue(achievementsRef, (snapshot) => {
+      if (snapshot.exists()) {
+        const data = snapshot.val();
+        const list = Object.entries(data).map(([id, value]) => ({
+          id,
+          ...(value as Omit<Achievement, 'id'>)
+        }));
+        setAchievements(list);
+      } else {
+        setAchievements([]);
+      }
+      setLoading(false); 
+    });
+    return () => unsubscribe();
+  }, []);
+
+  const handleAdd = async (newAchievement: Omit<Achievement, 'id'>) => {
+    const newRef = push(ref(db, 'achievements'));
+    await set(newRef, newAchievement);
     setShowForm(false);
   };
 
-  const handleUpdate = (updatedAchievement: Achievement) => {
-    setAchievements((prev) =>
-      prev.map((ach) => (ach.id === updatedAchievement.id ? updatedAchievement : ach))
-    );
+  const handleUpdate = async (data: Omit<Achievement, 'id'>, id?: string) => {
+    if (!id) return;
+    await update(ref(db, `achievements/${id}`), data);
     setEditingAchievement(null);
     setShowForm(false);
   };
 
-  const handleDelete = (id: number) => {
-    setAchievements((prev) => prev.filter((ach) => ach.id !== id));
+  const handleDelete = async (id: string) => {
+    await remove(ref(db, `achievements/${id}`));
   };
 
   const handleEditClick = (achievement: Achievement) => {
@@ -65,14 +85,18 @@ function Achievements() {
       )}
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
-        {achievements.map((achievement) => (
-          <AchievementCard
-            key={achievement.id}
-            achievement={achievement}
-            onEdit={() => handleEditClick(achievement)}
-            onDelete={() => handleDelete(achievement.id)}
-          />
-        ))}
+        {loading
+          ? Array.from({ length: 3 }).map((_, idx) => (
+              <AchievementCard key={idx} loading />
+            ))
+          : achievements.map((achievement) => (
+              <AchievementCard
+                key={achievement.id}
+                achievement={achievement}
+                onEdit={() => handleEditClick(achievement)}
+                onDelete={() => handleDelete(achievement.id)}
+              />
+            ))}
       </div>
     </div>
   );

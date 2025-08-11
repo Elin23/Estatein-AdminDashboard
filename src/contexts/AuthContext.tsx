@@ -1,29 +1,43 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState } from 'react';
+import { getAuth, signInWithEmailAndPassword, signOut } from 'firebase/auth';
+import { app } from '../firebaseConfig'; 
 
 interface AuthContextType {
   isAdmin: boolean;
   login: (email: string, password: string) => Promise<void>;
-  logout: () => void;
+  logout: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
+const auth = getAuth(app);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [isAdmin, setIsAdmin] = useState<boolean>(() => {
-    return localStorage.getItem('isAdmin') === 'true';
-  });
+  const [isAdmin, setIsAdmin] = useState<boolean>(false);
 
   const login = async (email: string, password: string) => {
-    // In a real app, this would make an API call to verify credentials
-    if (email === 'admin@example.com' && password === 'admin123') {
-      setIsAdmin(true);
-      localStorage.setItem('isAdmin', 'true');
-    } else {
-      throw new Error('Invalid credentials');
+    try {
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      if (userCredential.user.email === 'admin@example.com') {
+        setIsAdmin(true);
+        localStorage.setItem('isAdmin', 'true');
+      } else {
+        throw new Error('You are not authorized to access this dashboard.');
+      }
+    } catch (error: any) {
+      if (error.code === 'auth/user-not-found') {
+        throw new Error('No account found with this email.');
+      } else if (error.code === 'auth/wrong-password') {
+        throw new Error('Incorrect password.');
+      } else if (error.code === 'auth/invalid-email') {
+        throw new Error('Invalid email format.');
+      } else {
+        throw new Error('Login failed. Please try again.');
+      }
     }
   };
 
-  const logout = () => {
+  const logout = async () => {
+    await signOut(auth);
     setIsAdmin(false);
     localStorage.removeItem('isAdmin');
   };

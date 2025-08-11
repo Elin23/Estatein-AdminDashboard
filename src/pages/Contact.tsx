@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
 import { ref, onValue } from "firebase/database";
 import { db } from "../firebaseConfig";
-import type { Contact } from "../types";
+
 import ContactList from "../components/contact/ContactList";
+import type { ContactType } from "../types";
 
 const Contact = () => {
-  const [contacts, setContacts] = useState<Contact[]>([]);
+  const [contacts, setContacts] = useState<ContactType[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
@@ -14,7 +15,7 @@ const Contact = () => {
     const unsubscribe = onValue(contactsRef, (snapshot) => {
       const data = snapshot.val();
       if (data) {
-        const list: Contact[] = Object.entries(data).map(([id, value]) => {
+        const list: ContactType[] = Object.entries(data).map(([id, value]) => {
           const val = value as any;
           // console.log(data);
           return {
@@ -45,7 +46,7 @@ const Contact = () => {
   if (contacts.length === 0)
     return <div className="text-4xl text-center mt-32">No contacts found.</div>;
 
-  const handleUpdateStatus = (id: string, status: Contact["status"]) => {
+  const handleUpdateStatus = (id: string, status: ContactType["status"]) => {
     setContacts(
       contacts.map((contact) =>
         contact.id === id ? { ...contact, status } : contact
