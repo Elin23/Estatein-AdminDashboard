@@ -66,7 +66,7 @@ function Achievements() {
       <div className="flex justify-between items-center mb-4 huge:max-w-[1390px] huge:mx-auto">
         <h1 className="text-2xl font-bold text-white">Achievements</h1>
         <button
-          className="bg-purple60 hover:bg-purple65 text-white px-4 py-2 rounded"
+          className="bg-purple60 hover:bg-purple65  text-white px-4 py-2 rounded"
           onClick={handleAddClick}
         >
           + Add Achievement

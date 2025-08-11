@@ -1,15 +1,45 @@
 // Property Types
 export interface Property {
-  id: string;
-  title: string;
-  description: string;
-  location: string;
-  category: 'residential' | 'business' | 'agricultural';
-  features: string[];
-  images: string[];
-  mapUrl: string;
+  createdAt?:string;
+  id:string;
+  title:string;
+  type:"villa" | "apartment" | "house" | string;
+  location:string;
+  price:number;
+  description:string;
+  bedrooms:string;
+  bathrooms: string;
   area: number;
-  createdAt: Date;
+  buildYear:string;
+  features:string[];
+  status:"available" | "sold";
+  mapUrl:string;
+  images: string[];
+
+  additionalFees: {
+    transferTax:number,
+    legalFees:number,
+    inspection: number,
+    insurance:number,
+  },
+
+  monthlyCosts: {
+    propertyTaxes:number,
+    hoa: number,
+  },
+
+  totalInitialCosts: {
+    listingPrice: number,
+    additionalFees: number,
+    downPayment: number,
+    mortgageAmount: number,
+  },
+
+  monthlyExpenses: {
+    propertyTaxes: number,//same above
+    hoa: number,//the same one above
+    insurance: number,//total insurance / 12
+  },
 }
 
 export type PropertyFormData = Omit<Property, 'id' | 'createdAt'>;

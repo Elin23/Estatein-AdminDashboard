@@ -1,7 +1,4 @@
 
-import Feedback from '../components/Feedback';
-
-
 const Dashboard = () => {
   return (
     <div className="p-6 space-y-6">
@@ -10,7 +7,7 @@ const Dashboard = () => {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <Feedback />
+        {/* <Feedback /> */}
         {/* <FAQSection /> */}
       </div>
     </div>

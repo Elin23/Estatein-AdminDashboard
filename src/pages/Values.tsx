@@ -90,7 +90,7 @@ function Values() {
         <button
           className="bg-purple60 hover:bg-purple65 text-white px-4 py-2 rounded disabled:opacity-60"
           onClick={handleAddClick}
-          disabled={loading || values.length >= 4}
+          disabled={loading}
         >
           + Add Value
         </button>

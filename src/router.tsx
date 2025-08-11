@@ -1,7 +1,4 @@
 import { createBrowserRouter } from "react-router-dom"
-import ProtectedRoute from "./components/ProtectedRoute"
-
-import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
 import Properties from './pages/Properties';
 import Locations from './pages/Locations';
@@ -11,8 +8,11 @@ import Achievements from './pages/Achievements';
 import Team from './pages/Team';
 import Values from './pages/Values';
 import Contact  from './pages/Contact';
-import SocialLinks from './components/SocialMedia/SocialLinks';
 import Steps from "./pages/Steps"
+import Testimonials from "./pages/Testimonials";
+import SocialLinks from "./pages/SocialLinks";
+import UserManagement from "./pages/UserManagement";
+import Login from "./pages/Login";
 
 const router = createBrowserRouter([
   {
@@ -22,9 +22,9 @@ const router = createBrowserRouter([
   {
     path: "/",
     element: (
-      <ProtectedRoute>
+      
         <MainLayout />
-      </ProtectedRoute>
+     
     ),
     children: [
       { path: '', element: <Dashboard /> },
@@ -33,10 +33,12 @@ const router = createBrowserRouter([
       { path: 'achievements', element: <Achievements /> },
       { path: 'submissions', element: <Submissions /> },
       { path: 'contact', element: <Contact /> },
+      { path: 'testimonials', element: <Testimonials /> },
       { path: 'team', element: <Team /> },
       { path: 'values', element: <Values /> },
       { path: 'social', element: <SocialLinks /> },
       { path: "steps", element: <Steps /> },
+      { path: "user-management", element: <UserManagement /> },
 
     ],
   },
