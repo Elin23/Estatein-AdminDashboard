@@ -11,7 +11,7 @@ const menuItems = [
   { icon: MapPin, label: 'Locations', path: '/locations' },
   { icon: Grid, label: 'Achievements', path: '/achievements' },
   { icon: FormInput, label: 'Our Team', path: '/team' },
-  { icon: MapPin, label: 'Testimonials', path: '/testimonials' },
+  { icon: MapPin, label: 'testimonials', path: '/testimonials' },
   { icon: InboxIcon, label: 'Submissions', path: '/submissions' },
   { icon: StepForward, label: 'Steps', path: '/steps' },
   { icon: Aperture, label: 'Our Values', path: '/values' },

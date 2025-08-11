@@ -1,6 +1,5 @@
 import { createBrowserRouter } from "react-router-dom"
 import ProtectedRoute from "./components/ProtectedRoute"
-
 import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
 import Properties from './pages/Properties';
@@ -13,6 +12,7 @@ import Values from './pages/Values';
 import Contact  from './pages/Contact';
 import SocialLinks from './components/SocialMedia/SocialLinks';
 import Steps from "./pages/Steps"
+import Testimonials from "./pages/Testimonials";
 
 const router = createBrowserRouter([
   {
@@ -33,6 +33,7 @@ const router = createBrowserRouter([
       { path: 'achievements', element: <Achievements /> },
       { path: 'submissions', element: <Submissions /> },
       { path: 'contact', element: <Contact /> },
+      { path: 'testimonials', element: <Testimonials /> },
       { path: 'team', element: <Team /> },
       { path: 'values', element: <Values /> },
       { path: 'social', element: <SocialLinks /> },
