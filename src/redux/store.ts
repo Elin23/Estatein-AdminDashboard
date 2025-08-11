@@ -11,8 +11,11 @@ export const store = configureStore({
     locations: locationReducer,
     values: valuesReducer,
   },
-  devTools: import.meta.env.MODE !== "production",
+  devTools: import.meta.env.MODE !== 'production',
 });
+
+
 
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;
+
