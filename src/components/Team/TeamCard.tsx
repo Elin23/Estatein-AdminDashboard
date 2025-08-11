@@ -1,4 +1,6 @@
+import { useSelector } from 'react-redux';
 import type { TeamMember } from '../../types/index';
+import type { RootState } from '../../redux/store';
 
 interface Props {
     member: TeamMember;
@@ -7,6 +9,8 @@ interface Props {
 }
 
 export default function TeamCard({ member, onEdit, onDelete }: Props) {
+    const role = useSelector((state: RootState) => state.auth.role) || '';
+    
     return (
         <div className="bg-white dark:bg-gray-800 p-4 rounded shadow">
             <img
@@ -16,6 +20,7 @@ export default function TeamCard({ member, onEdit, onDelete }: Props) {
             />
             <h3 className="text-lg text-black dark:text-white font-bold">{member.name}</h3>
             <p className="text-sm text-gray-600">{member.role}</p>
+            {(role === "admin") && (
             <div className="mt-4 flex justify-end space-x-2">
                 <button
                     onClick={onEdit}
@@ -29,7 +34,7 @@ export default function TeamCard({ member, onEdit, onDelete }: Props) {
                 >
                     Delete
                 </button>
-            </div>
+            </div>)}
         </div>
     );
 }

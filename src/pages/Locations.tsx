@@ -5,8 +5,11 @@ import Modal from "../components/UI/Modal";
 import { useLocations } from "../hooks/useLocations";
 import { usePagination } from "../hooks/usePagination";
 import { useState } from "react";
+import { useSelector } from "react-redux";
+import type { RootState } from "../redux/store";
 
 const Locations = () => {
+  const role = useSelector((state: RootState) => state.auth.role) || '';
   const { locations, loading, error, saveLocation, deleteLocation } =
     useLocations();
   const { totalPages,  } =
@@ -28,12 +31,12 @@ const Locations = () => {
         <h1 className="text-3xl font-bold text-gray-700 dark:text-gray-200">
           Our Locations
         </h1>
-        <button
+        {(role === "admin") && (<button
           onClick={() => setShowForm((prev) => !prev)}
           className="bg-purple60 text-white px-4 py-2 rounded-lg hover:bg-[#5b2fc4]"
         >
           {showForm ? "Close Form" : "+ Add Location"}
-        </button>
+        </button>)}
       </div>
 
       {error && <p className="text-red-500">{error}</p>}

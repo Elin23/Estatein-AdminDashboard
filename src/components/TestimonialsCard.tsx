@@ -1,5 +1,7 @@
 import React from "react"
 import { Switch } from "@headlessui/react"
+import { useSelector } from "react-redux"
+import type { RootState } from "../redux/store"
 
 interface Testimonial {
   id: string
@@ -21,6 +23,7 @@ const TestimonialCard: React.FC<TestimonialCardProps> = ({
   testimonial,
   onToggleShow,
 }) => {
+  const role = useSelector((state: RootState) => state.auth.role) || '';
   return (
     <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-10">
       <div className="flex justify-between items-start">
@@ -33,7 +36,7 @@ const TestimonialCard: React.FC<TestimonialCardProps> = ({
           </p>
         </div>
 
-        <div className="flex items-center gap-2">
+        {(role === "admin") && (<div className="flex items-center gap-2">
           <span className="text-sm text-gray-600 dark:text-gray-300">
             Visible
           </span>
@@ -50,7 +53,7 @@ const TestimonialCard: React.FC<TestimonialCardProps> = ({
               } inline-block h-4 w-4 transform bg-white rounded-full transition`}
             />
           </Switch>
-        </div>
+        </div>)}
       </div>
 
       <div className="mt-4 flex items-center gap-4">

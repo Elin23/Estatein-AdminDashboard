@@ -1,11 +1,15 @@
+import { useSelector } from "react-redux";
 import type { LocationData } from "../../types/forms";
 import { Mail, Phone, MapPin } from "lucide-react";
+import type { RootState } from "../../redux/store";
 interface LocationCardProps {
   data: LocationData;
   onEdit: () => void;
   onDelete: () => void;
 }
 function LocationCard({ data, onEdit, onDelete }: LocationCardProps) {
+  const role = useSelector((state: RootState) => state.auth.role) || '';
+  
   return (
     <div className="bg-white dark:bg-gray-800 shadow-md rounded-xl p-4 hover:shadow-lg transition w-full">
       <h3 className="text-xl font-semibold text-purple60">{data.branch}</h3>
@@ -33,7 +37,8 @@ function LocationCard({ data, onEdit, onDelete }: LocationCardProps) {
 
       {/* Actions */}
       <div className="mt-4 flex gap-2">
-        <button
+        {(role === "admin") && (
+        <><button
           className="px-3 py-1 bg-purple60 text-white rounded hover:bg-purple60/80"
           onClick={onEdit}
         >
@@ -44,7 +49,7 @@ function LocationCard({ data, onEdit, onDelete }: LocationCardProps) {
           onClick={onDelete}
         >
           Delete
-        </button>
+        </button></>)}
       </div>
     </div>
   );

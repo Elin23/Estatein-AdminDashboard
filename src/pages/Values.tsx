@@ -4,6 +4,8 @@ import ValuesCard from "../components/Values/ValuesCard";
 import { ref, onValue, push, set, update, remove } from "firebase/database";
 import { db } from "../firebaseConfig";
 import type { ValueItem } from "../types/ValueItem";
+import { useSelector } from "react-redux";
+import type { RootState } from "../redux/store";
 
 function Values() {
   const [values, setValues] = useState<ValueItem[]>([]);
@@ -11,6 +13,7 @@ function Values() {
   const [showForm, setShowForm] = useState(false);
   const [loading, setLoading] = useState(true);
   const [err, setErr] = useState<string | null>(null);
+  const role = useSelector((state: RootState) => state.auth.role) || '';
 
   useEffect(() => {
     setLoading(true);
@@ -87,13 +90,13 @@ function Values() {
     <div className="p-6">
       <div className="flex justify-between items-center mb-4">
         <h1 className="text-2xl font-bold text-black dark:text-white">Values</h1>
-        <button
+        {(role === "admin") && (<button
           className="bg-purple60 hover:bg-purple65 text-white px-4 py-2 rounded disabled:opacity-60"
           onClick={handleAddClick}
           disabled={loading || values.length >= 4}
         >
           + Add Value
-        </button>
+        </button>)}
       </div>
 
       {err && (

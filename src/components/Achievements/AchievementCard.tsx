@@ -1,4 +1,6 @@
+import { useSelector } from "react-redux";
 import type { Achievement } from "../../pages/Achievements";
+import type { RootState } from "../../redux/store";
 
 interface AchievementCardProps {
   achievement?: Achievement; 
@@ -8,6 +10,8 @@ interface AchievementCardProps {
 }
 
 function AchievementCard({ achievement, onEdit, onDelete, loading }: AchievementCardProps) {
+  const role = useSelector((state: RootState) => state.auth.role) || '';
+
   if (loading) {
     return (
       <div className="bg-white dark:bg-gray-800 p-4 rounded shadow animate-pulse">
@@ -25,6 +29,7 @@ function AchievementCard({ achievement, onEdit, onDelete, loading }: Achievement
     <div className="bg-white dark:bg-gray-800 p-4 rounded shadow">
       <h3 className="text-lg font-bold text-black dark:text-white">{achievement?.title}</h3>
       <p className=" text-black dark:text-white">{achievement?.description}</p>
+      {(role === "admin") && (
       <div className="mt-4 flex justify-end space-x-2">
         <button
           onClick={onEdit}
@@ -38,7 +43,7 @@ function AchievementCard({ achievement, onEdit, onDelete, loading }: Achievement
         >
           Delete
         </button>
-      </div>
+      </div>)}
     </div>
   );
 }

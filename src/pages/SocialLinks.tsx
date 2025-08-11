@@ -3,6 +3,8 @@ import { ref, onValue, push, set, remove } from "firebase/database";
 import type { SocialLink } from "../components/SocialMedia/SocialLinksForm";
 import { db } from "../firebaseConfig";
 import SocialLinkForm from "../components/SocialMedia/SocialLinksForm";
+import { useSelector } from "react-redux";
+import type { RootState } from "../redux/store";
 
 const PLATFORMS = ["facebook", "linkedin", "twitter", "youtube"] as const;
 
@@ -18,7 +20,8 @@ export default function SocialLinks() {
     const [adding, setAdding] = useState(false);
     const [editing, setEditing] = useState<SocialLink | null>(null);
     const [query, setQuery] = useState("");
-
+    const role = useSelector((state: RootState) => state.auth.role) || '';
+    
     useEffect(() => {
         const linksRef = ref(db, "socialLinks");
         const unsubscribe = onValue(linksRef, (snapshot) => {
@@ -101,7 +104,7 @@ export default function SocialLinks() {
                                 className="outline-none text-sm bg-transparent text-gray-900 dark:text-white w-full"
                             />
                         </div>
-
+                    {(role === "admin") && (
                         <button
                             onClick={() => {
                                 setAdding(true);
@@ -111,7 +114,7 @@ export default function SocialLinks() {
                             className="px-4 py-2 bg-purple-600 text-white rounded-lg shadow hover:bg-purple-700 whitespace-nowrap"
                         >
                             + Add Value
-                        </button>
+                        </button>)}
                     </div>
                 </div>
 
@@ -200,6 +203,7 @@ export default function SocialLinks() {
                                                 {link.url}
                                             </a>
                                         </td>
+                                        {(role === "admin") && (
                                         <td className="px-4 sm:px-6 py-4 whitespace-nowrap text-right text-sm font-medium flex justify-end gap-2">
                                             <button
                                                 onClick={() => {
@@ -217,7 +221,7 @@ export default function SocialLinks() {
                                             >
                                                 Delete
                                             </button>
-                                        </td>
+                                        </td>)}
                                     </tr>
                                 ))
                             )}

@@ -23,6 +23,7 @@ const authSlice = createSlice({
       state.isLoggedIn = true;
       state.email = action.payload.email;
       state.role = action.payload.role;
+      console.log(action.payload.role);
     },
     logout: (state) => {
       state.isLoggedIn = false;

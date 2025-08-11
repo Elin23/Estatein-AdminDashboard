@@ -4,8 +4,11 @@ import { ref, onValue, push, set, remove } from 'firebase/database';
 import TeamForm from '../components/Team/TeamForm';
 import TeamCard from '../components/Team/TeamCard';
 import { type TeamMember } from '../types/index';
+import { useSelector } from 'react-redux';
+import type { RootState } from '../redux/store';
 
 export default function Team() {
+    const role = useSelector((state: RootState) => state.auth.role) || '';
     const [members, setMembers] = useState<TeamMember[]>([]);
     const [editing, setEditing] = useState<TeamMember | null>(null);
     const [showForm, setShowForm] = useState(false);
@@ -42,12 +45,12 @@ export default function Team() {
         <div className="p-6">
             <div className="flex justify-between items-center mb-4">
                 <h1 className="text-2xl font-bold text-black dark:text-white">Our Team</h1>
-                <button
+                {(role === "admin") && (<button
                     className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded"
                     onClick={() => { setEditing(null); setShowForm(true); }}
                 >
                     + Add Member
-                </button>
+                </button>)}
             </div>
 
             {showForm && (

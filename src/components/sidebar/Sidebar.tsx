@@ -16,26 +16,28 @@ import {
 import { useLocation, useNavigate } from 'react-router-dom';
 import SidebarLink from './SidebarLink';
 import Switch from '../UI/Switch';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { logout } from '../../redux/slices/authSlice';
 import { getAuth, signOut } from 'firebase/auth';
+import type { RootState } from '../../redux/store';
 
 const menuItems = [
-  { icon: LayoutDashboard, label: 'Dashboard', path: '/' },
-  { icon: Building2, label: 'Properties', path: '/properties' },
-  { icon: MapPin, label: 'Locations', path: '/locations' },
-  { icon: Grid, label: 'Achievements', path: '/achievements' },
-  { icon: FormInput, label: 'Our Team', path: '/team' },
-  { icon: MapPin, label: 'testimonials', path: '/testimonials' },
-  { icon: InboxIcon, label: 'Submissions', path: '/submissions' },
-  { icon: StepForward, label: 'Steps', path: '/steps' },
-  { icon: Aperture, label: 'Our Values', path: '/values' },
-  { icon: MessageSquare, label: 'Contact', path: '/contact' },
-  { icon: Link, label: 'SocialLinks', path: '/social' },
-  { icon: User, label: 'User Management', path: '/user-management' },
+  { icon: LayoutDashboard, label: 'Dashboard', path: '/', visible: ["sales", "support", "admin"] },
+  { icon: Building2, label: 'Properties', path: '/properties', visible: ["sales", "support", "admin"]  },
+  { icon: MapPin, label: 'Locations', path: '/locations', visible: ["support", "admin"]  },
+  { icon: Grid, label: 'Achievements', path: '/achievements', visible: ["support", "admin"]  },
+  { icon: FormInput, label: 'Our Team', path: '/team', visible: ["support", "admin"]  },
+  { icon: MapPin, label: 'testimonials', path: '/testimonials', visible: ["support", "admin"]  },
+  { icon: InboxIcon, label: 'Submissions', path: '/submissions', visible: ["sales", "support", "admin"]  },
+  { icon: StepForward, label: 'Steps', path: '/steps', visible: ["support", "admin"]  },
+  { icon: Aperture, label: 'Our Values', path: '/values', visible: ["support", "admin"]  },
+  { icon: MessageSquare, label: 'Contact', path: '/contact', visible: ["support", "admin"]  },
+  { icon: Link, label: 'SocialLinks', path: '/social', visible: ["support", "admin"]  },
+  { icon: User, label: 'User Management', path: '/user-management', visible: ["admin"]  },
 ];
 
 const Sidebar: React.FC = () => {
+  const userRole = useSelector((state: RootState) => state.auth.role) || '';
   const location = useLocation();
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -71,11 +73,13 @@ const Sidebar: React.FC = () => {
       {/* Navigation */}
       <nav className="flex-1 mt-6 overflow-y-auto">
         {menuItems.map((item) => (
-          <SidebarLink
-            key={item.path}
-            {...item}
-            isActive={location.pathname === item.path}
-          />
+          item.visible.includes(userRole) ? (
+            <SidebarLink
+              key={item.path}
+              {...item}
+              isActive={location.pathname === item.path}
+            />
+          ) : null
         ))}
       </nav>
 

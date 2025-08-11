@@ -1,4 +1,6 @@
+import { useSelector } from "react-redux";
 import type { Step } from "../../pages/Steps";
+import type { RootState } from "../../redux/store";
 
 interface StepCardProps {
   step?: Step; 
@@ -8,6 +10,8 @@ interface StepCardProps {
 }
 
 function StepCard({ step, onEdit, onDelete, loading }: StepCardProps) {
+  const role = useSelector((state: RootState) => state.auth.role) || '';
+
   if (loading) {
     return (
       <div className="bg-white dark:bg-gray-800 p-4 rounded shadow animate-pulse">
@@ -26,7 +30,7 @@ function StepCard({ step, onEdit, onDelete, loading }: StepCardProps) {
       <h3 className="text-lg font-bold text-black dark:text-white">{step?.stepNum}</h3>
       <p className=" text-black dark:text-white">{step?.title}</p>
       <p className=" text-black dark:text-white">{step?.description}</p>
-      <div className="mt-4 flex justify-end space-x-2">
+      {(role === "admin") && (<div className="mt-4 flex justify-end space-x-2">
         <button
           onClick={onEdit}
           className="px-3 py-1 bg-purple70 text-white rounded hover:bg-purple60"
@@ -39,7 +43,7 @@ function StepCard({ step, onEdit, onDelete, loading }: StepCardProps) {
         >
           Delete
         </button>
-      </div>
+      </div>)}
     </div>
   );
 }
