@@ -1,9 +1,11 @@
 import React from 'react';
 import { StepForward, Building2, MapPin, LayoutDashboard, Grid, FormInput, InboxIcon, MessageSquare, LogOut, Aperture, Link } from 'lucide-react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { useAuth } from '../../contexts/AuthContext';
+// import { useAuth } from '../../contexts/AuthContext';
 import SidebarLink from './SidebarLink';
 import Switch from '../UI/Switch';
+import { useDispatch } from 'react-redux';
+
 
 const menuItems = [
   { icon: LayoutDashboard, label: 'Dashboard', path: '/' },
@@ -17,21 +19,17 @@ const menuItems = [
   { icon: Aperture, label: 'Our Values', path: '/values' },
   { icon: MessageSquare, label: 'Contact', path: '/contact' },
   { icon: Link, label: 'SocialLinks', path: '/social' },
+  { icon: Link , label: 'SocialLinks', path: '/social' },
+  // { icon: Building2, label: 'User Management', path: '/user-management' },
 ];
 
 const Sidebar: React.FC = () => {
   const location = useLocation();
-  const { logout } = useAuth();
   const navigate = useNavigate();
 
-  const handleLogout = async () => {
-    try {
-      await logout();
-      navigate('/login');
-    } catch (error) {
-      console.error('Failed to logout:', error);
-    }
-  };
+
+    const dispatch = useDispatch();
+
 
   return (
     <div className="bg-white dark:bg-gray-800 h-screen w-64 fixed left-0 top-0 shadow-lg flex flex-col">
@@ -55,8 +53,10 @@ const Sidebar: React.FC = () => {
 
       <div className="p-4">
         <button
-          onClick={handleLogout}
+          // onClick={handleLogout}
           className="flex items-center w-full px-6 py-3 text-gray-700 dark:text-gray-200 hover:bg-red-50 dark:hover:bg-red-900/20 hover:text-red-600 dark:hover:text-red-400 transition-colors rounded"
+          // onClick={() => dispatch(logout())}
+          // className="flex items-center w-full px-6 py-3 text-gray-700 dark:text-gray-200 hover:bg-red-50 dark:hover:bg-red-900/20 hover:text-red-600 dark:hover:text-red-400 transition-colors"
         >
           <LogOut className="w-5 h-5 mr-3" />
           <span className="font-medium">Logout</span>
