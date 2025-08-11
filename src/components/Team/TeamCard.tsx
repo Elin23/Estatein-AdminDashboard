@@ -14,7 +14,7 @@ export default function TeamCard({ member, onEdit, onDelete }: Props) {
                 alt={member.name}
                 className="w-full h-48 object-cover rounded mb-4"
             />
-            <h3 className="text-lg text-white font-bold">{member.name}</h3>
+            <h3 className="text-lg text-black dark:text-white font-bold">{member.name}</h3>
             <p className="text-sm text-gray-600">{member.role}</p>
             <div className="mt-4 flex justify-end space-x-2">
                 <button

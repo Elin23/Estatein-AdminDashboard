@@ -10,9 +10,9 @@ import Achievements from './pages/Achievements';
 import Team from './pages/Team';
 import Values from './pages/Values';
 import Contact  from './pages/Contact';
-import SocialLinks from './components/SocialMedia/SocialLinks';
 import Steps from "./pages/Steps"
 import Testimonials from "./pages/Testimonials";
+import SocialLinks from "./pages/SocialLinks";
 
 const router = createBrowserRouter([
   {
