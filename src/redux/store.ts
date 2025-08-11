@@ -5,6 +5,11 @@ import storage from "redux-persist/lib/storage";
 import emailReducer from "./slices/emailSlice";
 import themeReducer from "./slices/themeSlice";
 import authReducer from "./slices/authSlice"; 
+import locationsReducer from "./slices/locationSlice"; 
+import valuesReducer from "./slices/valuesSlice"; 
+import paginationReducer from "./slices/paginationSlice"; 
+
+
 
 const persistConfig = {
   key: "root",
@@ -16,6 +21,9 @@ const rootReducer = combineReducers({
   email: emailReducer,
   theme: themeReducer,
   auth: authReducer,
+  locations: locationsReducer,
+  values: valuesReducer,
+  pagination: paginationReducer,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
