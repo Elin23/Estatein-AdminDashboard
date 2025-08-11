@@ -1,4 +1,3 @@
-// redux/slices/valuesSlice.ts
 import { createSlice, createAsyncThunk, } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import { db } from "../../firebaseConfig";
@@ -19,7 +18,6 @@ const initialState: ValuesState = {
   error: null,
 };
 
-// Thunk to listen for realtime changes
 export const listenToValues = createAsyncThunk<
   void,
   void,
@@ -67,7 +65,6 @@ export const addValue = createAsyncThunk<
   }
 });
 
-// Thunk to update an existing value
 export const updateValue = createAsyncThunk<
   void,
   ValueItem,
@@ -84,7 +81,6 @@ export const updateValue = createAsyncThunk<
   }
 });
 
-// Thunk to delete a value
 export const deleteValue = createAsyncThunk<
   void,
   string,

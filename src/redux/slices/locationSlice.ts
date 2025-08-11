@@ -1,4 +1,3 @@
-// redux/slices/locationsSlice.ts
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import type {  PayloadAction } from "@reduxjs/toolkit";
 import { db } from "../../firebaseConfig";
@@ -32,7 +31,6 @@ const initialState: LocationState = {
   error: null,
 };
 
-// Thunk: Real-time listener
 export const listenToLocations = createAsyncThunk(
   "locations/listenToLocations",
   async (_, { rejectWithValue, dispatch }) => {
@@ -63,7 +61,6 @@ export const listenToLocations = createAsyncThunk(
   }
 );
 
-// Thunk: Save location (add or update)
 export const saveLocation = createAsyncThunk(
   "locations/saveLocation",
   async (
@@ -87,7 +84,6 @@ export const saveLocation = createAsyncThunk(
   }
 );
 
-// Thunk: Delete location
 export const deleteLocation = createAsyncThunk(
   "locations/deleteLocation",
   async (id: string, { rejectWithValue }) => {
