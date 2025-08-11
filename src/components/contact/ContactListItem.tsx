@@ -20,7 +20,7 @@ const ContactListItem: React.FC<ContactListItemProps> = ({
   };
 
   return (
-    <div className="border-l-4 pl-4 py-3 rounded-r-lg bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+    <div className="border-l-4 px-5 py-3 rounded-r-lg bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
       <div className="flex justify-between items-start">
         <div className="space-y-1">
           <h3 className="font-medium text-gray-800 dark:text-white">

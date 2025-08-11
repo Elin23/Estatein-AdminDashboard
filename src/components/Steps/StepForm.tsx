@@ -56,7 +56,7 @@ export default function StepForm({
   return (
     <form
       onSubmit={handleSubmit}
-      className="bg-white dark:bg-gray-800 p-4 rounded shadow"
+      className="bg-white dark:bg-gray-800 p-4 rounded shadow huge:max-w-[1390px] huge:mx-auto"
     >
 
       <div className="mb-2">

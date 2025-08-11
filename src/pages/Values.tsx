@@ -1,9 +1,9 @@
 import { useEffect, useState, useCallback } from "react";
 import ValueForm from "../components/Values/ValuesForm";
-import ValuesCard from "../components/Values/ValuesCard";
 import { ref, onValue, push, set, update, remove } from "firebase/database";
 import { db } from "../firebaseConfig";
 import type { ValueItem } from "../types/ValueItem";
+import GenericCard from "../components/GenericCard/GenericCard";
 
 function Values() {
   const [values, setValues] = useState<ValueItem[]>([]);
@@ -85,7 +85,7 @@ function Values() {
 
   return (
     <div className="p-6">
-      <div className="flex justify-between items-center mb-4">
+      <div className="flex justify-between items-center mb-4 huge:max-w-[1390px] huge:mx-auto">
         <h1 className="text-2xl font-bold text-white">Values</h1>
         <button
           className="bg-purple60 hover:bg-purple65 text-white px-4 py-2 rounded disabled:opacity-60"
@@ -112,25 +112,25 @@ function Values() {
           }}
         />
       )}
-
-      {loading ? (
-        <p className="text-white/80">Loading...</p>
-      ) : values.length === 0 ? (
-        <p className="text-white/60">No values yet. Add your first one!</p>
-      ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
-          {values.map((value) => (
-            <ValuesCard
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4  huge:max-w-[1390px] huge:mx-auto">
+        {loading ? Array.from({ length: 3 }).map((_, idx) => (
+          <GenericCard key={idx} loading />
+        ))
+          : values.map((value) => (
+            <GenericCard
               key={value.id}
-              value={value}
+              title={value?.title}
+              description={value?.description}
               onEdit={() => handleEditClick(value)}
               onDelete={() => handleDelete(value.id)}
+              loading={loading}
             />
           ))}
-        </div>
-      )}
+      </div>
     </div>
+
   );
 }
 
 export default Values;
+

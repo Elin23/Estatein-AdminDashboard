@@ -52,7 +52,7 @@ export default function AchievementForm({
   return (
     <form
       onSubmit={handleSubmit}
-      className="bg-white dark:bg-gray-800 p-4 rounded shadow"
+      className="bg-white dark:bg-gray-800 p-4 rounded shadow huge:max-w-[1390px] huge:mx-auto"
     >
       <div className="mb-2">
         <label className="block text-sm font-medium mb-1 text-white">
