@@ -23,9 +23,9 @@ function StepCard({ step, onEdit, onDelete, loading }: StepCardProps) {
 
   return (
     <div className="bg-white dark:bg-gray-800 p-4 rounded shadow">
-      <h3 className="text-lg font-bold text-white">{step?.stepNum}</h3>
-      <p className="dark:text-gray-300 text-white">{step?.title}</p>
-      <p className="dark:text-gray-300 text-white">{step?.description}</p>
+      <h3 className="text-lg font-bold text-black dark:text-white">{step?.stepNum}</h3>
+      <p className=" text-black dark:text-white">{step?.title}</p>
+      <p className=" text-black dark:text-white">{step?.description}</p>
       <div className="mt-4 flex justify-end space-x-2">
         <button
           onClick={onEdit}

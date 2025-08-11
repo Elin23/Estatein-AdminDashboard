@@ -64,7 +64,7 @@ function LocationForm({
     <form
       ref={formRef}
       onSubmit={handleSubmit}
-      className="p-4 lg-custom:p-[40px] 2xl:p-[50px] gap-[24px] lg-custom:gap-[40px] 2xl:gap-[50px] flex flex-col w-full rounded-xl border border-white90 dark:border-gray15 bg-white dark:bg-gray-800"
+      className="p-4 lg-custom:p-[40px] 2xl:p-[50px] gap-[24px] lg-custom:gap-[40px] 2xl:gap-[50px] flex flex-col w-full rounded-xl border  bg-white dark:bg-gray-800"
     >
       <h2 className="2xl:text-2xl text-xl font-bold text-gray-800 dark:text-white">
         {initialData.branch ? "Edit Location" : "Add Location"}
@@ -83,7 +83,7 @@ function LocationForm({
             name="branch"
             defaultValue={initialData.branch}
             placeholder="Branch Name"
-            className="rounded-lg bg-white97 dark:bg-gray10 text-gray60 dark:text-gray40 text-sm/[20px] 2xl:text-lg font-medium border border-white90 dark:border-gray15 px-5 py-4"
+            className="rounded-lg  text-sm/[20px] 2xl:text-lg font-medium border border-black dark:border-white  text-black dark:text-white px-5 py-4"
           />
         </div>
 
@@ -99,7 +99,7 @@ function LocationForm({
             name="address"
             defaultValue={initialData.address}
             placeholder="Address"
-            className="rounded-lg bg-white97 dark:bg-gray10 text-gray60 dark:text-gray40 text-sm/[20px] 2xl:text-lg font-medium border border-white90 dark:border-gray15 px-5 py-4"
+            className="rounded-lg border-black dark:border-white  text-black dark:text-white text-sm/[20px] 2xl:text-lg font-medium border  px-5 py-4"
           />
         </div>
 
@@ -114,13 +114,13 @@ function LocationForm({
             id="category"
             name="category"
             defaultValue={initialData.category || ""}
-            className="rounded-lg bg-white97 dark:bg-gray10 text-gray60 dark:text-gray40 text-sm/[20px] 2xl:text-lg font-medium border border-white90 dark:border-gray15 px-5 py-4"
+            className="rounded-lg border-black dark:border-white  text-black dark:text-white text-sm/[20px] 2xl:text-lg font-medium border  px-5 py-4"
           >
             <option value="" disabled>
               Select Category
             </option>
-            <option value="regional">Regional</option>
-            <option value="international">International</option>
+            <option className=" dark:text-black text-white" value="regional">Regional</option>
+            <option className=" dark:text-black text-white" value="international">International</option>
           </select>
         </div>
 
@@ -136,7 +136,7 @@ function LocationForm({
             name="details"
             defaultValue={initialData.details}
             placeholder="Location Details"
-            className="rounded-lg bg-white97 dark:bg-gray10 text-gray60 dark:text-gray40 text-sm/[20px] 2xl:text-lg font-medium border border-white90 dark:border-gray15 px-5 py-4 resize-none"
+            className="rounded-lg border-black dark:border-white  text-black dark:text-white text-sm/[20px] 2xl:text-lg font-medium border  px-5 py-4 resize-none"
             rows={4}
           />
         </div>
@@ -160,7 +160,7 @@ function LocationForm({
             name="email"
             defaultValue={initialData.email}
             placeholder="Email"
-            className="rounded-lg bg-white97 dark:bg-gray10 text-gray60 dark:text-gray40 text-sm/[20px] 2xl:text-lg font-medium border border-white90 dark:border-gray15 px-5 py-4"
+            className="rounded-lg border-black dark:border-white  text-black dark:text-white text-sm/[20px] 2xl:text-lg font-medium border  px-5 py-4"
           />
         </div>
 
@@ -176,7 +176,7 @@ function LocationForm({
             name="phone"
             defaultValue={initialData.phone}
             placeholder="Phone Number"
-            className="rounded-lg bg-white97 dark:bg-gray10 text-gray60 dark:text-gray40 text-sm/[20px] 2xl:text-lg font-medium border border-white90 dark:border-gray15 px-5 py-4"
+            className="rounded-lg border-black dark:border-white  text-black dark:text-white text-sm/[20px] 2xl:text-lg font-medium border  px-5 py-4"
           />
         </div>
 
@@ -192,7 +192,7 @@ function LocationForm({
             name="city"
             defaultValue={initialData.city}
             placeholder="City"
-            className="rounded-lg bg-white97 dark:bg-gray10 text-gray60 dark:text-gray40 text-sm/[20px] 2xl:text-lg font-medium border border-white90 dark:border-gray15 px-5 py-4"
+            className="rounded-lg border-black dark:border-white  text-black dark:text-white text-sm/[20px] 2xl:text-lg font-medium border  px-5 py-4"
           />
         </div>
       </div>
