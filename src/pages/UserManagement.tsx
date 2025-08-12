@@ -25,7 +25,6 @@ const UserManagement = () => {
   const auth = getAuth();
   const db = getDatabase();
 
-  // جلب قائمة المستخدمين من Realtime Database
   useEffect(() => {
     const usersRef = ref(db, "users");
     const unsubscribe = onValue(usersRef, (snapshot) => {
@@ -51,19 +50,16 @@ const UserManagement = () => {
 
     try {
       if (editingUid) {
-        // تعديل role فقط
         await update(ref(db, `users/${editingUid}`), { role });
         setMessage("✅ User updated successfully!");
         setEditingUid(null);
       } else {
-        // إنشاء مستخدم جديد في Firebase Auth
         const userCredential = await createUserWithEmailAndPassword(
           auth,
           email,
           password
         );
         const uid = userCredential.user.uid;
-        // إضافة بيانات المستخدم إلى Realtime Database
         await set(ref(db, `users/${uid}`), {
           email,
           role,
@@ -71,7 +67,6 @@ const UserManagement = () => {
         setMessage("✅ User created successfully!");
       }
 
-      // إعادة تعيين الحقول
       setEmail("");
       setPassword("");
       setRole("admin");
@@ -84,9 +79,7 @@ const UserManagement = () => {
 
   const handleDeleteUser = async (uid: string) => {
     try {
-      // حذف المستخدم من Realtime Database
       await remove(ref(db, `users/${uid}`));
-      // ملاحظة: حذف المستخدم من Firebase Auth يحتاج صلاحيات إدارية من السيرفر (firebase admin sdk)
       setMessage("✅ User deleted from database!");
     } catch (error: any) {
       console.error(error);
@@ -128,7 +121,7 @@ const UserManagement = () => {
             type="email"
             placeholder="Email"
             value={email}
-            disabled={!!editingUid} // منع تعديل الايميل عند التعديل
+            disabled={!!editingUid} 
             onChange={(e) => setEmail(e.target.value)}
             className="w-full p-2 border rounded"
             required
