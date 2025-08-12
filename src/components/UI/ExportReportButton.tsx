@@ -23,10 +23,8 @@ function ExportButton<T>({
     if (!data.length) return;
 
     if (onExport) {
-      // استعمل دالة التصدير الجاهزة إذا مررت
       onExport(data);
     } else if (mapData) {
-      // وإلا استعمل mapData لإنشاء الملف داخليًا
       const exportData = data.map(mapData);
       const worksheet = XLSX.utils.json_to_sheet(exportData);
       const workbook = XLSX.utils.book_new();
@@ -40,7 +38,7 @@ function ExportButton<T>({
   return (
     <button
       onClick={handleExport}
-      className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700"
+      className="bg-purple65 text-white px-4 py-2 rounded-lg hover:bg-purple60"
       disabled={disabled || data.length === 0}
       title={disabled || data.length === 0 ? "No data to export" : buttonLabel}
     >
