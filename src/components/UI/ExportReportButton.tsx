@@ -4,8 +4,8 @@ interface ExportButtonProps<T> {
   data: T[];
   fileName?: string;
   getSheetName?: () => string;
-  mapData?: (item: T) => Record<string, any>; // اختياري
-  onExport?: (data: T[]) => void; // اختياري: دالة تصدير جاهزة
+  mapData?: (item: T) => Record<string, any>; 
+  onExport?: (data: T[]) => void; 
   buttonLabel?: string;
   disabled?: boolean;
 }
