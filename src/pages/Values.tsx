@@ -34,7 +34,7 @@ function Values() {
       }
     );
     return () => unsubscribe();
-  }, []); 
+  }, []);
 
   const handleAdd = useCallback(async (payload: ValueItem) => {
     try {
@@ -90,10 +90,10 @@ function Values() {
         <button
           className="bg-purple60 hover:bg-purple65 text-white px-4 py-2 rounded disabled:opacity-60"
           onClick={handleAddClick}
-          disabled={loading}
+          disabled={loading || values.length >= 4}
         >
           + Add Value
-         </button>
+        </button>
       </div>
 
       {err && (
