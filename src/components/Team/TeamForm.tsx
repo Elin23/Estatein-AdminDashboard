@@ -77,7 +77,7 @@ export default function TeamForm({ initialData, onCancel, onSubmit }: Props) {
   return (
     <form
       onSubmit={handleSubmit}
-      className="bg-white dark:bg-gray-800 p-4 rounded shadow"
+      className="bg-white dark:bg-gray-800 p-4 rounded shadow huge:max-w-[1390px] huge:mx-auto"
     >
       <div className="mb-2">
         <label className="block text-sm font-medium mb-1 text-gray-900 dark:text-gray-100">
@@ -85,7 +85,7 @@ export default function TeamForm({ initialData, onCancel, onSubmit }: Props) {
         </label>
         <input
           type="text"
-          className="w-full px-3 py-2 border  dark:border-gray-600 rounded text-gray-900 dark:text-gray-100 bg-white dark:bg-gray-700"
+          className="w-full px-3 py-2 border border-black dark:border-white  text-black dark:text-white  rounded "
           value={name}
           onChange={(e) => setName(e.target.value)}
           required
@@ -98,7 +98,7 @@ export default function TeamForm({ initialData, onCancel, onSubmit }: Props) {
         </label>
         <input
           type="text"
-          className="w-full px-3 py-2 border  dark:border-gray-600 rounded text-gray-900 dark:text-gray-100 bg-white dark:bg-gray-700"
+          className="w-full px-3 py-2 border  border-black dark:border-white  text-black dark:text-white rounded  "
           value={role}
           onChange={(e) => setRole(e.target.value)}
           required
@@ -113,7 +113,7 @@ export default function TeamForm({ initialData, onCancel, onSubmit }: Props) {
           type="file"
           accept="image/*"
           onChange={handleFile}
-          className="w-full px-3 py-2 border  dark:border-gray-600 rounded bg-white dark:bg-gray-700"
+          className="w-full px-3 py-2 border  border-black dark:border-white  text-black dark:text-white  rounded "
         />
       </div>
 

@@ -41,13 +41,13 @@ function ValueForm({ onSubmit, initialData = null, onCancel }: ValueFormProps) {
   return (
     <form
       onSubmit={handleSubmit}
-      className="bg-white dark:bg-gray-800 p-4 rounded shadow"
+      className="bg-white dark:bg-gray-800 p-4 rounded shadow huge:max-w-[1390px] huge:mx-auto"
     >
       <div className="mb-2">
-        <label className="block text-sm font-medium mb-1 text-white">Title</label>
+        <label className="block text-sm font-medium mb-1 text-black dark:text-white">Title</label>
         <input
           type="text"
-          className="w-full px-3 py-2 border border-white rounded text-white bg-transparent"
+          className="w-full px-3 py-2 border border-black dark:border-white rounded text-black dark:text-white bg-transparent"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
           required
@@ -55,11 +55,11 @@ function ValueForm({ onSubmit, initialData = null, onCancel }: ValueFormProps) {
       </div>
 
       <div className="mb-2">
-        <label className="block text-sm font-medium mb-1 text-white">
+        <label className="block text-sm font-medium mb-1 text-black dark:text-white">
           Description
         </label>
         <textarea
-          className="w-full px-3 py-2 border border-white rounded text-white bg-transparent"
+          className="w-full px-3 py-2 border border-black dark:border-white rounded text-black dark:text-white bg-transparent"
           value={description}
           onChange={(e) => setDescription(e.target.value)}
           required

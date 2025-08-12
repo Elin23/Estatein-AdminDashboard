@@ -2,6 +2,8 @@ import { useState, useEffect, useMemo } from "react"
 import { onValue, ref, update } from "firebase/database"
 import { db } from "../firebaseConfig"
 import TestimonialCard from "../components/TestimonialsCard"
+import { useSelector } from "react-redux"
+import type { RootState } from "../redux/store"
 
 interface Testimonial {
   id: string
@@ -19,6 +21,7 @@ const Testimonials = () => {
   const [search, setSearch] = useState("")
   const [showFilter, setShowFilter] = useState<"all" | "true" | "false">("all")
   const [selectedItems, setSelectedItems] = useState<string[]>([])
+  const role = useSelector((state: RootState) => state.auth.role) || '';
 
   useEffect(() => {
     const unsub = onValue(ref(db, "testimonials"), (snapshot) => {
@@ -75,7 +78,7 @@ const Testimonials = () => {
   }
 
   return (
-    <div className="p-6">
+    <div className="p-6 max-w-[1430px] mx-auto ">
       <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-6 gap-4">
         <h1 className="text-2xl font-bold text-gray-800 dark:text-white">
           Testimonials
@@ -120,12 +123,12 @@ const Testimonials = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {filteredTestimonials.map((item) => (
           <div key={item.id} className="relative">
-            <input
+            {(role === "admin") && (<input
               type="checkbox"
               checked={selectedItems.includes(item.id)}
               onChange={() => toggleSelect(item.id)}
               className="absolute top-3 left-3 w-6 h-6 cursor-pointer border-2 border-gray-400 rounded-sm dark:border-gray-600"
-            />
+            />)}
             <TestimonialCard
               testimonial={item}
               onToggleShow={handleToggleShow}

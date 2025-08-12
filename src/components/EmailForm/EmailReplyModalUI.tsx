@@ -21,7 +21,7 @@ export default function EmailReplyModalUI({
       role="dialog"
       aria-modal="true"
     >
-      <div className="w-full max-w-lg rounded-2xl bg-white99 p-6 shadow-2xl ring-1 ring-gray75 dark:bg-gray10">
+      <div className="w-full max-w-lg rounded-2xl bg-white99 p-6 shadow-2xl ring-1 ring-gray08 dark:bg-gray-800">
         {/* Header */}
         <div className="mb-5 flex items-center justify-between">
           <button

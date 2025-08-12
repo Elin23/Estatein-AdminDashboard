@@ -10,7 +10,7 @@ import {
   selectEmailSuccess,
   sendEmail,
 } from '../../redux/slices/emailSlice';
-import type { AppDispatch } from '../../redux/store';
+import type { AppDispatch, RootState } from '../../redux/store';
 import { composeEmailMessage } from '../EmailForm/composeEmailMessage';
 
 interface SubmissionCardProps {
@@ -20,6 +20,7 @@ interface SubmissionCardProps {
 
 const SubmissionCard: React.FC<SubmissionCardProps> = ({ submission, onUpdateStatus }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const role = useSelector((state: RootState) => state.auth.role) || '';
 
   const dispatch = useDispatch<AppDispatch>();
   const sending = useSelector(selectEmailSending);
@@ -89,7 +90,9 @@ const SubmissionCard: React.FC<SubmissionCardProps> = ({ submission, onUpdateSta
   };
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
+
+    
+    <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 huge:max-w-[452px]">
       <div className="flex justify-between items-start">
         <div>
           <h3 className="text-lg font-semibold text-gray-800 dark:text-white">
@@ -124,7 +127,7 @@ const SubmissionCard: React.FC<SubmissionCardProps> = ({ submission, onUpdateSta
           </div>
         ))}
       </div>
-
+      {(role === "admin" || role === "sales") && (
       <div className="mt-6 flex flex-wrap gap-2">
         {submission.status !== 'approved' && (
           <button
@@ -159,7 +162,7 @@ const SubmissionCard: React.FC<SubmissionCardProps> = ({ submission, onUpdateSta
           Send Email
         </button>
       </div>
-
+      )}
       <div className="mt-4 text-xs text-gray-500 dark:text-gray-400">
         Submitted on {submission.submittedAt.toLocaleDateString()}
       </div>

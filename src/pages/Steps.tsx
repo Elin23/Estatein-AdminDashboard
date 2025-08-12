@@ -1,8 +1,10 @@
 import { useState, useEffect } from 'react';
 import { db } from '../firebaseConfig';
 import { ref, onValue, push, set, update, remove } from 'firebase/database';
-import StepCard from '../components/Steps/StepCard';
 import StepForm from '../components/Steps/StepForm';
+import GenericCard from '../components/GenericCard/GenericCard';
+import { useSelector } from 'react-redux';
+import type { RootState } from '../redux/store';
 
 export interface Step {
   id: string;
@@ -12,6 +14,7 @@ export interface Step {
 }
 
 function Steps() {
+  const role = useSelector((state: RootState) => state.auth.role) || '';
   const [steps, setSteps] = useState<Step[]>([]);
   const [loading, setLoading] = useState(true);
   const [editingStep, setEditingStep] = useState<Step | null>(null);
@@ -64,14 +67,14 @@ function Steps() {
 
   return (
     <div className="p-6">
-      <div className="flex justify-between items-center mb-4">
-        <h1 className="text-2xl font-bold text-white">Steps</h1>
-        <button
+      <div className="flex justify-between items-center mb-4 huge:max-w-[1390px] huge:mx-auto">
+        <h1 className="text-2xl font-bold text-gray-800 dark:text-white mb-6">Steps</h1>
+        {(role === "admin") && (<button
           className="bg-purple60 hover:bg-purple65 text-white px-4 py-2 rounded"
           onClick={handleAddClick}
         >
           + Add Step
-        </button>
+        </button>)}
       </div>
 
       {showForm && (
@@ -85,15 +88,15 @@ function Steps() {
         />
       )}
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
-        {loading
-          ? Array.from({ length: 3 }).map((_, idx) => (
-              <StepCard key={idx} loading />
-            ))
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4 huge:max-w-[1390px] huge:mx-auto">
+        {loading ? Array.from({ length: 3 }).map((_, idx) => (
+          <GenericCard key={idx} loading />
+        ))
           : steps.map((step) => (
-              <StepCard
+              <GenericCard
                 key={step.id}
-                step={step}
+                title={step.title}
+                description={step.description}
                 onEdit={() => handleEditClick(step)}
                 onDelete={() => handleDelete(step.id)}
               />

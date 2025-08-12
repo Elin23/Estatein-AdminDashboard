@@ -1,58 +1,29 @@
-import React, { createContext, useContext, useState } from 'react';
-import { getAuth, signInWithEmailAndPassword, signOut } from 'firebase/auth';
-import { app } from '../firebaseConfig'; 
+// import React, { useEffect } from 'react';
+// import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut } from 'firebase/auth';
+// import { app } from '../firebaseConfig';
+// import { useAppDispatch } from '../hooks/useAppSelector';
 
-interface AuthContextType {
-  isAdmin: boolean;
-  login: (email: string, password: string) => Promise<void>;
-  logout: () => Promise<void>;
-}
 
-const AuthContext = createContext<AuthContextType | undefined>(undefined);
-const auth = getAuth(app);
+// const auth = getAuth(app);
 
-export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [isAdmin, setIsAdmin] = useState<boolean>(false);
+// export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+//   const dispatch = useAppDispatch();
 
-  const login = async (email: string, password: string) => {
-    try {
-      const userCredential = await signInWithEmailAndPassword(auth, email, password);
-      if (userCredential.user.email === 'admin@example.com') {
-        setIsAdmin(true);
-        localStorage.setItem('isAdmin', 'true');
-      } else {
-        throw new Error('You are not authorized to access this dashboard.');
-      }
-    } catch (error: any) {
-      if (error.code === 'auth/user-not-found') {
-        throw new Error('No account found with this email.');
-      } else if (error.code === 'auth/wrong-password') {
-        throw new Error('Incorrect password.');
-      } else if (error.code === 'auth/invalid-email') {
-        throw new Error('Invalid email format.');
-      } else {
-        throw new Error('Login failed. Please try again.');
-      }
-    }
-  };
+//   useEffect(() => {
+//     const unsubscribe = onAuthStateChanged(auth, (user) => {
+//       if (user && user.email) {
+//         let role: 'admin' | 'support_manager' = 'support_manager';
+//         if (user.email === 'admin@example.com') role = 'admin';
 
-  const logout = async () => {
-    await signOut(auth);
-    setIsAdmin(false);
-    localStorage.removeItem('isAdmin');
-  };
+//         dispatch(loginSuccess({ email: user.email, role }));
+//       } else {
+//         dispatch(logoutAction());
+//       }
+//     });
+//     return () => unsubscribe();
+//   }, [dispatch]);
 
-  return (
-    <AuthContext.Provider value={{ isAdmin, login, logout }}>
-      {children}
-    </AuthContext.Provider>
-  );
-};
+ 
 
-export const useAuth = () => {
-  const context = useContext(AuthContext);
-  if (context === undefined) {
-    throw new Error('useAuth must be used within an AuthProvider');
-  }
-  return context;
-};
+//   return <>{children}</>;
+// };
