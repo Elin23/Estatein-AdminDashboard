@@ -4,15 +4,17 @@ import {
   Building2,
   MapPin,
   LayoutDashboard,
-  Grid,
-  FormInput,
+
   InboxIcon,
   MessageSquare,
   LogOut,
-  Aperture,
+  
   Link,
   User,
   Menu,
+  Users,
+  Trophy,
+  Star,
 } from "lucide-react"
 import { useLocation, useNavigate } from "react-router-dom"
 import SidebarLink from "./SidebarLink"
@@ -25,78 +27,79 @@ import { useSidebar } from "../../contexts/SidebarContext"
 
 const menuItems = [
   {
-    icon: LayoutDashboard,
+    icon: LayoutDashboard, // Dashboard - ممكن تبقي كما هي أو تغير حسب المكتبة
     label: "Dashboard",
     path: "/",
     visible: ["sales", "support", "admin"],
   },
   {
-    icon: Building2,
+    icon: Building2, // Properties - ممكن تبقي بناء أو بيت حسب المكتبة متوفرة
     label: "Properties",
     path: "/properties",
     visible: ["sales", "support", "admin"],
   },
   {
-    icon: MapPin,
+    icon: MapPin, // Locations - ممتاز تبقى كما هي
     label: "Locations",
     path: "/locations",
     visible: ["support", "admin"],
   },
   {
-    icon: Grid,
+    icon: Trophy, // Achievements - بدل Grid لـ Trophy (إنجازات)
     label: "Achievements",
     path: "/achievements",
     visible: ["support", "admin"],
   },
   {
-    icon: FormInput,
+    icon: Users, // Our Team - بدل FormInput لـ Users (فريق)
     label: "Our Team",
     path: "/team",
     visible: ["support", "admin"],
   },
   {
-    icon: MapPin,
+    icon: MessageSquare, // Testimonials - بدل MapPin لـ MessageSquare أو Quote (شهادات)
     label: "Testimonials",
     path: "/testimonials",
     visible: ["support", "admin"],
   },
   {
-    icon: InboxIcon,
+    icon: InboxIcon, // Submissions - مناسبة
     label: "Submissions",
     path: "/submissions",
     visible: ["sales", "support", "admin"],
   },
   {
-    icon: StepForward,
+    icon: StepForward, // Steps - مناسبة
     label: "Steps",
     path: "/steps",
     visible: ["support", "admin"],
   },
   {
-    icon: Aperture,
+    icon: Star, // Our Values - بدل Aperture لـ Star (قيم)
     label: "Our Values",
     path: "/values",
     visible: ["support", "admin"],
   },
   {
-    icon: MessageSquare,
+    icon: MessageSquare, // Contact - مناسبة
     label: "Contact",
     path: "/contact",
     visible: ["support", "admin"],
   },
   {
-    icon: Link,
+    icon: Link, // SocialLinks - مناسبة
     label: "SocialLinks",
     path: "/social",
     visible: ["support", "admin"],
   },
   {
-    icon: User,
+    icon: User, // User Management - مناسبة
     label: "User Management",
     path: "/user-management",
     visible: ["admin"],
   },
 ]
+
 
 const Sidebar: React.FC = () => {
   const userRole = useSelector((state: RootState) => state.auth.role) || ""
