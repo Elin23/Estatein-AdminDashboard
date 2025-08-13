@@ -15,6 +15,7 @@ import {
   Users,
   Trophy,
   Star,
+  CircleQuestionMarkIcon,
 } from "lucide-react"
 import { useLocation, useNavigate } from "react-router-dom"
 import SidebarLink from "./SidebarLink"
@@ -91,6 +92,12 @@ const menuItems = [
     label: "SocialLinks",
     path: "/social",
     visible: ["support", "admin"],
+  },
+  {
+    icon:CircleQuestionMarkIcon,
+    label:"FAQs",
+    path:"/faqs",
+    visible:["support", "admin"],
   },
   {
     icon: User, // User Management - مناسبة

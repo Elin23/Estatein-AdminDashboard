@@ -8,6 +8,7 @@ import { useSelector } from 'react-redux';
 import type { RootState } from '../redux/store';
 import ExportButton from '../components/UI/ExportReportButton';
 import { exportProperties } from '../lib/exportProperties';
+import GeneralBtn from '../components/buttons/GeneralBtn';
 
 const Properties = () => {
   const role = useSelector((state: RootState) => state.auth.role) || '';
@@ -196,12 +197,11 @@ const Properties = () => {
                 <div className="flex items-center w-full justify-between">
                   <div className="mt-4 flex justify-end">
                     {(role === 'admin' || role === 'sales') && (
-                      <button
-                        onClick={() => handleDeleteProperty(property.id)}
-                        className="text-red-600 hover:text-red-800 transition-colors"
-                      >
-                        <Trash2 className="w-5 h-5" />
-                      </button>
+                      <GeneralBtn 
+                      btnContent={<Trash2 className="w-5 h-5" />}
+                      btnType='delete'
+                      actionToDo={()=>handleDeleteProperty(property.id)}
+                      />
                     )}
                   </div>
                   <div className="mt-4 flex justify-end">

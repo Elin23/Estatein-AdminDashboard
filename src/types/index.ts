@@ -108,4 +108,12 @@ export interface TeamMember {
   clientImage: string;
 }
 
+
+// Faqs Types
+
+export interface FaqType{
+  id:string;
+  question:string;
+  answer:string;
+}
 export type TeamMemberFormData = Omit<TeamMember, 'id' | 'createdAt' | 'imageUrl'>;

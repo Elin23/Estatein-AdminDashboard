@@ -40,7 +40,7 @@ function Achievements() {
   const handleAdd = async (newAchievement: Omit<Achievement, 'id'>) => {
     const newRef = push(ref(db, 'achievements'));
     await set(newRef, newAchievement);
-    setShowForm(false);
+    setShowForm(false); 
   };
 
   const handleUpdate = async (data: Omit<Achievement, 'id'>, id?: string) => {

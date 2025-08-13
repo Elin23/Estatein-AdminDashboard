@@ -1,46 +1,42 @@
-import { useEffect, useRef, useState } from 'react';
-import type { Achievement } from '../../pages/Achievements';
-import GeneralBtn from '../buttons/GeneralBtn';
-import CancleBtn from '../buttons/CancleBtn';
+import React, { useEffect, useState } from "react";
+import type { FaqType } from "../../types";
+import GeneralBtn from "../buttons/GeneralBtn";
+import CancleBtn from "../buttons/CancleBtn";
 
-interface AchievementFormProps {
-  initialData?: Achievement | null;
+interface FaqsFromProps {
+  initialData?: FaqType | null;
   onCancel: () => void;
-  onSubmit: (data: Omit<Achievement, 'id'>, id?: string) => Promise<void>;
+  onSubmit: (data: Omit<FaqType, 'id'>, id?: string) => Promise<void>;
 }
 
-export default function AchievementForm({
-  initialData = null,
-  onCancel,
-  onSubmit
-}: AchievementFormProps) {
-  const [title, setTitle] = useState('');
-  const [description, setDescription] = useState('');
+export default function FaqsFrom({ initialData = null, onCancel, onSubmit }: FaqsFromProps) {
+  const [question, setQuestion] = useState<string>('');
+  const [answer, setAnswer] = useState<string>('');
   const [loading, setLoading] = useState(false);
- 
+
   useEffect(() => {
     if (initialData) {
-      setTitle(initialData.title);
-      setDescription(initialData.description);
+      setQuestion(initialData.question);
+      setAnswer(initialData.answer);
     } else {
-      setTitle('');
-      setDescription('');
+      setQuestion('');
+      setAnswer('');
     }
   }, [initialData]);
 
-  const handleSubmit = async () => {
-    if (!title.trim() || !description.trim()) {
+  const formSubmit = async () => {
+    if (!question.trim() || !answer.trim()) {
       return alert('Please fill title and description');
     }
     setLoading(true);
     try {
       await onSubmit(
-        { title: title.trim(), description: description.trim() },
+        { question: question.trim(), answer: answer.trim() },
         initialData?.id
       );
       if (!initialData) {
-        setTitle('');
-        setDescription('');
+        setQuestion('');
+        setAnswer('');
       }
     } catch {
       alert('Save failed');
@@ -51,41 +47,41 @@ export default function AchievementForm({
 
   return (
     <form
-      onSubmit={handleSubmit}
+      onSubmit={formSubmit}
       className="bg-white dark:bg-gray-800 p-4 rounded shadow huge:max-w-[1390px] huge:mx-auto"
     >
       <div className="mb-2">
         <label className="block text-sm font-medium mb-1 text-black dark:text-white">
-          Title
+          Question
         </label>
         <input
           type="text"
           className="w-full px-3 py-2 border border-black dark:border-white rounded text-black dark:text-white bg-transparent"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
+          value={question}
+          onChange={(e) => setQuestion(e.target.value)}
           required
         />
       </div>
 
       <div className="mb-2">
         <label className="block text-sm font-medium mb-1 text-black dark:text-white">
-          Description
+          Answer
         </label>
         <textarea
           className="w-full px-3 py-2 border border-black dark:border-white rounded text-black dark:text-white bg-transparent"
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
+          value={answer}
+          onChange={(e) => setAnswer(e.target.value)}
           required
         />
       </div>
 
       <div className="flex justify-end space-x-2 mt-4">
         <CancleBtn onCLick={onCancel} disabled={loading}/>
-        <GeneralBtn 
-          btnContent={`${initialData? 'Update' : 'Add'}`} 
-          btnType='add'
-          actionToDo={handleSubmit}
-          />
+        <GeneralBtn
+          btnContent={initialData ? "Update" : "Add"} 
+          btnType={initialData ? 'update' : 'add'}
+          actionToDo={formSubmit}
+        />
       </div>
     </form>
   );

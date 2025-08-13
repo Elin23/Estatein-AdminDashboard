@@ -1,5 +1,6 @@
 import { useSelector } from "react-redux";
 import type { RootState } from "../../redux/store";
+import GeneralBtn from "../buttons/GeneralBtn";
 
 interface GenericCardProps {
   title?: string;
@@ -67,9 +68,11 @@ export default function GenericCard({
           </button>
         )}
         {onDelete && (
-          <button onClick={onDelete} className="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700">
-            Delete
-          </button>
+          <GeneralBtn
+          btnContent="Delete"
+          actionToDo={onDelete}
+          btnType="delete"
+          />
         )}
       </div>)}
     </div>

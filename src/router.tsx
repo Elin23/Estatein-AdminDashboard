@@ -15,6 +15,7 @@ import UserManagement from "./pages/UserManagement";
 import Login from "./pages/Login";
 import Unauthorized from "./pages/Unauthorized";
 import ProtectedRoute from "./components/auth/ProtectedRoute";
+import FAQ from "./pages/FAQ";
 
 const router = createBrowserRouter([
   {
@@ -44,6 +45,7 @@ const router = createBrowserRouter([
           { path: "values", element: <Values /> },
           { path: "social", element: <SocialLinks /> },
           { path: "steps", element: <Steps /> },
+          {path: "faqs" , element:<FAQ />}
         ],
       },
       {

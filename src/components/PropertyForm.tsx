@@ -1,7 +1,8 @@
-import React, {useEffect, useState, type Dispatch} from 'react';
+import React, {useEffect, useRef, useState, type Dispatch} from 'react';
 import { X} from 'lucide-react';
 import type { Property, PropertyFormData } from '../types';
 import FeaturesInput from './form/FeaturesInput';
+import GeneralBtn from './buttons/GeneralBtn';
 
 interface PropertyFormProps {
   onSubmit: (data: PropertyFormData) => void;
@@ -20,8 +21,7 @@ const PropertyForm: React.FC<PropertyFormProps> = ({ onSubmit, locations,isloadi
   const [uploading, setUploading] = useState(false)
   const [imageUrls, setImageUrls] = useState<string[]>([])
   const [features , setFeatures] = useState<string[]>([])
-
-
+  const formRef = useRef<HTMLFormElement | null>(null)
 
 
   // handle multiple images upload function
@@ -131,7 +131,7 @@ const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
   }, [editing, propertyBeingEdited]);
 
   return (
-    <form onSubmit={handleSubmit} className="eco-form animate-fade-in huge:max-w-[1430px] mx-auto">
+    <form  className="eco-form animate-fade-in huge:max-w-[1430px] mx-auto" ref={formRef} onSubmit={handleSubmit}>
       <h2 className="text-2xl font-bold text-gray-800 dark:text-white mb-6">Add New Property</h2>
 
       {isloading && <div className="loading_shape w-full h-full bg-gray10 text-white text-6xl font-semibold text-center animate-pulse"></div>}
@@ -178,7 +178,7 @@ const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
               name="location"
               required
               className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-              value={editing ? propertyBeingEdited?.location : ''}
+              defaultValue={editing ? propertyBeingEdited?.location ?? "" : ""}
             >
               <option value="">Select Location</option>
               {locations.map(loc => (
@@ -193,7 +193,7 @@ const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
             <select
               name="category"
               required
-              value={editing ? propertyBeingEdited?.type : ''}
+              defaultValue={editing ? propertyBeingEdited?.type ?? "" : ""}
               className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
             >
               <option value="">Select Category</option>
@@ -268,7 +268,7 @@ const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
             <select
               name="status"
               required
-              value={editing ? propertyBeingEdited?.status : ''}
+              defaultValue={editing ? propertyBeingEdited?.status ?? "" : ""}
               className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
             >
               <option value="">Select Status</option>
@@ -421,12 +421,11 @@ const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
         </div>
       </div>
       <div className="mt-8 flex justify-end submit_area">
-        <button
-          type="submit"
-          className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
-        >
-         {editing ? 'Save Changes' : "Add Property"}
-        </button>
+        <GeneralBtn
+          btnContent={editing ? 'Save Changes' : "Add Property"} 
+          btnType={editing ? 'update' : 'add'}
+          actionToDo={()=>formRef.current?.requestSubmit()}
+        />
       </div>
     </form>
   );

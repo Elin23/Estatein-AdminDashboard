@@ -1,5 +1,7 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import type { Step } from '../../pages/Steps';
+import GeneralBtn from '../buttons/GeneralBtn';
+import CancleBtn from '../buttons/CancleBtn';
 
 interface StepFormProps {
   initialData?: Step | null;
@@ -16,7 +18,7 @@ export default function StepForm({
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [loading, setLoading] = useState(false);
-
+  const fromRef = useRef<HTMLFormElement>(null)
  
   useEffect(() => {
     if (initialData) {
@@ -57,6 +59,7 @@ export default function StepForm({
     <form
       onSubmit={handleSubmit}
       className="bg-white dark:bg-gray-800 p-4 rounded shadow huge:max-w-[1390px] huge:mx-auto"
+      ref={fromRef}
     >
 
       <div className="mb-2">
@@ -98,21 +101,14 @@ export default function StepForm({
       </div>
 
       <div className="flex justify-end space-x-2 mt-4">
-        <button
-          type="button"
-          onClick={onCancel}
-          className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600"
-          disabled={loading}
-        >
-          Cancel
-        </button>
-        <button
-          type="submit"
-          className="px-4 py-2 bg-purple60 text-white rounded hover:bg-purple70 disabled:opacity-50 disabled:cursor-not-allowed"
-          disabled={loading}
-        >
-          {initialData ? 'Update' : 'Add'}
-        </button>
+        <CancleBtn onCLick={onCancel} />
+        <GeneralBtn
+        btnContent={initialData ? 'Update' : 'Add'}
+        disabled={loading}
+        actionToDo={()=>fromRef.current?.requestSubmit}
+        btnType={initialData ? 'update' : 'add'}
+        />
+
       </div>
     </form>
   );
