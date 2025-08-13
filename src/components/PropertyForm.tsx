@@ -4,7 +4,6 @@ import type { Property, PropertyFormData } from '../types';
 import FeaturesInput from './form/FeaturesInput';
 import FormField from './InputField/FormField';
 
-
 interface PropertyFormProps {
   onSubmit: (data: PropertyFormData) => void;
   locations: string[];
@@ -15,16 +14,23 @@ interface PropertyFormProps {
   onEdit: (id: any, property: any) => void;
 }
 
+const PropertyForm: React.FC<PropertyFormProps> = ({
+  onSubmit,
+  locations,
+  isloading,
+  editing,
+  setEditing,
+  propertyBeingEdited,
+  onEdit
+}) => {
+  const [uploading, setUploading] = useState(false);
+  const [imageUrls, setImageUrls] = useState<string[]>([]);
+  const [features, setFeatures] = useState<string[]>([]);
 
-
-const PropertyForm: React.FC<PropertyFormProps> = ({ onSubmit, locations, isloading, editing, setEditing, propertyBeingEdited, onEdit }) => {
-
-  const [uploading, setUploading] = useState(false)
-  const [imageUrls, setImageUrls] = useState<string[]>([])
-  const [features, setFeatures] = useState<string[]>([])
-
-
-
+  // State للـ dropdowns وحقول التحكم
+  const [location, setLocation] = useState('');
+  const [category, setCategory] = useState('');
+  const [status, setStatus] = useState('');
 
   // handle multiple images upload function
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -53,15 +59,9 @@ const PropertyForm: React.FC<PropertyFormProps> = ({ onSubmit, locations, isload
     }
 
     setImageUrls((prev) => [...prev, ...uploadedUrls]);
-
     e.target.value = "";
-
     setUploading(false);
   };
-
-
-
-
 
   // add property function
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -73,9 +73,9 @@ const PropertyForm: React.FC<PropertyFormProps> = ({ onSubmit, locations, isload
     const propertyData: PropertyFormData = {
       title: formData.get('title') as string,
       description: formData.get('description') as string,
-      location: formData.get('location') as string,
-      type: formData.get('category') as string,
-      features: features,
+      location,
+      type: category,
+      features,
       images: imageUrls,
       mapUrl: formData.get('mapUrl') as string,
       area: Number(formData.get('area')),
@@ -83,7 +83,7 @@ const PropertyForm: React.FC<PropertyFormProps> = ({ onSubmit, locations, isload
       bedrooms: formData.get("bedrooms") as string,
       buildYear: realYear,
       price: Number(formData.get("price")),
-      status: formData.get("status") as "available" | "sold",
+      status: status as "available" | "sold",
       additionalFees: {
         transferTax: Number(formData.get('transferTax')),
         inspection: Number(formData.get('homeInspection')),
@@ -91,11 +91,11 @@ const PropertyForm: React.FC<PropertyFormProps> = ({ onSubmit, locations, isload
         legalFees: Number(formData.get("legalFees")),
       },
       monthlyCosts: {
-        hoa: Number(formData.get("hao")),
+        hoa: Number(formData.get("hoa")),
         propertyTaxes: Number(formData.get("propertyTaxes"))
       },
       monthlyExpenses: {
-        hoa: Number(formData.get("hao")),
+        hoa: Number(formData.get("hoa")),
         insurance: Number(formData.get("annualInsurance")) / 12,
         propertyTaxes: Number(formData.get("propertyTaxes"))
       },
@@ -109,26 +109,31 @@ const PropertyForm: React.FC<PropertyFormProps> = ({ onSubmit, locations, isload
 
     if (editing) {
       onEdit(propertyBeingEdited!.id, propertyData)
-
-    }
-    else {
+    } else {
       onSubmit(propertyData);
     }
 
     e.currentTarget.reset();
     setImageUrls([]);
-
-
+    setFeatures([]);
+    setLocation('');
+    setCategory('');
+    setStatus('');
   };
-
 
   useEffect(() => {
     if (editing && propertyBeingEdited) {
       setFeatures(propertyBeingEdited.features || []);
       setImageUrls(propertyBeingEdited.images || []);
+      setLocation(propertyBeingEdited.location || '');
+      setCategory(propertyBeingEdited.type || '');
+      setStatus(propertyBeingEdited.status || '');
     } else {
       setFeatures([]);
       setImageUrls([]);
+      setLocation('');
+      setCategory('');
+      setStatus('');
     }
   }, [editing, propertyBeingEdited]);
 
@@ -137,8 +142,8 @@ const PropertyForm: React.FC<PropertyFormProps> = ({ onSubmit, locations, isload
       <h2 className="text-2xl font-bold text-gray-800 dark:text-white mb-6">Add New Property</h2>
 
       {isloading && <div className="loading_shape w-full h-full bg-gray10 text-white text-6xl font-semibold text-center animate-pulse"></div>}
-      <div className="space-y-6">
 
+      <div className="space-y-6">
         <div className='flex w-full justify-between'>
           <div className=' w-[47%] name/title'>
             <FormField
@@ -177,7 +182,8 @@ const PropertyForm: React.FC<PropertyFormProps> = ({ onSubmit, locations, isload
               name="location"
               required
               select
-              value={editing ? propertyBeingEdited?.location : ""}
+              value={location}
+              onChange={(e) => setLocation(e.target.value)}
               options={locations.map((loc) => ({ value: loc, label: loc }))}
               placeholder="Select Location"
             />
@@ -189,7 +195,8 @@ const PropertyForm: React.FC<PropertyFormProps> = ({ onSubmit, locations, isload
               name="category"
               required
               select
-              value={editing ? propertyBeingEdited?.type : ""}
+              value={category}
+              onChange={(e) => setCategory(e.target.value)}
               placeholder="Select Category"
               options={[
                 { value: "villa", label: "villa" },
@@ -221,7 +228,6 @@ const PropertyForm: React.FC<PropertyFormProps> = ({ onSubmit, locations, isload
             />
           </div>
 
-
           <div className='bedRooms'>
             <FormField
               type="number"
@@ -243,7 +249,6 @@ const PropertyForm: React.FC<PropertyFormProps> = ({ onSubmit, locations, isload
           </div>
         </div>
 
-
         <div className="map_andStatus flex w-full gap-3">
           <FormField
             label="Map URL"
@@ -260,7 +265,8 @@ const PropertyForm: React.FC<PropertyFormProps> = ({ onSubmit, locations, isload
             name="status"
             required
             select
-            value={editing ? propertyBeingEdited?.status : ""}
+            value={status}
+            onChange={(e) => setStatus(e.target.value)}
             placeholder="Select Status"
             options={[
               { value: "available", label: "available" },
@@ -286,7 +292,6 @@ const PropertyForm: React.FC<PropertyFormProps> = ({ onSubmit, locations, isload
 
           {uploading && <div className='w-10 h-10 animate-ping rounded-4xl bg-blue-700 mx-auto'></div>}
           <div className="grid grid-cols-2 md:grid-cols-3 gap-4 selected_images_display">
-            {/* review later */}
             {imageUrls.map((image, index) => (
               <div key={index} className="relative group animate-fade-in">
                 <img
@@ -307,11 +312,9 @@ const PropertyForm: React.FC<PropertyFormProps> = ({ onSubmit, locations, isload
         </div>
       </div>
 
-
       <div className='features'>
         <FeaturesInput features={features} setFeatures={setFeatures} />
       </div>
-
 
       <div className='additional_fees w-full mt-5'>
         <h3 className='text-xl font-bold text-gray-800 dark:text-white mb-3'>Additional Fees</h3>
@@ -339,10 +342,7 @@ const PropertyForm: React.FC<PropertyFormProps> = ({ onSubmit, locations, isload
             required
             defaultValue={editing ? propertyBeingEdited?.additionalFees?.inspection : ""}
           />
-        </div>
 
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
           <FormField
             label="Annual Insurance"
             name="annualInsurance"
@@ -351,55 +351,15 @@ const PropertyForm: React.FC<PropertyFormProps> = ({ onSubmit, locations, isload
             defaultValue={editing ? propertyBeingEdited?.additionalFees?.insurance : ""}
           />
         </div>
-
       </div>
 
-      <div className="monthly_costs w-full mt-5">
-        <h3 className='text-xl font-bold text-gray-800 dark:text-white mb-3'>Monthly Costs</h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-          <FormField
-            label="Property Taxes"
-            name="propertyTaxes"
-            type="number"
-            required
-            defaultValue={editing ? propertyBeingEdited?.monthlyCosts.propertyTaxes : ""}
-          />
-
-          <FormField
-            label="Homeowners' Association Fee"
-            name="hoa"
-            type="number"
-            required
-            defaultValue={editing ? propertyBeingEdited?.monthlyCosts.hoa : ""}
-          />
-        </div>
-
-      </div>
-      <div className="totalIntialCosts w-full mt-5">
-        <h3 className='text-xl font-bold text-gray-800 dark:text-white mb-3'>Total Initial Costs</h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-          <FormField
-            label="Down Payment"
-            name="downPayment"
-            type="number"
-            required
-            defaultValue={editing ? propertyBeingEdited?.totalInitialCosts.downPayment : ""}
-          />
-          <FormField
-            label="Mortgage Amount"
-            name="mortgageAmount"
-            type="number"
-            required
-            defaultValue={editing ? propertyBeingEdited?.totalInitialCosts.mortgageAmount : ""}
-          />
-        </div>
-      </div>
-      <div className="mt-8 flex justify-end submit_area">
+      <div className="mt-5 text-end">
         <button
           type="submit"
-          className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+          className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+          disabled={uploading}
         >
-          {editing ? 'Save Changes' : "Add Property"}
+          {editing ? "Update Property" : "Add Property"}
         </button>
       </div>
     </form>
