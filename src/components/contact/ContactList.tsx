@@ -1,18 +1,21 @@
-import React from 'react';
-import { Mail } from 'lucide-react';
-import type { Contact } from '../../types';
-import ContactListItem from './ContactListItem';
+import React from "react";
+import { Mail } from "lucide-react";
+import type { ContactType } from "../../types";
+import ContactListItem from "./ContactListItem";
 
 interface ContactListProps {
-  contacts: Contact[];
-  onUpdateStatus: (id: string, status: Contact['status']) => void;
+  contacts: ContactType[];
+  onUpdateStatus: (id: string, status: ContactType["status"]) => void;
 }
 
 const ContactList: React.FC<ContactListProps> = ({ contacts, onUpdateStatus }) => {
   return (
     <div className="max-w-4xl mx-auto">
       <div className="space-y-4">
-        <h2 className="text-lg font-semibold text-gray-800 dark:text-white mb-4">Contact Requests</h2>
+        <h2 className="text-lg font-semibold text-gray-800 dark:text-white mb-4">
+          Contact Requests
+        </h2>
+
         <div className="space-y-4">
           {contacts.map((contact) => (
             <ContactListItem

@@ -1,99 +1,113 @@
-import React from "react"
+import React, { useEffect, useRef, useState } from 'react';
 import {
   StepForward,
   Building2,
   MapPin,
   LayoutDashboard,
-
+  Grid,
+  FormInput,
   InboxIcon,
   MessageSquare,
   LogOut,
-  
+  Aperture,
   Link,
   User,
   Menu,
-  Users,
-  Trophy,
-  Star,
 } from "lucide-react"
-import { useLocation, useNavigate } from "react-router-dom"
-import SidebarLink from "./SidebarLink"
-import Switch from "../UI/Switch"
+import { useLocation, useNavigate } from 'react-router-dom';
+import SidebarLink from './SidebarLink';
+import Switch from '../UI/Switch';
 import { useDispatch, useSelector } from "react-redux"
-import { logout } from "../../redux/slices/authSlice"
-import { getAuth, signOut } from "firebase/auth"
+import { logout } from '../../redux/slices/authSlice';
+import { getAuth, signOut } from 'firebase/auth';
+import { db } from '../../firebaseConfig';
+import { ref, onValue, query, limitToLast } from 'firebase/database';
 import type { RootState } from "../../redux/store"
 import { useSidebar } from "../../contexts/SidebarContext"
 
+const LAST_SEEN_KEY = 'notif:lastSeenAt';
+const SEEN_IDS_KEY = 'notif:seenIds';
+const SYNC_EVENT = 'notif:sync';
+
+function loadSeenIds(): Set<string> {
+  try {
+    const raw = localStorage.getItem(SEEN_IDS_KEY);
+    if (!raw) return new Set();
+    return new Set(JSON.parse(raw) as string[]);
+  } catch {
+    return new Set();
+  }
+}
+
 const menuItems = [
   {
-    icon: LayoutDashboard, // Dashboard - ممكن تبقي كما هي أو تغير حسب المكتبة
+    icon: LayoutDashboard,
     label: "Dashboard",
     path: "/",
     visible: ["sales", "support", "admin"],
   },
   {
-    icon: Building2, // Properties - ممكن تبقي بناء أو بيت حسب المكتبة متوفرة
+    icon: Building2,
     label: "Properties",
     path: "/properties",
     visible: ["sales", "support", "admin"],
   },
   {
-    icon: MapPin, // Locations - ممتاز تبقى كما هي
+    icon: MapPin,
     label: "Locations",
     path: "/locations",
     visible: ["support", "admin"],
   },
   {
-    icon: Trophy, // Achievements - بدل Grid لـ Trophy (إنجازات)
+    icon: Grid,
     label: "Achievements",
     path: "/achievements",
     visible: ["support", "admin"],
   },
   {
-    icon: Users, // Our Team - بدل FormInput لـ Users (فريق)
+    icon: FormInput,
     label: "Our Team",
     path: "/team",
     visible: ["support", "admin"],
   },
   {
-    icon: MessageSquare, // Testimonials - بدل MapPin لـ MessageSquare أو Quote (شهادات)
+    icon: MapPin,
     label: "Testimonials",
     path: "/testimonials",
     visible: ["support", "admin"],
   },
   {
-    icon: InboxIcon, // Submissions - مناسبة
+    icon: InboxIcon,
     label: "Submissions",
     path: "/submissions",
     visible: ["sales", "support", "admin"],
   },
   {
-    icon: StepForward, // Steps - مناسبة
+    icon: StepForward,
     label: "Steps",
     path: "/steps",
     visible: ["support", "admin"],
   },
   {
-    icon: Star, // Our Values - بدل Aperture لـ Star (قيم)
+    icon: Aperture,
     label: "Our Values",
     path: "/values",
     visible: ["support", "admin"],
   },
   {
-    icon: MessageSquare, // Contact - مناسبة
+    icon: MessageSquare,
     label: "Contact",
     path: "/contact",
     visible: ["support", "admin"],
   },
   {
-    icon: Link, // SocialLinks - مناسبة
+    icon: Link,
     label: "SocialLinks",
     path: "/social",
     visible: ["support", "admin"],
   },
   {
-    icon: User, // User Management - مناسبة
+    icon: User,
     label: "User Management",
     path: "/user-management",
     visible: ["admin"],
@@ -102,13 +116,55 @@ const menuItems = [
 
 
 const Sidebar: React.FC = () => {
-  const userRole = useSelector((state: RootState) => state.auth.role) || ""
-  const location = useLocation()
-  const navigate = useNavigate()
-  const dispatch = useDispatch()
-  const auth = getAuth()
+    const userRole = useSelector((state: RootState) => state.auth.role) || ""
 
+  const location = useLocation();
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const auth = getAuth();
   const { isCollapsed, toggleSidebar } = useSidebar()
+  const [unreadCount, setUnreadCount] = useState(0);
+  const [seenIds, setSeenIds] = useState<Set<string>>(() => loadSeenIds());
+  const lastSeenRef = useRef<number>(Number(localStorage.getItem(LAST_SEEN_KEY) || 0));
+
+  useEffect(() => {
+    const notifRef = query(ref(db, 'notifications'), limitToLast(200));
+    const off = onValue(
+      notifRef,
+      (snap) => {
+        const data = snap.val() || {};
+        let count = 0;
+        for (const [id, v] of Object.entries<any>(data)) {
+          const ts = typeof v?.createdAt === 'number' ? v.createdAt : 0;
+          const isUnread = ts > lastSeenRef.current && !seenIds.has(id as string);
+          if (isUnread) count++;
+        }
+        setUnreadCount(count);
+      },
+      () => setUnreadCount(0)
+    );
+    return () => off();
+  }, [seenIds]);
+
+  useEffect(() => {
+    const handler = () => {
+      setSeenIds(loadSeenIds());
+      lastSeenRef.current = Number(localStorage.getItem(LAST_SEEN_KEY) || 0);
+    };
+    window.addEventListener(SYNC_EVENT, handler);
+    return () => window.removeEventListener(SYNC_EVENT, handler);
+  }, []);
+
+  useEffect(() => {
+    const onStorage = (e: StorageEvent) => {
+      if (e.key === SEEN_IDS_KEY || e.key === LAST_SEEN_KEY) {
+        setSeenIds(loadSeenIds());
+        lastSeenRef.current = Number(localStorage.getItem(LAST_SEEN_KEY) || 0);
+      }
+    };
+    window.addEventListener('storage', onStorage);
+    return () => window.removeEventListener('storage', onStorage);
+  }, []);
 
   const handleLogout = async () => {
     try {
@@ -149,13 +205,17 @@ const Sidebar: React.FC = () => {
         </div>
       </div>
 
-      <nav className="flex-1 mt-2 overflow-y-auto">
+
+      {/* Navigation */}
+    <nav className="flex-1 mt-2 overflow-y-auto">
         {menuItems.map((item) =>
           item.visible.includes(userRole) ? (
             <SidebarLink
               key={item.path}
               {...item}
               isActive={location.pathname === item.path}
+                                unreadCount={item.path === '/' ? unreadCount : 0}
+
               isCollapsed={isCollapsed}
             />
           ) : null
