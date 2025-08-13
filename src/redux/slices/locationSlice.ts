@@ -104,6 +104,7 @@ const locationsSlice = createSlice({
       action: PayloadAction<{ id: string; data: LocationData }[]>
     ) {
       state.items = action.payload;
+      state.loading= true;
       state.error = null;
     },
     setError(state, action: PayloadAction<string | null>) {
