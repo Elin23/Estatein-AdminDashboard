@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import type { RootState, AppDispatch } from "../redux/store";
 import {
-  listenToLocations,
+  subscribeToLocations,
   saveLocation,
   deleteLocation,
 } from "../redux/slices/locationSlice";
@@ -31,7 +31,7 @@ function Locations() {
   const [locationToDelete, setLocationToDelete] = useState<string | null>(null);
 
   useEffect(() => {
-    dispatch(listenToLocations());
+    dispatch(subscribeToLocations());
   }, [dispatch]);
 
   const handleEdit = (id: string) => {
@@ -69,7 +69,7 @@ function Locations() {
 
       {error && <p className="text-red-500">{error}</p>}
 
-      {showForm && (
+      {showForm?  (
         <LocationForm
           initialData={
             editId ? locations.find((l) => l.id === editId)?.data : undefined
@@ -84,9 +84,9 @@ function Locations() {
           onCancel={() => setShowForm(false)}
           loading={loading}
         />
-      )}
+      ): 
 
-      {!showForm && (
+      (
         <Pagination
           items={locations}
           renderItem={({ id, data }) => (
@@ -100,6 +100,7 @@ function Locations() {
               }}
             />
           )}
+          loading={loading}
         />
       )}
 

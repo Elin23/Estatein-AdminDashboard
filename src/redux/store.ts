@@ -8,6 +8,14 @@ import authReducer from "./slices/authSlice";
 import locationsReducer from "./slices/locationSlice"; 
 import valuesReducer from "./slices/valuesSlice"; 
 import paginationReducer from "./slices/paginationSlice"; 
+import propertiesReducer from "./slices/propertiesSlice"; 
+import achievementsReducer from "./slices/achievementsSlice"; 
+import teamReducer from "./slices/teamSlice"; 
+import testimonialsReducer from "./slices/testimonialsSlice"; 
+import submissionsReducer from "./slices/submissionsSlice"; 
+import stepsReducer from "./slices/stepsSlice"; 
+import contactsReducer from "./slices/contactsSlice"; 
+import socialLinksReducer from "./slices/socialLinksSlice"; 
 
 
 
@@ -24,6 +32,14 @@ const rootReducer = combineReducers({
   locations: locationsReducer,
   values: valuesReducer,
   pagination: paginationReducer,
+  properties: propertiesReducer,
+  achievements: achievementsReducer,
+  team: teamReducer,
+  testimonials: testimonialsReducer,
+  submissions: submissionsReducer,
+  steps: stepsReducer,
+  contacts: contactsReducer,
+  socialLinks: socialLinksReducer,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

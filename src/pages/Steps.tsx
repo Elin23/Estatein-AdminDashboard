@@ -1,10 +1,15 @@
-import { useState, useEffect } from 'react';
-import { db } from '../firebaseConfig';
-import { ref, onValue, push, set, update, remove } from 'firebase/database';
-import StepForm from '../components/Steps/StepForm';
-import GenericCard from '../components/GenericCard/GenericCard';
-import { useSelector } from 'react-redux';
-import type { RootState } from '../redux/store';
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import type { RootState, AppDispatch } from "../redux/store";
+import {
+  subscribeToSteps,
+  addStep,
+  updateStep,
+  deleteStep,
+} from "../redux/slices/stepsSlice";
+import StepForm from "../components/Steps/StepForm";
+import GenericCard from "../components/GenericCard/GenericCard";
+import Pagination from "../components/UI/Pagination";
 
 export interface Step {
   id: string;
@@ -14,49 +19,39 @@ export interface Step {
 }
 
 function Steps() {
-  const role = useSelector((state: RootState) => state.auth.role) || '';
-  const [steps, setSteps] = useState<Step[]>([]);
-  const [loading, setLoading] = useState(true);
+  const dispatch = useDispatch<AppDispatch>();
+  const {
+    list: steps,
+    loading,
+    error,
+  } = useSelector((state: RootState) => state.steps);
+  const role = useSelector((state: RootState) => state.auth.role) || "";
   const [editingStep, setEditingStep] = useState<Step | null>(null);
   const [showForm, setShowForm] = useState(false);
 
   useEffect(() => {
-    const stepsRef = ref(db, 'steps');
-    const unsubscribe = onValue(stepsRef, (snapshot) => {
-      if (snapshot.exists()) {
-        const data = snapshot.val();
-        const list = Object.entries(data).map(([id, value]) => ({
-          id,
-          ...(value as Omit<Step, 'id'>)
-        }));
-        setSteps(list);
-      } else {
-        setSteps([]);
-      }
-      setLoading(false); 
-    });
-    return () => unsubscribe();
-  }, []);
+    dispatch(subscribeToSteps());
 
-  const handleAdd = async (newStep: Omit<Step, 'id'>) => {
-    const newRef = push(ref(db, 'steps'));
-    await set(newRef, newStep);
+  }, [dispatch]);
+
+  const handleAdd = async (newStep: Omit<Step, "id">) => {
+    await dispatch(addStep(newStep)).unwrap();
     setShowForm(false);
   };
 
-  const handleUpdate = async (data: Omit<Step, 'id'>, id?: string) => {
-    if (!id) return;
-    await update(ref(db, `steps/${id}`), data);
+  const handleUpdate = async (data: Omit<Step, "id">, id?: string) => {
+    if (!id || !editingStep) return;
+    await dispatch(updateStep({ id, data })).unwrap();
     setEditingStep(null);
     setShowForm(false);
   };
 
   const handleDelete = async (id: string) => {
-    await remove(ref(db, `steps/${id}`));
+    await dispatch(deleteStep(id)).unwrap();
   };
 
-  const handleEditClick = (achievement: Step) => {
-    setEditingStep(achievement);
+  const handleEditClick = (step: Step) => {
+    setEditingStep(step);
     setShowForm(true);
   };
 
@@ -64,17 +59,22 @@ function Steps() {
     setEditingStep(null);
     setShowForm(true);
   };
+  console.log(loading)
 
   return (
     <div className="p-6">
       <div className="flex justify-between items-center mb-4 huge:max-w-[1390px] huge:mx-auto">
-        <h1 className="text-2xl font-bold text-gray-800 dark:text-white mb-6">Steps</h1>
-        {(role === "admin") && (<button
-          className="bg-purple60 hover:bg-purple65 text-white px-4 py-2 rounded"
-          onClick={handleAddClick}
-        >
-          + Add Step
-        </button>)}
+        <h1 className="text-2xl font-bold text-gray-800 dark:text-white mb-6">
+          Steps
+        </h1>
+        {role === "admin" && (
+          <button
+            className="bg-purple60 hover:bg-purple65 text-white px-4 py-2 rounded"
+            onClick={handleAddClick}
+          >
+            + Add Step
+          </button>
+        )}
       </div>
 
       {showForm && (
@@ -88,20 +88,21 @@ function Steps() {
         />
       )}
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4 huge:max-w-[1390px] huge:mx-auto">
-        {loading ? Array.from({ length: 3 }).map((_, idx) => (
-          <GenericCard key={idx} loading />
-        ))
-          : steps.map((step) => (
-              <GenericCard
-                key={step.id}
-                title={step.title}
-                description={step.description}
-                onEdit={() => handleEditClick(step)}
-                onDelete={() => handleDelete(step.id)}
-              />
-            ))}
-      </div>
+      <Pagination
+        items={steps}
+        renderItem={(item) => (
+          <GenericCard
+            key={item.id}
+            title={item.title}
+            description={item.description}
+            onEdit={() => handleEditClick(item)}
+            onDelete={() => handleDelete(item.id)}
+          />
+        )}
+        loading={loading}
+      />
+
+      {error && <div className="text-red-500 mt-4">{error}</div>}
     </div>
   );
 }

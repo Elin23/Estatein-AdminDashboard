@@ -6,13 +6,15 @@ import ThemeProvider from "./contexts/ThemeContext"
 import { SidebarProvider } from "./contexts/SidebarContext"
 import { useAppDispatch } from "./hooks/useAppSelector";
 import { useEffect } from "react";
-import { listenToLocations } from "./redux/slices/locationSlice";
+import { subscribeToSubmissions } from "./redux/slices/submissionsSlice";
+import { subscribeToProperties } from "./redux/slices/propertiesSlice";
 
 function App() {
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    dispatch(listenToLocations());
+    dispatch(subscribeToSubmissions()); 
+    dispatch(subscribeToProperties());
   }, [dispatch]);
 
   return (
