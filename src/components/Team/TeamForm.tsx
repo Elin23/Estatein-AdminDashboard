@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import type { TeamMember } from '../../types/index';
+import FormField from '../InputField/FormField';
 
 interface Props {
   initialData?: TeamMember;
@@ -79,44 +80,31 @@ export default function TeamForm({ initialData, onCancel, onSubmit }: Props) {
       onSubmit={handleSubmit}
       className="bg-white dark:bg-gray-800 p-4 rounded shadow huge:max-w-[1390px] huge:mx-auto"
     >
-      <div className="mb-2">
-        <label className="block text-sm font-medium mb-1 text-gray-900 dark:text-gray-100">
-          Name
-        </label>
-        <input
-          type="text"
-          className="w-full px-3 py-2 border border-black dark:border-white  text-black dark:text-white  rounded "
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          required
-        />
-      </div>
+      <FormField
+        label="Name"
+        name="name"
+        type="text"
+        value={name}
+        onChange={(e) => setName(e.target.value)}
+        required
+      />
 
-      <div className="mb-2">
-        <label className="block text-sm font-medium mb-1 text-gray-900 dark:text-gray-100">
-          Role
-        </label>
-        <input
-          type="text"
-          className="w-full px-3 py-2 border  border-black dark:border-white  text-black dark:text-white rounded  "
-          value={role}
-          onChange={(e) => setRole(e.target.value)}
-          required
-        />
-      </div>
+      <FormField
+        label="Role"
+        name="role"
+        type="text"
+        value={role}
+        onChange={(e) => setRole(e.target.value)}
+        required
+      />
 
-      <div className="mb-2">
-        <label className="block text-sm font-medium mb-1 text-gray-900 dark:text-gray-100">
-          Photo
-        </label>
-        <input
-          type="file"
-          accept="image/*"
-          onChange={handleFile}
-          className="w-full px-3 py-2 border  border-black dark:border-white  text-black dark:text-white  rounded "
-        />
-      </div>
-
+      <FormField
+        label="Photo"
+        name="photo"
+        file
+        accept="image/*"
+        onChange={(e) => handleFile(e as React.ChangeEvent<HTMLInputElement>)}
+      />
       {uploading && <p className="text-sm text-gray-500">Uploading image…</p>}
       {clientImage && (
         <img

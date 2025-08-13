@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import FormField from "../InputField/FormField";
 
 export interface SocialLink {
     id?: string;
@@ -58,14 +59,16 @@ export default function SocialLinkForm({ platform, initialData, onCancel, onSubm
             </div>
 
             <label className="block text-sm text-gray-600 mb-1">URL</label>
-            <input
+            <FormField
+                label={`${platform.charAt(0).toUpperCase() + platform.slice(1)} URL`}
+                name={platform}
                 type="url"
                 value={url}
                 onChange={(e) => setUrl(e.target.value)}
                 placeholder={`https://www.${platform}.com/your-page`}
-                className="w-full px-3 py-2 border rounded-md mb-3 focus:outline-none focus:ring-2 focus:ring-purple-200"
                 required
             />
+
 
             <div className="flex justify-end gap-2">
                 <button

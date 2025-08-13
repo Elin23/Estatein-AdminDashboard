@@ -1,15 +1,14 @@
-import { createSlice, createAsyncThunk, } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import { db } from "../../firebaseConfig";
 import { ref, onValue, push, set, update, remove } from "firebase/database";
 import type { ValueItem } from "../../types/ValueItem";
 
-
-
 interface ValuesState {
   items: ValueItem[];
   loading: boolean;
   error: string | null;
+  unsubscribe?: () => void;
 }
 
 const initialState: ValuesState = {
@@ -18,42 +17,56 @@ const initialState: ValuesState = {
   error: null,
 };
 
-export const listenToValues = createAsyncThunk<
+export const subscribeToValues = createAsyncThunk<
   void,
   void,
-  { rejectValue: string }
->("values/listenToValues", async (_, { rejectWithValue, dispatch }) => {
+  { rejectValue: string; state: any }
+>("values/subscribe", async (_, { rejectWithValue, dispatch, getState }) => {
+  const state = getState() as any;
+  const currentUnsub = state.values.unsubscribe;
+
+  if (currentUnsub) {
+    currentUnsub();
+  }
+
   try {
+    dispatch(setLoading(true));
     const valuesRef = ref(db, "values");
-    onValue(
+
+    const unsubscribe = onValue(
       valuesRef,
       (snapshot) => {
         const data = snapshot.val() ?? {};
-        const parsed: ValueItem[] = Object.entries(data).map(
+        const valuesList: ValueItem[] = Object.entries(data).map(
           ([id, value]: [string, any]) => ({
             id,
             title: value.title ?? "",
             description: value.description ?? "",
           })
         );
-        dispatch(setValues(parsed));
+
+        dispatch(setValues(valuesList.reverse()));
         dispatch(setError(null));
+        dispatch(setLoading(false));
       },
       (error) => {
-        dispatch(setError(error.message));
+        dispatch(setError(error.message || "Failed to load values."));
+        dispatch(setLoading(false));
       }
     );
-  } catch (err) {
-    return rejectWithValue("Failed to listen to values");
+
+    dispatch(setUnsubscribe(() => unsubscribe));
+  } catch (err: any) {
+    dispatch(setLoading(false));
+    return rejectWithValue(err.message || "Failed to subscribe to values.");
   }
 });
 
-// Thunk to add a new value
 export const addValue = createAsyncThunk<
   void,
   Omit<ValueItem, "id">,
   { rejectValue: string }
->("values/addValue", async (payload, { rejectWithValue }) => {
+>("values/add", async (payload, { rejectWithValue }) => {
   try {
     const newRef = push(ref(db, "values"));
     await set(newRef, {
@@ -69,10 +82,9 @@ export const updateValue = createAsyncThunk<
   void,
   ValueItem,
   { rejectValue: string }
->("values/updateValue", async (payload, { rejectWithValue }) => {
+>("values/update", async (payload, { rejectWithValue }) => {
   try {
-    const itemRef = ref(db, `values/${payload.id}`);
-    await update(itemRef, {
+    await update(ref(db, `values/${payload.id}`), {
       title: payload.title.trim(),
       description: payload.description.trim(),
     });
@@ -85,7 +97,7 @@ export const deleteValue = createAsyncThunk<
   void,
   string,
   { rejectValue: string }
->("values/deleteValue", async (id, { rejectWithValue }) => {
+>("values/delete", async (id, { rejectWithValue }) => {
   try {
     await remove(ref(db, `values/${id}`));
   } catch (err: any) {
@@ -99,47 +111,58 @@ const valuesSlice = createSlice({
   reducers: {
     setValues(state, action: PayloadAction<ValueItem[]>) {
       state.items = action.payload;
-      state.error = null;
-      state.loading = false;
     },
     setError(state, action: PayloadAction<string | null>) {
       state.error = action.payload;
-      state.loading = false;
     },
     setLoading(state, action: PayloadAction<boolean>) {
       state.loading = action.payload;
     },
+    setUnsubscribe(state, action: PayloadAction<() => void>) {
+      state.unsubscribe = action.payload;
+    },
+    cleanupSubscription(state) {
+      if (state.unsubscribe) {
+        state.unsubscribe();
+        state.unsubscribe = undefined;
+      }
+      state.loading = false;
+      state.error = null;
+    },
   },
   extraReducers: (builder) => {
     builder
+      // addValue
       .addCase(addValue.pending, (state) => {
         state.loading = true;
+        state.error = null;
       })
       .addCase(addValue.fulfilled, (state) => {
         state.loading = false;
-        state.error = null;
       })
       .addCase(addValue.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload ?? "Failed to add value";
       })
+      // updateValue
       .addCase(updateValue.pending, (state) => {
         state.loading = true;
+        state.error = null;
       })
       .addCase(updateValue.fulfilled, (state) => {
         state.loading = false;
-        state.error = null;
       })
       .addCase(updateValue.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload ?? "Failed to update value";
       })
+      // deleteValue
       .addCase(deleteValue.pending, (state) => {
         state.loading = true;
+        state.error = null;
       })
       .addCase(deleteValue.fulfilled, (state) => {
         state.loading = false;
-        state.error = null;
       })
       .addCase(deleteValue.rejected, (state, action) => {
         state.loading = false;
@@ -148,5 +171,12 @@ const valuesSlice = createSlice({
   },
 });
 
-export const { setValues, setError, setLoading } = valuesSlice.actions;
+export const {
+  setValues,
+  setError,
+  setLoading,
+  setUnsubscribe,
+  cleanupSubscription,
+} = valuesSlice.actions;
+
 export default valuesSlice.reducer;

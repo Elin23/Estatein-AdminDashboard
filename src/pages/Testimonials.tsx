@@ -1,81 +1,54 @@
-import { useState, useEffect, useMemo } from "react"
-import { onValue, ref, update } from "firebase/database"
-import { db } from "../firebaseConfig"
-import TestimonialCard from "../components/TestimonialsCard"
-import { useSelector } from "react-redux"
-import type { RootState } from "../redux/store"
+import { useEffect, useState, useMemo } from "react"
+import { useDispatch, useSelector } from "react-redux"
+import type { RootState, AppDispatch } from "../redux/store"
+import {
+  subscribeToTestimonials,
+  toggleTestimonialShow,
+  bulkUpdateTestimonialsShow,
+} from "../redux/slices/testimonialsSlice";
+ import TestimonialCard from "../components/TestimonialsCard"
+ import Pagination from "../components/UI/Pagination"
 
-interface Testimonial {
-  id: string
-  clientImage: string
-  location: string
-  name: string
-  rate: number
-  review: string
-  show: boolean
-  subject: string
-}
+
 
 const Testimonials = () => {
-  const [testimonials, setTestimonials] = useState<Testimonial[]>([])
-  const [search, setSearch] = useState("")
-  const [showFilter, setShowFilter] = useState<"all" | "true" | "false">("all")
-  const [selectedItems, setSelectedItems] = useState<string[]>([])
-  const role = useSelector((state: RootState) => state.auth.role) || '';
+  const dispatch = useDispatch<AppDispatch>();
+  const { list: testimonials, loading } = useSelector(
+    (state: RootState) => state.testimonials
+  );
+  const role = useSelector((state: RootState) => state.auth.role) || "";
+
+  const [search, setSearch] = useState("");
+  const [showFilter, setShowFilter] = useState<"all" | "true" | "false">("all");
+  const [selectedItems, setSelectedItems] = useState<string[]>([]);
 
   useEffect(() => {
-    const unsub = onValue(ref(db, "testimonials"), (snapshot) => {
-      const data = snapshot.val() || {}
-      const list: Testimonial[] = Object.entries(data).map(
-        ([id, value]: any) => ({
-          id,
-          ...value,
-        })
-      )
-      setTestimonials(list)
-    })
-    return () => unsub()
-  }, [])
+    dispatch(subscribeToTestimonials());
+  }, [dispatch]);
 
   const filteredTestimonials = useMemo(() => {
     return testimonials.filter((t) => {
-      const matchesSearch = t.name.toLowerCase().includes(search.toLowerCase())
+      const matchesSearch = t.name.toLowerCase().includes(search.toLowerCase());
       const matchesShow =
-        showFilter === "all"
-          ? true
-          : showFilter === "true"
-          ? t.show === true
-          : t.show === false
-      return matchesSearch && matchesShow
-    })
-  }, [testimonials, search, showFilter])
+        showFilter === "all" ? true : showFilter === "true" ? t.show : !t.show;
+      return matchesSearch && matchesShow;
+    });
+  }, [testimonials, search, showFilter]);
 
-  const handleToggleShow = async (id: string, newValue: boolean) => {
-    try {
-      await update(ref(db, `testimonials/${id}`), { show: newValue })
-    } catch (err) {
-      console.error("Error updating show:", err)
-    }
-  }
+  const handleToggleShow = (id: string, newValue: boolean) => {
+    dispatch(toggleTestimonialShow({ id, newValue }));
+  };
 
-  const handleBulkUpdate = async (newValue: boolean) => {
-    const updates: Record<string, any> = {}
-    selectedItems.forEach((id) => {
-      updates[`testimonials/${id}/show`] = newValue
-    })
-    try {
-      await update(ref(db), updates)
-      setSelectedItems([])
-    } catch (err) {
-      console.error("Bulk update error:", err)
-    }
-  }
+  const handleBulkUpdate = (newValue: boolean) => {
+    dispatch(bulkUpdateTestimonialsShow({ ids: selectedItems, newValue }));
+    setSelectedItems([]);
+  };
 
   const toggleSelect = (id: string) => {
     setSelectedItems((prev) =>
       prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]
-    )
-  }
+    );
+  };
 
   return (
     <div className="p-6 max-w-[1430px] mx-auto ">
@@ -119,23 +92,26 @@ const Testimonials = () => {
           </button>
         </div>
       )}
-
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {filteredTestimonials.map((item) => (
+      <Pagination
+        items={filteredTestimonials}
+        renderItem={(item) => (
           <div key={item.id} className="relative">
-            {(role === "admin") && (<input
-              type="checkbox"
-              checked={selectedItems.includes(item.id)}
-              onChange={() => toggleSelect(item.id)}
-              className="absolute top-3 left-3 w-6 h-6 cursor-pointer border-2 border-gray-400 rounded-sm dark:border-gray-600"
-            />)}
+            {role === "admin" && (
+              <input
+                type="checkbox"
+                checked={selectedItems.includes(item.id)}
+                onChange={() => toggleSelect(item.id)}
+                className="absolute top-3 left-3 w-6 h-6 cursor-pointer border-2 border-gray-400 rounded-sm dark:border-gray-600"
+              />
+            )}
             <TestimonialCard
               testimonial={item}
               onToggleShow={handleToggleShow}
             />
           </div>
-        ))}
-      </div>
+        )}
+        loading={loading}
+      />
 
       {filteredTestimonials.length === 0 && (
         <div className="text-center py-12">
@@ -145,7 +121,7 @@ const Testimonials = () => {
         </div>
       )}
     </div>
-  )
-}
+  );
+};
 
 export default Testimonials
