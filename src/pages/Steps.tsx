@@ -3,6 +3,8 @@ import { db } from '../firebaseConfig';
 import { ref, onValue, push, set, update, remove } from 'firebase/database';
 import StepForm from '../components/Steps/StepForm';
 import GenericCard from '../components/GenericCard/GenericCard';
+import { useSelector } from 'react-redux';
+import type { RootState } from '../redux/store';
 
 export interface Step {
   id: string;
@@ -12,6 +14,7 @@ export interface Step {
 }
 
 function Steps() {
+  const role = useSelector((state: RootState) => state.auth.role) || '';
   const [steps, setSteps] = useState<Step[]>([]);
   const [loading, setLoading] = useState(true);
   const [editingStep, setEditingStep] = useState<Step | null>(null);
@@ -65,13 +68,13 @@ function Steps() {
   return (
     <div className="p-6">
       <div className="flex justify-between items-center mb-4 huge:max-w-[1390px] huge:mx-auto">
-        <h1 className="text-2xl font-bold text-white">Steps</h1>
-        <button
+        <h1 className="text-2xl font-bold text-gray-800 dark:text-white mb-6">Steps</h1>
+        {(role === "admin") && (<button
           className="bg-purple60 hover:bg-purple65 text-white px-4 py-2 rounded"
           onClick={handleAddClick}
         >
           + Add Step
-        </button>
+        </button>)}
       </div>
 
       {showForm && (

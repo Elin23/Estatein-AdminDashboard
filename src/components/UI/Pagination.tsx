@@ -21,7 +21,6 @@ export default function Pagination<T>({
 
   return (
     <div>
-      {/* Cards Grid */}
       <div
         className="grid gap-4"
         style={{
@@ -31,7 +30,6 @@ export default function Pagination<T>({
         {paginatedItems.map((item, _) => renderItem(item))}
       </div>
 
-      {/* Pagination Controls */}
       <div className="flex justify-center items-center gap-2 flex-wrap mt-6">
         <button
           onClick={() => setCurrentPage(currentPage - 1)}

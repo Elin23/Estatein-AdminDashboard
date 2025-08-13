@@ -1,3 +1,6 @@
+import { useSelector } from "react-redux";
+import type { RootState } from "../../redux/store";
+
 interface GenericCardProps {
   title?: string;
   subtitle?: string;
@@ -22,6 +25,8 @@ export default function GenericCard({
   loading,
   hasImage,
 }: GenericCardProps) {
+  const role = useSelector((state: RootState) => state.auth.role) || '';
+  
   if (loading) {
     return (
       <div className="bg-white dark:bg-gray-800 p-4 rounded shadow animate-pulse w-full huge:max-w-[452px]">
@@ -54,7 +59,7 @@ export default function GenericCard({
       {title && <h3 className="text-lg font-bold text-gray-800 dark:text-white">{title}</h3>}
 
       {description && <p className="text-gray-800 dark:text-white">{description}</p>}
-
+      {(role === "admin") && (
       <div className="mt-4 flex justify-end space-x-2">
         {onEdit && (
           <button onClick={onEdit} className="px-3 py-1 bg-purple70 text-white rounded hover:bg-purple60">
@@ -66,7 +71,7 @@ export default function GenericCard({
             Delete
           </button>
         )}
-      </div>
+      </div>)}
     </div>
   );
 }

@@ -3,6 +3,8 @@ import AchievementForm from '../components/Achievements/AchievementForm';
 import { db } from '../firebaseConfig';
 import { ref, onValue, push, set, update, remove } from 'firebase/database';
 import GenericCard from '../components/GenericCard/GenericCard';
+import { useSelector } from 'react-redux';
+import type { RootState } from '../redux/store';
 
 export interface Achievement {
   id: string;
@@ -11,6 +13,7 @@ export interface Achievement {
 }
 
 function Achievements() {
+  const role = useSelector((state: RootState) => state.auth.role) || '';
   const [achievements, setAchievements] = useState<Achievement[]>([]);
   const [loading, setLoading] = useState(true);
   const [editingAchievement, setEditingAchievement] = useState<Achievement | null>(null);
@@ -64,13 +67,13 @@ function Achievements() {
   return (
     <div className="p-6">
       <div className="flex justify-between items-center mb-4 huge:max-w-[1390px] huge:mx-auto">
-        <h1 className="text-2xl font-bold text-white">Achievements</h1>
-        <button
+        <h1 className="text-2xl font-bold text-gray-800 dark:text-white mb-6">Achievements</h1>
+        {(role === "admin") && (<button
           className="bg-purple60 hover:bg-purple65  text-white px-4 py-2 rounded"
           onClick={handleAddClick}
         >
           + Add Achievement
-        </button>
+        </button>)}
       </div>
 
       {showForm && (

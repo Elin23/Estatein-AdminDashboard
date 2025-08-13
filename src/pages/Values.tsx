@@ -1,106 +1,94 @@
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState} from "react";
+import { useSelector, useDispatch } from "react-redux";
+import type { RootState, AppDispatch } from "../redux/store";
 import ValueForm from "../components/Values/ValuesForm";
-import { ref, onValue, push, set, update, remove } from "firebase/database";
-import { db } from "../firebaseConfig";
 import type { ValueItem } from "../types/ValueItem";
+
+import {
+  listenToValues,
+  addValue,
+  updateValue,
+  deleteValue,
+} from "../redux/slices/valuesSlice";
+
+import Pagination from "../components/UI/Pagination";
+import Modal from "../components/UI/Modal";
 import GenericCard from "../components/GenericCard/GenericCard";
 
 function Values() {
-  const [values, setValues] = useState<ValueItem[]>([]);
+  const dispatch = useDispatch<AppDispatch>();
+  const {
+    items: values,
+    loading,
+    error,
+  } = useSelector((state: RootState) => state.values);
+
   const [editingValue, setEditingValue] = useState<ValueItem | null>(null);
+    // For modal confirmation on delete
+  const [modalOpen, setModalOpen] = useState(false);
+  const [valueToDelete, setValueToDelete] = useState<string | null>(null);
   const [showForm, setShowForm] = useState(false);
-  const [loading, setLoading] = useState(true);
-  const [err, setErr] = useState<string | null>(null);
+  const role = useSelector((state: RootState) => state.auth.role) || '';
 
   useEffect(() => {
-    setLoading(true);
-    const listRef = ref(db, "values");
-    const unsubscribe = onValue(
-      listRef,
-      (snapshot) => {
-        const obj = snapshot.val() ?? {};
-        const list: ValueItem[] = Object.entries(obj).map(([id, value]: [string, any]) => ({
-          id,
-          title: value?.title ?? "",
-          description: value?.description ?? "",
-        }));
-        setValues(list);
-        setErr(null);
-        setLoading(false);
-      },
-      (error) => {
-        setErr(error.message);
-        setLoading(false);
-      }
-    );
-    return () => unsubscribe();
-  }, []);
+    dispatch(listenToValues());
+  }, [dispatch]);
 
-  const handleAdd = useCallback(async (payload: ValueItem) => {
-    try {
-      const newRef = push(ref(db, "values"));
-      await set(newRef, { title: payload.title.trim(), description: payload.description.trim() });
-      setShowForm(false);
-      setEditingValue(null);
-    } catch (e: any) {
-      setErr(e.message ?? "Failed to add value");
-    } finally {
-    }
-  }, []);
+  const handleAdd = async (payload: Omit<ValueItem, "id">) => {
+    await dispatch(addValue(payload));
+    setShowForm(false);
+    setEditingValue(null);
+  };
 
-  const handleUpdate = useCallback(async (updatedValue: ValueItem) => {
-    try {
-      const itemRef = ref(db, `values/${updatedValue.id}`);
-      await update(itemRef, {
-        title: updatedValue.title.trim(),
-        description: updatedValue.description.trim(),
-      });
-      setShowForm(false);
-      setEditingValue(null);
-    } catch (e: any) {
-      setErr(e.message ?? "Failed to update value");
-    } finally {
-    }
-  }, []);
+  const handleUpdate = async (payload: ValueItem) => {
+    await dispatch(updateValue(payload));
+    setShowForm(false);
+    setEditingValue(null);
+  };
 
-  const handleDelete = useCallback(async (id: string) => {
-    const ok = confirm("Are you sure you want to delete this value?");
-    if (!ok) return;
-    try {
-      await remove(ref(db, `values/${id}`));
-    } catch (e: any) {
-      setErr(e.message ?? "Failed to delete value");
+  const handleDelete = async (id: string) => {
+    setValueToDelete(id);
+    setModalOpen(true);
+  };
+
+  const confirmDelete = async () => {
+    if (valueToDelete) {
+      await dispatch(deleteValue(valueToDelete));
+      setValueToDelete(null);
+      setModalOpen(false);
     }
-  }, []);
+  };
 
   const handleEditClick = (value: ValueItem) => {
     setEditingValue(value);
     setShowForm(true);
   };
 
-  const handleAddClick = () => {
-    setEditingValue(null);
-    setShowForm(true);
-  };
+  // const handleAddClick = () => {
+  //   setEditingValue(null);
+  //   setShowForm(true);
+  // };
 
   return (
     <div className="p-6">
       <div className="flex justify-between items-center mb-4 huge:max-w-[1390px] huge:mx-auto">
-        <h1 className="text-2xl font-bold text-white">Values</h1>
-        <button
+        <h1 className="text-2xl font-bold text-gray-800 dark:text-white mb-6">Values</h1>
+        {(role === "admin") && (<button
           className="bg-purple60 hover:bg-purple65 text-white px-4 py-2 rounded disabled:opacity-60"
-          onClick={handleAddClick}
-          disabled={loading}
+          onClick={() => setShowForm((prev) => !prev)}
+          // onClick={handleAddClick}
+          disabled={loading || values.length >= 4}
         >
-          + Add Value
-        </button>
+          {showForm ? "Close Form" : "+ Add Value"}
+        </button>)}
       </div>
 
-      {err && (
+        {error && (
         <div className="mb-4 rounded border border-red-500/30 bg-red-500/10 p-3 text-red-200">
-          {err}
+          {error}
         </div>
       )}
+
 
       {showForm && (
         <ValueForm

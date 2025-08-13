@@ -9,6 +9,8 @@ interface SidebarLinkProps {
   path: string;
   isActive: boolean;
   unreadCount?: number;
+    isCollapsed?: boolean
+
 }
 
 const SidebarLink: React.FC<SidebarLinkProps> = ({
@@ -17,6 +19,8 @@ const SidebarLink: React.FC<SidebarLinkProps> = ({
   path,
   isActive,
   unreadCount = 0,
+    isCollapsed,
+
 }) => {
   const showCount = unreadCount > 0;
 
@@ -29,7 +33,7 @@ const SidebarLink: React.FC<SidebarLinkProps> = ({
       aria-label={showCount ? `${label}, ${unreadCount} unread` : label}
     >
       <Icon className="w-5 h-5 mr-3" />
-      <span className="font-medium">{label}</span>
+      {!isCollapsed && <span className="font-medium">{label}</span>}
 
       {showCount && (
         <span className="ml-2 inline-flex min-w-[18px] h-[18px] px-1 items-center justify-center rounded-full bg-red-500 text-white text-[11px] leading-none font-semibold">
@@ -37,7 +41,7 @@ const SidebarLink: React.FC<SidebarLinkProps> = ({
         </span>
       )}
     </Link>
-  );
-};
+  )
+}
 
 export default SidebarLink;
