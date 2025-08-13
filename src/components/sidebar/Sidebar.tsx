@@ -13,6 +13,7 @@ import {
   Link,
   User,
   Menu,
+  PersonStanding,
 } from "lucide-react"
 import { useLocation, useNavigate } from 'react-router-dom';
 import SidebarLink from './SidebarLink';
@@ -92,6 +93,12 @@ const menuItems = [
     icon: Aperture,
     label: "Our Values",
     path: "/values",
+    visible: ["support", "admin"],
+  },
+    {
+    icon: PersonStanding ,
+    label: "Valued Clients",
+    path: "/clients",
     visible: ["support", "admin"],
   },
   {
