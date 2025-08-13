@@ -1,3 +1,4 @@
+import NotificationSection from "../components/Notifications/NotificationSection";
 
 const Dashboard = () => {
   return (
@@ -7,6 +8,8 @@ const Dashboard = () => {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <NotificationSection />
+
         {/* <Feedback /> */}
         {/* <FAQSection /> */}
       </div>
@@ -15,3 +18,4 @@ const Dashboard = () => {
 };
 
 export default Dashboard;
+

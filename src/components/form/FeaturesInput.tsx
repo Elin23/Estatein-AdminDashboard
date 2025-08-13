@@ -1,5 +1,6 @@
 import { X } from "lucide-react";
 import React, { useState } from "react";
+import FormField from "../InputField/FormField";
 
 
 interface FeaturesInputProps {
@@ -9,7 +10,7 @@ interface FeaturesInputProps {
 
 
 export default function FeaturesInput({ features, setFeatures }: FeaturesInputProps) {
-    
+
   const [currentFeature, setCurrentFeature] = useState("");
 
   const addFeature = () => {
@@ -37,13 +38,12 @@ export default function FeaturesInput({ features, setFeatures }: FeaturesInputPr
       <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">Features</label>
 
       <div className="flex gap-2">
-        <input
-          type="text"
-          value={currentFeature}
+        <FormField
           onChange={(e) => setCurrentFeature(e.target.value)}
           onKeyDown={handleKeyDown}
+          value={currentFeature}
           placeholder="Add a feature..."
-          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+          className=" w-full"
         />
         <button
           type="button"
@@ -56,7 +56,7 @@ export default function FeaturesInput({ features, setFeatures }: FeaturesInputPr
 
       {/* Chips */}
       <div className="flex flex-col gap-2 mt-3">
-        {features.map((feature,index) => (
+        {features.map((feature, index) => (
           <div
             key={index}
             className="mt-1 rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white
@@ -70,7 +70,7 @@ export default function FeaturesInput({ features, setFeatures }: FeaturesInputPr
               className="text-base text-red-600 cursor-pointer  rounded-lg bg-gray40 h-8 w-8 flex items-center justify-center
               hover:bg-gray30 duration-200"
             >
-                <X className="w-4 h-4"/>
+              <X className="w-4 h-4" />
             </button>
           </div>
         ))}
