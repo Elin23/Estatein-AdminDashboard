@@ -1,10 +1,13 @@
-import { useState, useEffect, useMemo } from "react";
-import { ref, onValue, push, set, remove } from "firebase/database";
-import type { SocialLink } from "../components/SocialMedia/SocialLinksForm";
-import { db } from "../firebaseConfig";
+import { useState, useMemo, useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import type { RootState, AppDispatch } from "../redux/store";
+import {
+    subscribeToSocialLinks,
+    saveSocialLink,
+    deleteSocialLink,
+    cleanupSubscription,
+} from "../redux/slices/socialLinksSlice";
 import SocialLinkForm from "../components/SocialMedia/SocialLinksForm";
-import { useSelector } from "react-redux";
-import type { RootState } from "../redux/store";
 
 const PLATFORMS = ["facebook", "linkedin", "twitter", "youtube"] as const;
 
@@ -15,27 +18,23 @@ const PlatformBadge = ({ name }: { name: string }) => (
 );
 
 export default function SocialLinks() {
-    const [active, setActive] = useState<string>(PLATFORMS[0]);
-    const [links, setLinks] = useState<SocialLink[]>([]);
-    const [adding, setAdding] = useState(false);
-    const [editing, setEditing] = useState<SocialLink | null>(null);
-    const [query, setQuery] = useState("");
-    const role = useSelector((state: RootState) => state.auth.role) || '';
-    
-    useEffect(() => {
-        const linksRef = ref(db, "socialLinks");
-        const unsubscribe = onValue(linksRef, (snapshot) => {
-            const data = snapshot.val();
-            if (!data) {
-                setLinks([]);
-                return;
-            }
-            const list: SocialLink[] = Object.keys(data).map((id) => ({ id, ...data[id] }));
-            setLinks(list);
-        });
+    const dispatch = useDispatch<AppDispatch>();
+    const { list: links, loading } = useSelector(
+        (state: RootState) => state.socialLinks
+    );
+    const role = useSelector((state: RootState) => state.auth.role) || "";
 
-        return () => unsubscribe();
-    }, []);
+    const [active, setActive] = useState<string>(PLATFORMS[0]);
+    const [adding, setAdding] = useState(false);
+    const [editing, setEditing] = useState<any>(null);
+    const [query, setQuery] = useState("");
+
+    useEffect(() => {
+        dispatch(subscribeToSocialLinks());
+        return () => {
+            dispatch(cleanupSubscription());
+        };
+    }, [dispatch]);
 
     const filtered = useMemo(
         () =>
@@ -45,12 +44,8 @@ export default function SocialLinks() {
         [links, active, query]
     );
 
-    const handleSave = async (data: Omit<SocialLink, "id">, id?: string) => {
-        if (id) {
-            await set(ref(db, `socialLinks/${id}`), data);
-        } else {
-            await set(push(ref(db, "socialLinks")), data);
-        }
+    const handleSave = async (data: any, id?: string) => {
+        await dispatch(saveSocialLink({ data, id }));
         setAdding(false);
         setEditing(null);
     };
@@ -59,13 +54,12 @@ export default function SocialLinks() {
         if (!id) return;
         const ok = window.confirm("Are you sure you want to delete this link?");
         if (!ok) return;
-        await remove(ref(db, `socialLinks/${id}`));
+        await dispatch(deleteSocialLink(id));
     };
 
     return (
         <div className="min-h-screen bg-white dark:bg-gray-900 text-gray-900 dark:text-white">
             <div className="container mx-auto px-4 py-6">
-
                 {/* Header مع بحث وزر + Add */}
                 <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between mb-6 gap-4 lg:gap-0">
                     <div>
@@ -104,17 +98,18 @@ export default function SocialLinks() {
                                 className="outline-none text-sm bg-transparent text-gray-900 dark:text-white w-full"
                             />
                         </div>
-                    {(role === "admin") && (
-                        <button
-                            onClick={() => {
-                                setAdding(true);
-                                setEditing(null);
-                                window.scrollTo({ top: 0, behavior: "smooth" });
-                            }}
-                            className="px-4 py-2 bg-purple-600 text-white rounded-lg shadow hover:bg-purple-700 whitespace-nowrap"
-                        >
-                            + Add Value
-                        </button>)}
+                        {role === "admin" && (
+                            <button
+                                onClick={() => {
+                                    setAdding(true);
+                                    setEditing(null);
+                                    window.scrollTo({ top: 0, behavior: "smooth" });
+                                }}
+                                className="px-4 py-2 bg-purple-600 text-white rounded-lg shadow hover:bg-purple-700 whitespace-nowrap"
+                            >
+                                + Add Value
+                            </button>
+                        )}
                     </div>
                 </div>
 
@@ -136,7 +131,9 @@ export default function SocialLinks() {
                         >
                             <div className="flex items-center gap-2">
                                 <PlatformBadge name={p} />
-                                <span className="text-sm dark:text-gray-500 text-gray-700 capitalize">{p}</span>
+                                <span className="text-sm dark:text-gray-500 text-gray-700 capitalize">
+                                    {p}
+                                </span>
                                 <span className="ml-2 text-xs dark:text-gray-500 text-gray-700">
                                     ({links.filter((l) => l.platform === p).length})
                                 </span>
@@ -203,25 +200,26 @@ export default function SocialLinks() {
                                                 {link.url}
                                             </a>
                                         </td>
-                                        {(role === "admin") && (
-                                        <td className="px-4 sm:px-6 py-4 whitespace-nowrap text-right text-sm font-medium flex justify-end gap-2">
-                                            <button
-                                                onClick={() => {
-                                                    setEditing(link);
-                                                    setAdding(false);
-                                                    window.scrollTo({ top: 0, behavior: "smooth" });
-                                                }}
-                                                className="px-3 py-1 rounded-md bg-purple-600 text-white hover:bg-purple-700"
-                                            >
-                                                Edit
-                                            </button>
-                                            <button
-                                                onClick={() => handleDelete(link.id)}
-                                                className="px-3 py-1 rounded-md bg-red-500 text-white hover:bg-red-600"
-                                            >
-                                                Delete
-                                            </button>
-                                        </td>)}
+                                        {role === "admin" && (
+                                            <td className="px-4 sm:px-6 py-4 whitespace-nowrap text-right text-sm font-medium flex justify-end gap-2">
+                                                <button
+                                                    onClick={() => {
+                                                        setEditing(link);
+                                                        setAdding(false);
+                                                        window.scrollTo({ top: 0, behavior: "smooth" });
+                                                    }}
+                                                    className="px-3 py-1 rounded-md bg-purple-600 text-white hover:bg-purple-700"
+                                                >
+                                                    Edit
+                                                </button>
+                                                <button
+                                                    onClick={() => handleDelete(link.id)}
+                                                    className="px-3 py-1 rounded-md bg-red-500 text-white hover:bg-red-600"
+                                                >
+                                                    Delete
+                                                </button>
+                                            </td>
+                                        )}
                                     </tr>
                                 ))
                             )}
