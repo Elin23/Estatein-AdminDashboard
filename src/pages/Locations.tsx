@@ -11,8 +11,9 @@ import Pagination from "../components/UI/Pagination";
 import LocationForm from "../components/Location/LocationForm";
 import LocationCard from "../components/Location/LocationCard";
 import Modal from "../components/UI/Modal";
+import ActionButtons from "../components/UI/ActionButtons";
 
-function Locations () {
+function Locations() {
   const role = useSelector((state: RootState) => state.auth.role) || '';
 
   const dispatch = useDispatch<AppDispatch>();
@@ -44,12 +45,12 @@ function Locations () {
         <h1 className="text-3xl font-bold text-gray-700 dark:text-gray-200">
           Our Locations
         </h1>
-        {(role === "admin") && (<button
-          onClick={() => setShowForm((prev) => !prev)}
-          className="bg-purple60 text-white px-4 py-2 rounded-lg hover:bg-[#5b2fc4]"
-        >
-          {showForm ? "Close Form" : "+ Add Location"}
-        </button>)}
+        {(role === 'admin' || role === 'sales') && (
+          <ActionButtons
+            addBtnText={showForm ? 'Cancel' : 'Add Location'}
+            onAddClick={() => setShowForm((prev) => !prev)}
+          />
+        )}
       </div>
 
       {error && <p className="text-red-500">{error}</p>}

@@ -142,7 +142,7 @@ useEffect(() => {
       (
         <div className="Properties_Container grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 huge:max-w-[1390px] mx-auto">
           {properties.map((property) => (
-            <div key={property.id} className="bg-white rounded-lg shadow-md overflow-hidden huge:max-w-[452px]">
+            <div key={property.id} className="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden huge:max-w-[452px]">
               {property.images?.length > 0 && (
                 <img
                   src={property.images[0]}
@@ -153,7 +153,7 @@ useEffect(() => {
               <div className="p-4 text_container ">
                 {/* property status available or sold*/}
                 <div className="flex justify-between items-start">
-                  <h3 className="text-lg font-semibold text-gray-800">{property.title}</h3>
+                  <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100">{property.title}</h3>
                   <span className={`px-2 py-1 rounded text-sm font-medium ${
                     property.status === 'available' ? 'bg-green-100 text-green-800' :
                     property.status === 'sold' ? 'bg-red-100 text-red-800' :
@@ -165,24 +165,24 @@ useEffect(() => {
                   
                 <div className="mt-2 space-y-2">
                   {/* property Location */}
-                  <div className="flex items-center text-gray-600">
+                  <div className="flex items-center text-gray-600 dark:text-gray-400">
                     <MapPin className="w-4 h-4 mr-2" />
                     {property.location}
                   </div>
                   {/* property type */}
-                  <div className="flex items-center text-gray-600">
+                  <div className="flex items-center text-gray-600 dark:text-gray-400">
                     <Building2 className="w-4 h-4 mr-2" />
                     {property.type.charAt(0).toUpperCase() + property.type.slice(1)}
                   </div>
                   {/* price */}
-                  <div className="flex items-center text-gray-600">
+                  <div className="flex items-center text-gray-600 dark:text-gray-400">
                     <IndianRupee className="w-4 h-4 mr-2" />
                     {property.price.toLocaleString('en-IN')}
                   </div>
                 </div>
                 {/* description */}
                 <div className="mt-4">
-                  <p className="text-sm text-gray-600 line-clamp-2">{property.description}</p>
+                  <p className="text-sm text-gray-600 dark:text-gray-400 line-clamp-2">{property.description}</p>
                 </div>
 
                 {/* render features */}
@@ -192,7 +192,7 @@ useEffect(() => {
                       {property.features.map((feature, index) => (
                         <span
                           key={index}
-                          className="px-2 py-1 bg-gray-100 text-gray-600 text-sm rounded-full"
+                          className="px-2 py-1 bg-gray-100 text-gray-600 dark:text-gray-400 text-sm rounded-full"
                         >
                           {feature}
                         </span>
