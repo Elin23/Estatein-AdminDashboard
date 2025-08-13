@@ -1,6 +1,8 @@
-import type { FormSubmission } from "../../types";
+import type { FormSubmission, ContactType } from "../../types";
 
-const contactFooter = `
+export type ComposedEmail = { subject: string; message: string };
+
+export const contactFooter = `
 Best regards,
 Estatein Real Estate Company
 
@@ -22,80 +24,93 @@ Phone: +1 (123) 628-7890
 City: Metropolis
 `.trim();
 
-export function composeEmailMessage(submission: FormSubmission) {
-  const data = submission.data || {};
+const S = (v: unknown) => String(v ?? "").trim();
+const bullet = (label: string, value?: string) => {
+  const v = S(value);
+  return v ? `• ${label}: ${v}` : "";
+};
+const joinSpace = (parts: string[]) => parts.filter(Boolean).join(" ");
 
-  const firstName =
-    (data.firstName as string) ||
-    (data.name as string) ||
-    (data.fullName as string) ||
-    "";
+// ───────────── Submissions (Property/Inquiry/Contact) ─────────────
+export function composeEmailMessage(submission: FormSubmission): ComposedEmail {
+  const d = (submission.data ?? {}) as Record<string, unknown>;
 
-  const lastName = (data.lastName as string) || "";
+  const firstName = S(d.firstName ?? d.name ?? d.fullName);
+  const lastName  = S(d.lastName);
+  const fallbackName = firstName || S(d.fullName) || "there";
 
-  const email = (data.email as string) || (data.Email as string) || "";
-  const phone = (data.phone as string) || "";
-  const location = (data.location as string) || "";
-  const propertyType = (data.propertyType as string) || "";
-  const bedrooms = (data.bedrooms as string) || "";
-  const bathrooms = (data.bathrooms as string) || "";
-  const budget = (data.budget as string) || "";
-  const notes = (data.message as string) || "";
+  const email      = S(d.email ?? d.Email);
+  const phone      = S(d.phone);
+  const location   = S(d.location);
+  const property   = S(d.propertyType);
+  const bedrooms   = S(d.bedrooms);
+  const bathrooms  = S(d.bathrooms);
+  const budget     = S(d.budget);
+  const notes      = S(d.message);
 
-  const fallbackName =
-    firstName || (data.fullName as string) || "there";
+  const lowerForm = S(submission.category || submission.formName).toLowerCase();
 
-  const formType =
-    (submission.category as string)?.toLowerCase?.() ||
-    (submission.formName as string)?.toLowerCase?.() ||
-    "";
+  const tail = joinSpace([
+    property,
+    location ? `in ${location}` : "",
+  ]);
 
-  const subject = (() => {
-    const parts: string[] = [];
-    if (propertyType) parts.push(propertyType);
-    if (location) parts.push(`in ${location}`);
-    const tail = parts.length ? parts.join(" ") : (submission.formName || "your request");
-
-    if (formType.includes("contact")) return `Thank you for contacting us`;
-    if (formType.includes("inquiry") || formType.includes("property")) {
-      return `Your Property Inquiry — ${tail}`;
-    }
-    return `We received your request — ${tail}`;
-  })();
+  const subject =
+    lowerForm.includes("contact")
+      ? "Thank you for contacting us"
+      : (lowerForm.includes("inquiry") || lowerForm.includes("property"))
+      ? (tail ? `Your Property Inquiry — ${tail}` : "Your Property Inquiry")
+      : (tail ? `We received your request — ${tail}` : "We received your request");
 
   const greeting = lastName
-    ? `Dear Mr. ${lastName},`
+    ? `Dear ${firstName ? `${firstName} ${lastName}` : lastName},`
     : `Dear ${fallbackName},`;
 
-  const lineAbout =
-    `We are reaching out regarding your recent inquiry for a property` +
+  const intro =
+    `We are reaching out regarding your recent ${lowerForm.includes("inquiry") ? "inquiry" : "request"}` +
     (location ? ` in ${location}` : ``) +
     `. Our records indicate the following preferences:`;
 
-  const summaryLines = [
-    propertyType ? `• Property Type: ${propertyType}` : "",
-    bedrooms || bathrooms ? `• Bedrooms / Bathrooms: ${bedrooms || "—"} / ${bathrooms || "—"}` : "",
-    location ? `• Location: ${location}` : "",
-    budget ? `• Budget: ${budget}` : "",
-    email ? `• Email: ${email}` : "",
-    phone ? `• Phone: ${phone}` : "",
-    notes ? `• Additional Notes: ${notes}` : "",
+  const summary = [
+    bullet("Property Type", property),
+    (bedrooms || bathrooms) ? bullet("Bedrooms / Bathrooms", `${bedrooms || "—"} / ${bathrooms || "—"}`) : "",
+    bullet("Location", location),
+    bullet("Budget", budget),
+    bullet("Email", email),
+    bullet("Phone", phone),
+    bullet("Additional Notes", notes),
   ].filter(Boolean).join("\n");
 
-  const closing = `Our team is currently reviewing availability and pricing options that best match your criteria.
-If you have preferred dates/times for a viewing, please reply with two or three options and we will arrange the earliest possible slot.
-
-${contactFooter}`;
-
-  const message = [
-    greeting,
+  const closing = [
+    "Our team is currently reviewing availability and pricing options that best match your criteria.",
+    "If you have preferred dates/times for a viewing, please reply with two or three options and we will arrange the earliest possible slot.",
     "",
-    lineAbout,
-    "",
-    summaryLines,
-    "",
-    closing,
+    contactFooter,
   ].join("\n");
 
+  const message = [greeting, "", intro, "", summary, "", closing].join("\n");
   return { subject, message };
+}
+
+export { composeEmailMessage as composeSubmissionEmailMessage };
+
+// ───────────────────────── Contacts ─────────────────────────
+export function composeContactEmailMessage(contact: ContactType): ComposedEmail {
+  const firstName = S(contact.name).split(" ")[0] || "there";
+
+  const subject = S(contact.subject)
+    ? `Re: ${contact.subject}`
+    : "Thank you for contacting us";
+
+  const body = [
+    `Hi ${firstName},`,
+    "",
+    "Thanks for reaching out! We received your message and will get back to you shortly.",
+    "",
+    contact.message ? `Your message:\n"${contact.message}"` : "",
+    "",
+    contactFooter,
+  ].filter(Boolean).join("\n");
+
+  return { subject, message: body };
 }

@@ -143,7 +143,7 @@ const Properties = () => {
       ) : (
         <div className="Properties_Container grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 huge:max-w-[1390px] mx-auto">
           {properties.map((property) => (
-            <div key={property.id} className="bg-white rounded-lg shadow-md overflow-hidden huge:max-w-[452px]">
+            <div key={property.id} className="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden huge:max-w-[452px]">
               {property.images?.length > 0 && (
                 <img src={property.images[0]} alt={property.title} className="w-full h-48 object-cover" />
               )}
@@ -178,7 +178,7 @@ const Properties = () => {
                 </div>
 
                 <div className="mt-4">
-                  <p className="text-sm text-gray-600 line-clamp-2">{property.description}</p>
+                  <p className="text-sm text-gray-600 dark:text-gray-400 line-clamp-2">{property.description}</p>
                 </div>
 
                 {property.features?.length > 0 && (

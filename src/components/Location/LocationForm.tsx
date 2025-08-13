@@ -1,5 +1,6 @@
 import { useRef } from "react";
 import type { LocationData } from "../../types/forms";
+import FormField from "../InputField/FormField";
 
 interface LocationFormProps {
   initialData?: Partial<LocationData>;
@@ -14,7 +15,7 @@ function LocationForm({
   onCancel,
   loading,
 }: LocationFormProps) {
-  
+
   const formRef = useRef<HTMLFormElement>(null);
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -53,7 +54,7 @@ function LocationForm({
       phone,
       city,
       category,
-      createdAt: initialData?.createdAt || Date.now(), 
+      createdAt: initialData?.createdAt || Date.now(),
     });
 
     form.reset();
@@ -72,72 +73,53 @@ function LocationForm({
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
         <div className="flex flex-col w-full relative">
-          <label
-            htmlFor="branch"
-            className="mb-2.5 text-base/[1.5] 2xl:text-xl font-semibold text-gray-800 dark:text-white"
-          >
-            Branch Name
-          </label>
-          <input
+          <FormField
             id="branch"
             name="branch"
+            label="Branch Name"
             defaultValue={initialData.branch}
             placeholder="Branch Name"
-            className="rounded-lg  text-sm/[20px] 2xl:text-lg font-medium border border-black dark:border-white  text-black dark:text-white px-5 py-4"
+            required
           />
         </div>
 
+
         <div className="flex flex-col w-full relative">
-          <label
-            htmlFor="address"
-            className="mb-2.5 text-base/[1.5] 2xl:text-xl font-semibold  text-gray-800 dark:text-white"
-          >
-            Address
-          </label>
-          <input
+          <FormField
             id="address"
             name="address"
+            label="Address"
             defaultValue={initialData.address}
             placeholder="Address"
-            className="rounded-lg border-black dark:border-white  text-black dark:text-white text-sm/[20px] 2xl:text-lg font-medium border  px-5 py-4"
+            required
           />
         </div>
 
         <div className="flex flex-col w-full relative">
-          <label
-            htmlFor="category"
-            className="mb-2.5 text-base/[1.5] 2xl:text-xl font-semibold text-gray-800 dark:text-white"
-          >
-            Category
-          </label>
-          <select
+          <FormField
             id="category"
             name="category"
+            label="Category"
+            placeholder="Select Category"
             defaultValue={initialData.category || ""}
-            className="rounded-lg border-black dark:border-white  text-black dark:text-white text-sm/[20px] 2xl:text-lg font-medium border  px-5 py-4"
-          >
-            <option value="" disabled>
-              Select Category
-            </option>
-            <option className=" text-black dark:text-white" value="regional">Regional</option>
-            <option className="text-black dark:text-white" value="international">International</option>
-          </select>
+            select
+            options={[
+              { value: "regional", label: "Regional" },
+              { value: "international", label: "International" },
+            ]}
+          />
         </div>
 
         <div className="flex flex-col w-full relative md:col-span-2">
-          <label
-            htmlFor="details"
-            className="mb-2.5 text-base/[1.5] 2xl:text-xl font-semibold text-gray-800 dark:text-white"
-          >
-            Location Details
-          </label>
-          <textarea
+          <FormField
             id="details"
             name="details"
-            defaultValue={initialData.details}
+            label="Location Details"
             placeholder="Location Details"
-            className="rounded-lg border-black dark:border-white  text-black dark:text-white text-sm/[20px] 2xl:text-lg font-medium border  px-5 py-4 resize-none"
+            defaultValue={initialData.details}
+            multiline
             rows={4}
+            required
           />
         </div>
       </div>
@@ -148,51 +130,36 @@ function LocationForm({
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
         <div className="flex flex-col w-full relative">
-          <label
-            htmlFor="email"
-            className="mb-2.5 text-base/[1.5] 2xl:text-xl font-semibold  text-gray-800 dark:text-white"
-          >
-            Email
-          </label>
-          <input
+          <FormField
             type="email"
             id="email"
             name="email"
+            label="Email"
             defaultValue={initialData.email}
             placeholder="Email"
-            className="rounded-lg border-black dark:border-white  text-black dark:text-white text-sm/[20px] 2xl:text-lg font-medium border  px-5 py-4"
+            required
           />
         </div>
 
         <div className="flex flex-col w-full relative">
-          <label
-            htmlFor="phone"
-            className="mb-2.5 text-base/[1.5] 2xl:text-xl font-semibold  text-gray-800 dark:text-white"
-          >
-            Phone Number
-          </label>
-          <input
+          <FormField
             id="phone"
             name="phone"
+            label="Phone Number"
             defaultValue={initialData.phone}
             placeholder="Phone Number"
-            className="rounded-lg border-black dark:border-white  text-black dark:text-white text-sm/[20px] 2xl:text-lg font-medium border  px-5 py-4"
+            required
           />
         </div>
 
         <div className="flex flex-col w-full relative">
-          <label
-            htmlFor="city"
-            className="mb-2.5 text-base/[1.5] 2xl:text-xl font-semibold  text-gray-800 dark:text-white"
-          >
-            City
-          </label>
-          <input
+          <FormField
             id="city"
             name="city"
+            label="City"
             defaultValue={initialData.city}
             placeholder="City"
-            className="rounded-lg border-black dark:border-white  text-black dark:text-white text-sm/[20px] 2xl:text-lg font-medium border  px-5 py-4"
+            required
           />
         </div>
       </div>
@@ -212,6 +179,7 @@ function LocationForm({
         >
           Cancel
         </button>
+        
       </div>
     </form>
   );
