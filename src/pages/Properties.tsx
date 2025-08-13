@@ -114,7 +114,7 @@ const Properties = () => {
           renderItem={(property) => (
             <div
               key={property.id}
-              className="bg-white rounded-lg shadow-md overflow-hidden huge:max-w-[452px]"
+              className="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden huge:max-w-[452px]"
             >
               {property.images?.length > 0 && (
                 <img
@@ -160,7 +160,7 @@ const Properties = () => {
                 </div>
 
                 <div className="mt-4">
-                  <p className="text-sm text-gray-600 line-clamp-2">
+                  <p className="text-sm text-gray-600 dark:text-gray-400 line-clamp-2">
                     {property.description}
                   </p>
                 </div>

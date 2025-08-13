@@ -10,6 +10,7 @@ import {
 import AchievementForm from "../components/Achievements/AchievementForm";
 import GenericCard from "../components/GenericCard/GenericCard";
 import Pagination from "../components/UI/Pagination";
+import ActionButtons from '../components/UI/ActionButtons';
 
 export interface Achievement {
   id: string;
@@ -72,12 +73,10 @@ function Achievements() {
           Achievements
         </h1>
         {role === "admin" && (
-          <button
-            className="bg-purple60 hover:bg-purple65 text-white px-4 py-2 rounded"
-            onClick={handleAddClick}
-          >
-            + Add Achievement
-          </button>
+          <ActionButtons
+            onAddClick={handleAddClick}
+            addBtnText="+ Add Achievement"
+          />
         )}
       </div>
 

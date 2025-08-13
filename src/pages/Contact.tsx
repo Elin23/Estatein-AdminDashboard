@@ -31,10 +31,9 @@ const dispatch: AppDispatch = useDispatch();
 
   return (
     <div className="p-6">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold text-gray-800 dark:text-white">
-          Contact Requests
-        </h1>
+      <h1 className="text-2xl font-bold text-gray-800 dark:text-white mb-6">
+        Contact Requests
+      </h1>
 
         {contacts.length > 0 && (
           <ExportButton
@@ -44,8 +43,6 @@ const dispatch: AppDispatch = useDispatch();
             disabled={contacts.length === 0}
           />
         )}
-      </div>
-
       <ContactList contacts={contacts} onUpdateStatus={handleUpdateStatus} loading ={loading}/>
 
     

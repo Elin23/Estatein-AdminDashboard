@@ -60,7 +60,7 @@ export default function SocialLinks() {
     return (
         <div className="min-h-screen bg-white dark:bg-gray-900 text-gray-900 dark:text-white">
             <div className="container mx-auto px-4 py-6">
-                {/* Header مع بحث وزر + Add */}
+
                 <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between mb-6 gap-4 lg:gap-0">
                     <div>
                         <h1 className="text-3xl font-extrabold">Social Links</h1>
@@ -174,7 +174,7 @@ export default function SocialLinks() {
                             </tr>
                         </thead>
 
-                        <tbody className="divide-y divide-gray-100 dark:divide-gray-600">
+                        <tbody className="divide-y divide-gray-100 dark:divide-gray-600 " >
                             {filtered.length === 0 ? (
                                 <tr>
                                     <td
@@ -200,26 +200,25 @@ export default function SocialLinks() {
                                                 {link.url}
                                             </a>
                                         </td>
-                                        {role === "admin" && (
-                                            <td className="px-4 sm:px-6 py-4 whitespace-nowrap text-right text-sm font-medium flex justify-end gap-2">
-                                                <button
-                                                    onClick={() => {
-                                                        setEditing(link);
-                                                        setAdding(false);
-                                                        window.scrollTo({ top: 0, behavior: "smooth" });
-                                                    }}
-                                                    className="px-3 py-1 rounded-md bg-purple-600 text-white hover:bg-purple-700"
-                                                >
-                                                    Edit
-                                                </button>
-                                                <button
-                                                    onClick={() => handleDelete(link.id)}
-                                                    className="px-3 py-1 rounded-md bg-red-500 text-white hover:bg-red-600"
-                                                >
-                                                    Delete
-                                                </button>
-                                            </td>
-                                        )}
+                                        {(role === "admin") && (
+                                        <td className="px-4 sm:px-6 py-4 text-right text-sm font-medium flex justify-end gap-2 flex-wrap">
+                                            <button
+                                                onClick={() => {
+                                                    setEditing(link);
+                                                    setAdding(false);
+                                                    window.scrollTo({ top: 0, behavior: "smooth" });
+                                                }}
+                                                className="px-3 py-1 rounded-md bg-purple-600 text-white hover:bg-purple-700"
+                                            >
+                                                Edit
+                                            </button>
+                                            <button
+                                                onClick={() => handleDelete(link.id)}
+                                                className="px-3 py-1 rounded-md bg-red-500 text-white hover:bg-red-600"
+                                            >
+                                                Delete
+                                            </button>
+                                        </td>)}
                                     </tr>
                                 ))
                             )}
