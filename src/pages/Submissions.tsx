@@ -5,6 +5,9 @@ import { onValue, ref, update } from "firebase/database";
 import { db } from "../firebaseConfig";
 import SubmissionCard from "../components/submissions/SubmissionCard";
 import SubmissionCardSkeleton from "../components/submissions/SubmissionCardSkeleton";
+import ExportButton from "../components/UI/ExportReportButton";
+import { exportSubmissionsToExcel } from "../lib/exportSubmissions";
+
 
 type SubmissionWithType = FormSubmission & {
   formType: "contact" | "inquiry" | "property";
@@ -33,8 +36,8 @@ const Submissions = () => {
                 formType === "contact"
                   ? "Contact Form"
                   : formType === "inquiry"
-                  ? "Inquiry Form"
-                  : "Property Form";
+                    ? "Inquiry Form"
+                    : "Property Form";
 
               const category = payload.propertyType || payload.inquiryType || "General";
 
@@ -79,10 +82,7 @@ const Submissions = () => {
     return () => unsubscribe();
   }, []);
 
-  const categories = useMemo(
-    () => Array.from(new Set(submissions.map((s) => s.category))),
-    [submissions]
-  );
+  const categories = useMemo(() => Array.from(new Set(submissions.map((s) => s.category))), [submissions]);
 
   const filteredSubmissions = useMemo(
     () =>
@@ -103,15 +103,21 @@ const Submissions = () => {
     try {
       await update(ref(db, `forms/${sub.formType}/${id}`), { status });
     } catch (error) {
+      // error handling if needed
     }
   };
 
   return (
     <div className="p-6 huge:max-w-[1390px] huge:mx-auto">
       <div className="flex justify-between items-center mb-6 ">
-        <h1 className="text-2xl font-bold text-gray-800 dark:text-white">
-          Form Submissions
-        </h1>
+        <h1 className="text-2xl font-bold text-gray-800 dark:text-white">Form Submissions</h1>
+
+        <ExportButton
+          data={filteredSubmissions}
+          onExport={exportSubmissionsToExcel}  
+          buttonLabel="Export to Excel"
+          disabled={filteredSubmissions.length === 0}
+        />
       </div>
 
       <SubmissionFilters
@@ -126,19 +132,13 @@ const Submissions = () => {
         {loading
           ? Array.from({ length: 6 }).map((_, i) => <SubmissionCardSkeleton key={`skeleton-${i}`} />)
           : filteredSubmissions.map((submission) => (
-              <SubmissionCard
-                key={submission.id}
-                submission={submission}
-                onUpdateStatus={handleUpdateStatus}
-              />
-            ))}
+            <SubmissionCard key={submission.id} submission={submission} onUpdateStatus={handleUpdateStatus} />
+          ))}
       </div>
 
       {!loading && filteredSubmissions.length === 0 && (
         <div className="text-center py-12">
-          <p className="text-gray-500 dark:text-gray-400">
-            No submissions found matching the selected filters.
-          </p>
+          <p className="text-gray-500 dark:text-gray-400">No submissions found matching the selected filters.</p>
         </div>
       )}
     </div>

@@ -11,10 +11,11 @@ import Pagination from "../components/UI/Pagination";
 import LocationForm from "../components/Location/LocationForm";
 import LocationCard from "../components/Location/LocationCard";
 import Modal from "../components/UI/Modal";
-import ActionButtons from "../components/UI/ActionButtons";
+import ExportButton from "../components/UI/ExportReportButton";
+import { exportLocationsToExcel } from "../lib/exportLocations";
 
 function Locations() {
-  const role = useSelector((state: RootState) => state.auth.role) || '';
+  const role = useSelector((state: RootState) => state.auth.role) || "";
 
   const dispatch = useDispatch<AppDispatch>();
 
@@ -29,7 +30,6 @@ function Locations() {
   const [modalOpen, setModalOpen] = useState(false);
   const [locationToDelete, setLocationToDelete] = useState<string | null>(null);
 
-  // Listen to DB changes once when component mounts
   useEffect(() => {
     dispatch(listenToLocations());
   }, [dispatch]);
@@ -41,16 +41,30 @@ function Locations() {
 
   return (
     <div className="p-6">
-      <div className="flex justify-between mb-6">
+      <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold text-gray-700 dark:text-gray-200">
           Our Locations
         </h1>
-        {(role === 'admin' || role === 'sales') && (
-          <ActionButtons
-            addBtnText={showForm ? 'Cancel' : 'Add Location'}
-            onAddClick={() => setShowForm((prev) => !prev)}
-          />
-        )}
+
+        <div className="flex gap-3">
+          {locations.length > 0 && (
+            <ExportButton
+              data={locations}
+              onExport={exportLocationsToExcel}
+              buttonLabel="Export to Excel"
+              disabled={locations.length === 0}
+            />
+          )}
+
+          {role === "admin" && (
+            <button
+              onClick={() => setShowForm((prev) => !prev)}
+              className="bg-purple60 text-white px-4 py-2 rounded-lg hover:bg-[#5b2fc4]"
+            >
+              {showForm ? "Close Form" : "+ Add Location"}
+            </button>
+          )}
+        </div>
       </div>
 
       {error && <p className="text-red-500">{error}</p>}
@@ -102,6 +116,6 @@ function Locations() {
       />
     </div>
   );
-};
+}
 
 export default Locations;

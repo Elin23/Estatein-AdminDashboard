@@ -1,16 +1,18 @@
-import { RouterProvider } from 'react-router-dom';
+import { RouterProvider } from "react-router-dom"
 // import { ThemeProvider } from './contexts/ThemeContext';
 
-import router from './router';
-import ThemeProvider from './contexts/ThemeContext';
-
+import router from "./router"
+import ThemeProvider from "./contexts/ThemeContext"
+import { SidebarProvider } from "./contexts/SidebarContext"
 
 function App() {
   return (
-      <ThemeProvider>
+    <ThemeProvider>
+      <SidebarProvider>
         <RouterProvider router={router} />
-      </ThemeProvider>
-  );
+      </SidebarProvider>
+    </ThemeProvider>
+  )
 }
 
-export default App;
+export default App
