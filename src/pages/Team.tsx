@@ -43,8 +43,8 @@ export default function Team() {
   };
 
   return (
-    <div className="p-6">
-      <div className="flex justify-between items-center mb-4 huge:max-w-[1390px] huge:mx-auto">
+    <div className="p-6 huge:max-w-[1390px] huge:mx-auto">
+      <div className="flex justify-between items-center mb-4 ">
         <h1 className="text-2xl font-bold text-gray-800 dark:text-white mb-6">
           Our Team
         </h1>
@@ -92,6 +92,7 @@ export default function Team() {
               subtitle={member.role}
               imageSrc={member.clientImage}
               imageAlt={member.name}
+              twitterLink={member.twitterLink}
               onEdit={() => {
                 setEditing(member);
                 setShowForm(true);

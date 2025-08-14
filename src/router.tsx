@@ -1,7 +1,7 @@
 import { createBrowserRouter } from "react-router-dom";
 import Dashboard from './pages/Dashboard';
 import Properties from './pages/Properties';
-import Locations from './pages/Locations';
+import Locations from './pages/CompanyInfo/Locations';
 import Submissions from './pages/Submissions';
 import MainLayout from './layout/MainLayout';
 import Achievements from './pages/Achievements';
@@ -10,11 +10,12 @@ import Values from './pages/Values';
 import Contact from './pages/Contact';
 import Steps from "./pages/Steps";
 import Testimonials from "./pages/Testimonials";
-import SocialLinks from "./pages/SocialLinks";
 import UserManagement from "./pages/UserManagement";
 import Login from "./pages/Login";
 import Unauthorized from "./pages/Unauthorized";
 import ProtectedRoute from "./components/auth/ProtectedRoute";
+import ValuedClients from "./pages/ValuedClients";
+import CompanyInfo from "./pages/CompanyInfo/CompanyInfo";
 import FAQ from "./pages/FAQ";
 
 const router = createBrowserRouter([
@@ -30,22 +31,23 @@ const router = createBrowserRouter([
       {
         element: <ProtectedRoute allowedRoles={["sales", "support", "admin"]} />,
         children: [
-          { path: "properties", element: <Properties /> },     
+          { path: "properties", element: <Properties /> },
           { path: "submissions", element: <Submissions /> },
         ],
       },
       {
         element: <ProtectedRoute allowedRoles={["support", "admin"]} />,
         children: [
-          { path: "locations", element: <Locations /> },
           { path: "achievements", element: <Achievements /> },
           { path: "contact", element: <Contact /> },
           { path: "testimonials", element: <Testimonials /> },
           { path: "team", element: <Team /> },
           { path: "values", element: <Values /> },
-          { path: "social", element: <SocialLinks /> },
           { path: "steps", element: <Steps /> },
+          { path: "clients", element: <ValuedClients /> },
+          { path: "info", element: <CompanyInfo /> },
           {path: "faqs" , element:<FAQ />}
+
         ],
       },
       {
