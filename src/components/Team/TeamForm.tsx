@@ -13,6 +13,7 @@ export default function TeamForm({ initialData, onCancel, onSubmit }: Props) {
   const [name, setName] = useState(initialData?.name ?? '');
   const [role, setRole] = useState(initialData?.role ?? '');
   const [clientImage, setClientImage] = useState(initialData?.clientImage ?? '');
+  const [twitterLink, setTwitterLink] = useState(initialData?.twitterLink ?? '');
   const [loading, setLoading] = useState(false);
   const [uploading, setUploading] = useState(false);
   const fromRef = useRef<HTMLFormElement>(null)
@@ -21,10 +22,14 @@ export default function TeamForm({ initialData, onCancel, onSubmit }: Props) {
       setName(initialData.name);
       setRole(initialData.role);
       setClientImage(initialData.clientImage);
+      setTwitterLink(initialData.twitterLink ?? '');
+
     } else {
       setName('');
       setRole('');
       setClientImage('');
+      setTwitterLink('');
+
     }
   }, [initialData]);
 
@@ -61,13 +66,15 @@ export default function TeamForm({ initialData, onCancel, onSubmit }: Props) {
     setLoading(true);
     try {
       await onSubmit(
-        { name: name.trim(), role: role.trim(), clientImage },
+        { name: name.trim(), role: role.trim(), clientImage, twitterLink: twitterLink.trim() },
         initialData?.id
       );
       if (!initialData) {
         setName('');
         setRole('');
         setClientImage('');
+        setTwitterLink('');
+
       }
     } catch {
       alert('Save failed');
@@ -98,6 +105,14 @@ export default function TeamForm({ initialData, onCancel, onSubmit }: Props) {
         value={role}
         onChange={(e) => setRole(e.target.value)}
         required
+      />
+
+      <FormField
+        label="Twitter Link"
+        name="twitterLink"
+        type="url"
+        value={twitterLink}
+        onChange={(e) => setTwitterLink(e.target.value)}
       />
 
       <FormField
