@@ -1,14 +1,17 @@
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { usePagination } from "../../hooks/usePagination";
+import GenericCard from "../GenericCard/GenericCard";
 
 interface PaginationProps<T> {
   items: T[];
   renderItem: (item: T) => React.ReactNode;
+  loading?: boolean;
 }
 
 export default function Pagination<T>({
   items,
   renderItem,
+  loading = false,
 }: PaginationProps<T>) {
   const {
     currentPage,
@@ -19,6 +22,15 @@ export default function Pagination<T>({
     getPaginationNumbers,
   } = usePagination(items);
 
+  if (loading) {
+    return (
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4 huge:max-w-[1390px] huge:mx-auto">
+        {Array.from({ length: 3 }).map((_, idx) => (
+          <GenericCard key={idx} loading />
+        ))}
+      </div>
+    );
+  }
   return (
     <div>
       <div

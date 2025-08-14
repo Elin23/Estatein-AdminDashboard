@@ -18,7 +18,9 @@ const UserManagement = () => {
   const [password, setPassword] = useState("");
   const [role, setRole] = useState("admin");
   const [message, setMessage] = useState("");
-  const [users, setUsers] = useState<{ uid: string; email: string; role: string }[]>([]);
+  const [users, setUsers] = useState<
+    { uid: string; email: string; role: string }[]
+  >([]);
   const [showForm, setShowForm] = useState(false);
   const [editingUid, setEditingUid] = useState<string | null>(null);
 
@@ -87,7 +89,11 @@ const UserManagement = () => {
     }
   };
 
-  const handleEditUser = (user: { uid: string; email: string; role: string }) => {
+  const handleEditUser = (user: {
+    uid: string;
+    email: string;
+    role: string;
+  }) => {
     setEmail(user.email);
     setRole(user.role);
     setEditingUid(user.uid);
@@ -95,110 +101,135 @@ const UserManagement = () => {
   };
 
   return (
-    <div className="p-6 bg-white shadow-lg rounded-lg max-w-3xl mx-auto">
-      <h2 className="text-2xl font-bold mb-6">User Management</h2>
+    <div className="p-6">
+      <div className="flex justify-between items-center gap-5 flex-wrap mb-6">
+        <h2 className="text-2xl font-bold text-black dark:text-white">
+          User Management
+        </h2>
 
-      <button
-        onClick={() => {
-          setShowForm(!showForm);
-          setEditingUid(null);
-          setEmail("");
-          setPassword("");
-          setRole("admin");
-          setMessage("");
-        }}
-        className="mb-6 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-      >
-        {showForm ? "Cancel" : "Add User"}
-      </button>
-
-      {showForm && (
-        <form
-          onSubmit={handleCreateOrUpdateUser}
-          className="mb-6 space-y-4 border p-4 rounded"
+        <button
+          onClick={() => {
+            setShowForm(!showForm);
+            setEditingUid(null);
+            setEmail("");
+            setPassword("");
+            setRole("admin");
+            setMessage("");
+          }}
+          className="bg-purple65 text-white px-4 py-2 rounded-lg hover:bg-purple60"
         >
-          <input
-            type="email"
-            placeholder="Email"
-            value={email}
-            disabled={!!editingUid} 
-            onChange={(e) => setEmail(e.target.value)}
-            className="w-full p-2 border rounded"
-            required
-          />
+          {showForm ? "Cancel" : "Add User"}
+        </button>
+      </div>
 
-          {!editingUid && (
+      <div className="p-5 shadow-lg rounded-lg bg-white dark:bg-gray-800">
+        {showForm && (
+          <form
+            onSubmit={handleCreateOrUpdateUser}
+            className="mb-6 space-y-4 p-4 rounded border border-gray15 dark:border-white95"
+          >
             <input
-              type="password"
-              placeholder="Password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="w-full p-2 border rounded"
+              type="email"
+              placeholder="Email"
+              value={email}
+              disabled={!!editingUid}
+              onChange={(e) => setEmail(e.target.value)}
+              className="w-full outline-purple65 p-2 text-black dark:text-white95 rounded border border-gray15 dark:border-white95"
               required
             />
-          )}
 
-          <select
-            value={role}
-            onChange={(e) => setRole(e.target.value)}
-            className="w-full p-2 border rounded"
-          >
-            <option value="admin">Admin</option>
-            <option value="support">Support</option>
-            <option value="user">Sales</option>
-          </select>
+            {!editingUid && (
+              <input
+                type="password"
+                placeholder="Password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="w-full outline-purple65 p-2 border border-gray15 dark:border-white95 rounded"
+                required
+              />
+            )}
 
-          <button
-            type="submit"
-            className="w-full bg-green-600 text-white py-2 rounded hover:bg-green-700"
-          >
-            {editingUid ? "Update User" : "Create User"}
-          </button>
-        </form>
-      )}
+            <select
+              value={role}
+              onChange={(e) => setRole(e.target.value)}
+              className="w-full outline-purple65 p-2 dark:bg-gray-800 text-black dark:text-white95 border border-gray15 dark:border-white95 rounded"
+            >
+              <option value="admin">Admin</option>
+              <option value="support">Support</option>
+              <option value="user">Sales</option>
+            </select>
 
-      {message && (
-        <p className="mb-4 text-center font-semibold text-green-700">{message}</p>
-      )}
+            <button
+              type="submit"
+              className="w-full font-medium text-lg py-2 rounded bg-purple70 text-white hover:bg-purple60 duration-300 cursor-pointer"
+            >
+              {editingUid ? "Update User" : "Create User"}
+            </button>
+          </form>
+        )}
 
-      <table className="w-full border-collapse border border-gray-300">
-        <thead>
-          <tr className="bg-gray-100">
-            <th className="border border-gray-300 p-2">Email</th>
-            <th className="border border-gray-300 p-2">Role</th>
-            <th className="border border-gray-300 p-2">Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {users.length === 0 && (
-            <tr>
-              <td colSpan={3} className="text-center p-4">
-                No users found.
-              </td>
+        {message && (
+          <p className="mb-4 text-center font-semibold text-black dark:text-white95">
+            {message}
+          </p>
+        )}
+
+        <table className="max-[590px]:min-w-max w-full border-collapse border dark:border-white95 border-gray15 text-center">
+          <thead>
+            <tr className="bg-white95 dark:bg-gray-900">
+              <th className="text-xl text-black dark:text-white border dark:border-white95 border-gray15 p-3.5">
+                {" "}
+                Email{" "}
+              </th>
+              <th className="text-xl text-black dark:text-white border dark:border-white95 border-gray15 p-3.5">
+                {" "}
+                Role{" "}
+              </th>
+              <th className="text-xl text-black dark:text-white border dark:border-white95 border-gray15 p-3.5">
+                Actions
+              </th>
             </tr>
-          )}
-          {users.map(({ uid, email, role }) => (
-            <tr key={uid}>
-              <td className="border border-gray-300 p-2">{email}</td>
-              <td className="border border-gray-300 p-2">{role}</td>
-              <td className="border border-gray-300 p-2 space-x-2">
-                <button
-                  onClick={() => handleEditUser({ uid, email, role })}
-                  className="px-3 py-1 bg-yellow-400 rounded hover:bg-yellow-500"
+          </thead>
+          <tbody>
+            {users.length === 0 && (
+              <tr>
+                <td
+                  colSpan={3}
+                  className="text-2xl text-black dark:text-white95 text-center p-4"
                 >
-                  Edit
-                </button>
-                <button
-                  onClick={() => handleDeleteUser(uid)}
-                  className="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600"
-                >
-                  Delete
-                </button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+                  No users found.
+                </td>
+              </tr>
+            )}
+            {users.map(({ uid, email, role }) => (
+              <tr key={uid}>
+                <td className="text-black dark:text-white99 border dark:border-white99 border-gray15 p-3.5">
+                  {email}
+                </td>
+                <td className="text-black dark:text-white99 border dark:border-white99 border-gray15 p-3.5">
+                  {role}
+                </td>
+                <td className=" border dark:border-white99 border-gray15 p-3.5 space-x-2">
+                  <div className="flex justify-center items-center gap-1.5 flex-wrap">
+                    <button
+                      onClick={() => handleEditUser({ uid, email, role })}
+                      className="px-3 py-1 bg-purple70 text-white rounded hover:bg-purple60 duration-300 cursor-pointer"
+                    >
+                      Edit
+                    </button>
+                    <button
+                      onClick={() => handleDeleteUser(uid)}
+                      className="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700 duration-300 cursor-pointer"
+                    >
+                      Delete
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 };

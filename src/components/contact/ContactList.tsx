@@ -1,37 +1,41 @@
 import React from "react";
-import { Mail } from "lucide-react";
-import type { Contact } from "../../types";
+import type { ContactType } from "../../types";
 import ContactListItem from "./ContactListItem";
+import Pagination from "../UI/Pagination";
+import { Divide } from "lucide-react";
 
 interface ContactListProps {
-  contacts: Contact[];
-  onUpdateStatus: (id: string, status: Contact["status"]) => void;
+  contacts: ContactType[];
+  onUpdateStatus: (id: string, status: ContactType["status"]) => void;
+  loading: boolean;
 }
 
 const ContactList: React.FC<ContactListProps> = ({
   contacts,
   onUpdateStatus,
+  loading,
 }) => {
+  if (!loading && contacts.length === 0) {
+    return (
+      <p className="text-gray-500 dark:text-gray-400">
+        No contact requests yet
+      </p>
+    );
+  }
+
   return (
-    <div className="max-w-4xl mx-auto">
-      <div className="space-y-4">
-        {contacts.map((contact) => (
+    <div>
+      <Pagination
+        items={contacts}
+        renderItem={(item: ContactType) => (
           <ContactListItem
-            key={contact.id}
-            contact={contact}
+            key={item.id}
+            contact={item}
             onUpdateStatus={onUpdateStatus}
           />
-        ))}
-
-        {contacts.length === 0 && (
-          <div className="text-center py-8">
-            <Mail className="w-12 h-12 text-gray-400 mx-auto mb-3" />
-            <p className="text-gray-500 dark:text-gray-400">
-              No contact requests yet
-            </p>
-          </div>
         )}
-      </div>
+        loading={loading}
+      />
     </div>
   );
 };

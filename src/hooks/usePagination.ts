@@ -1,15 +1,18 @@
-
-
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import type { RootState } from "../redux/store";
-import { setCurrentPage, setItemsPerPage } from "../redux/slices/paginationSlice";
+import {
+  setCurrentPage,
+  setItemsPerPage,
+} from "../redux/slices/paginationSlice";
 
 export const usePagination = <T>(items: T[]) => {
   const dispatch = useDispatch();
   const { currentPage, itemsPerPage } = useSelector(
     (state: RootState) => state.pagination
   );
+
+  const prevLength = useRef(items.length);
 
   useEffect(() => {
     const updateItemsPerPage = () => {
@@ -24,7 +27,17 @@ export const usePagination = <T>(items: T[]) => {
     return () => window.removeEventListener("resize", updateItemsPerPage);
   }, [dispatch]);
 
-  const totalPages = Math.ceil(items.length / itemsPerPage);
+  const totalPages = Math.max(1, Math.ceil(items.length / itemsPerPage));
+
+  useEffect(() => {
+    if (currentPage > totalPages) {
+      dispatch(setCurrentPage(1));
+    }
+    else if (items.length !== prevLength.current) {
+      dispatch(setCurrentPage(1));
+    }
+    prevLength.current = items.length;
+  }, [items.length, totalPages, currentPage, dispatch]);
 
   const paginatedItems = items.slice(
     (currentPage - 1) * itemsPerPage,
