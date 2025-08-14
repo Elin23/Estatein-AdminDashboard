@@ -4,7 +4,7 @@ import { db } from "../firebaseConfig";
 import ContactList from "../components/contact/ContactList";
 import type { ContactType } from "../types";
 import { ContactListSkeleton } from "../components/contact/ContactListSkeleton";
-import ExportButton from "../components/UI/ExportReportButton"; 
+import ExportButton from "../components/UI/ExportReportButton";
 import { exportContactReport } from "../lib/exportContactReport";
 
 const Contact = () => {
@@ -29,7 +29,10 @@ const Contact = () => {
             status: val.status || "new",
           };
         });
-        setContacts(list);
+        const sortedList = list.sort(
+          (a, b) => b.createdAt.getTime() - a.createdAt.getTime()
+        );
+        setContacts(sortedList);
       } else {
         setContacts([]);
       }
@@ -66,11 +69,11 @@ const Contact = () => {
 
         {contacts.length > 0 && (
           <ExportButton
-          data={contacts}
-          onExport={exportContactReport}  
-          buttonLabel="Export to Excel"
-          disabled = {contacts.length === 0}
-        />
+            data={contacts}
+            onExport={exportContactReport}
+            buttonLabel="Export to Excel"
+            disabled={contacts.length === 0}
+          />
         )}
       </div>
 
