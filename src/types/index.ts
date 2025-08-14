@@ -13,6 +13,7 @@ export interface Property {
   buildYear:string;
   features:string[];
   status:"available" | "sold";
+  tags: string;
   mapUrl:string;
   images: string[];
 
@@ -108,12 +109,4 @@ export interface TeamMember {
   clientImage: string;
 }
 
-
-// Faqs Types
-
-export interface FaqType{
-  id:string;
-  question:string;
-  answer:string;
-}
 export type TeamMemberFormData = Omit<TeamMember, 'id' | 'createdAt' | 'imageUrl'>;
