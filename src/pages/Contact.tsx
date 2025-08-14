@@ -22,7 +22,7 @@ const Contact = () => {
 
   const handleUpdateStatus = (
     id: string,
-    status: "new" | "read" | "replied" | "rejected" | "reviewed"|"approved"
+    status: "new" | "read" | "replied" | "rejected" | "reviewed" | "approved"
   ) => {
     dispatch(updateContactStatus({ id, status }));
   };

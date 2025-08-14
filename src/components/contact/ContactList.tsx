@@ -2,7 +2,6 @@ import React from "react";
 import type { ContactType } from "../../types";
 import ContactListItem from "./ContactListItem";
 import Pagination from "../UI/Pagination";
-import { Divide } from "lucide-react";
 
 interface ContactListProps {
   contacts: ContactType[];

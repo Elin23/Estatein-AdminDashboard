@@ -88,7 +88,7 @@ const ContactListItem: React.FC<ContactListItemProps> = ({
   };
 
   return (
-    <div className="flex flex-col justify-between gap-4 p-6 bg-white dark:bg-gray-800 rounded shadow">
+    <div className="flex flex-col justify-between gap-4 p-6 bg-white dark:bg-gray-800 rounded-lg shadow">
       <div className="flex justify-between gap-3 flex-wrap">
         <h3 className="text-xl font-medium text-black dark:text-white95">
           {contact.name}
