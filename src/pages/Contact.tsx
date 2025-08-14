@@ -1,19 +1,17 @@
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import type { RootState } from "../redux/store";
 import {
   subscribeToContacts,
   updateContactStatus,
 } from "../redux/slices/contactsSlice";
-import ContactList from "../components/contact/ContactList";
-import { ContactListSkeleton } from "../components/contact/ContactListSkeleton";
 import ExportButton from "../components/UI/ExportReportButton";
 import { exportContactReport } from "../lib/exportContactReport";
 import type { AppDispatch } from "../redux/store";
-
+import ContactList from "../components/contact/ContactList";
 
 const Contact = () => {
-const dispatch: AppDispatch = useDispatch();
+  const dispatch: AppDispatch = useDispatch();
   const { list: contacts, loading } = useSelector(
     (state: RootState) => state.contacts
   );
@@ -24,16 +22,23 @@ const dispatch: AppDispatch = useDispatch();
 
   const handleUpdateStatus = (
     id: string,
-    status: "new" | "read" | "replied"
+    status: "new" | "read" | "replied" | "rejected" | "reviewed" | "approved"
   ) => {
     dispatch(updateContactStatus({ id, status }));
   };
 
+  const sortedContacts = useMemo(() => {
+    return [...contacts].sort(
+      (a, b) => b.createdAt.getTime() - a.createdAt.getTime()
+    );
+  }, [contacts]);
+
   return (
     <div className="p-6">
-      <h1 className="text-2xl font-bold text-gray-800 dark:text-white mb-6">
-        Contact Requests
-      </h1>
+      <div className="flex justify-between items-center gap-5 flex-wrap mb-6">
+        <h1 className="text-2xl font-bold text-gray-800 dark:text-white ">
+          Contact Requests
+        </h1>
 
         {contacts.length > 0 && (
           <ExportButton
@@ -43,9 +48,13 @@ const dispatch: AppDispatch = useDispatch();
             disabled={contacts.length === 0}
           />
         )}
-      <ContactList contacts={contacts} onUpdateStatus={handleUpdateStatus} loading ={loading}/>
+      </div>
 
-    
+      <ContactList
+        contacts={sortedContacts}
+        onUpdateStatus={handleUpdateStatus}
+        loading={loading}
+      />
     </div>
   );
 };

@@ -1,28 +1,30 @@
-import { useState, useEffect } from 'react';
-import { db } from '../firebaseConfig';
-import { ref, onValue, push, set, update, remove } from 'firebase/database';
-import { useSelector } from 'react-redux';
-import type { RootState } from '../redux/store';
-import ValuedClientsForm from '../components/ValuedClients/ValuedClientsForm';
-import ValuedClientCard from '../components/ValuedClients/ValuedClientCard';
-import type { ValuedClient } from '../types/ValuedClient';
+import { useState, useEffect } from "react";
+import { db } from "../firebaseConfig";
+import { ref, onValue, push, set, update, remove } from "firebase/database";
+import { useSelector } from "react-redux";
+import type { RootState } from "../redux/store";
+import ValuedClientsForm from "../components/ValuedClients/ValuedClientsForm";
+import ValuedClientCard from "../components/ValuedClients/ValuedClientCard";
+import type { ValuedClient } from "../types/ValuedClient";
 
 function ValuedClients() {
-  const role = useSelector((state: RootState) => state.auth.role) || '';
+  const role = useSelector((state: RootState) => state.auth.role) || "";
   const [clients, setClients] = useState<ValuedClient[]>([]);
   const [loading, setLoading] = useState(true);
   const [editingClient, setEditingClient] = useState<ValuedClient | null>(null);
   const [showForm, setShowForm] = useState(false);
 
   useEffect(() => {
-    const clientsRef = ref(db, 'clients');
+    const clientsRef = ref(db, "clients");
     const unsubscribe = onValue(clientsRef, (snapshot) => {
       if (snapshot.exists()) {
-        const data = snapshot.val() as Record<string, Omit<ValuedClient, 'id'>>;
-        const list: ValuedClient[] = Object.entries(data).map(([id, value]) => ({
-          id,
-          ...value,
-        }));
+        const data = snapshot.val() as Record<string, Omit<ValuedClient, "id">>;
+        const list: ValuedClient[] = Object.entries(data).map(
+          ([id, value]) => ({
+            id,
+            ...value,
+          })
+        );
         setClients(list);
       } else {
         setClients([]);
@@ -32,13 +34,13 @@ function ValuedClients() {
     return () => unsubscribe();
   }, []);
 
-  const handleAdd = async (newClient: Omit<ValuedClient, 'id'>) => {
-    const newRef = push(ref(db, 'clients'));
+  const handleAdd = async (newClient: Omit<ValuedClient, "id">) => {
+    const newRef = push(ref(db, "clients"));
     await set(newRef, newClient);
     setShowForm(false);
   };
 
-  const handleUpdate = async (data: Omit<ValuedClient, 'id'>, id?: string) => {
+  const handleUpdate = async (data: Omit<ValuedClient, "id">, id?: string) => {
     if (!id) return;
     await update(ref(db, `clients/${id}`), data);
     setEditingClient(null);
@@ -86,7 +88,9 @@ function ValuedClients() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4  huge:max-w-[1390px] huge:mx-auto">
         {loading
-          ? Array.from({ length: 3 }).map((_, idx) => <ValuedClientCard key={idx} loading />)
+          ? Array.from({ length: 3 }).map((_, idx) => (
+              <ValuedClientCard key={idx} loading />
+            ))
           : clients.map((client) => (
               <ValuedClientCard
                 key={client.id}

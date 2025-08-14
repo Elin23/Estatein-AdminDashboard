@@ -1,0 +1,127 @@
+import { useEffect, useState, type ComponentType } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import Pagination from "./UI/Pagination";
+import GenericCard from "./GenericCard/GenericCard";
+import type { RootState, AppDispatch } from "../redux/store";
+
+type CrudSectionProps<T> = {
+  title: string;
+  addBtnText: string;
+  role: string;
+  selectList: (state: RootState) => T[];
+  selectLoading: (state: RootState) => boolean;
+  selectError?: (state: RootState) => string | null;
+  subscribeAction: () => any;
+  cleanupAction?: () => any;
+  addAction: (item: Omit<T, "id">) => any;
+  updateAction: (payload: { id: string; data: Omit<T, "id"> }) => any;
+  deleteAction: (id: string) => any;
+  FormComponent: ComponentType<{
+    onSubmit: (data: Omit<T, "id">, id?: string) => Promise<void>;
+    initialData?: T | null;
+    onCancel: () => void;
+  }>;
+  renderTitle: (item: T) => string;
+  renderDescription: (item: T) => string;
+};
+
+function CrudSection<T extends { id: string }>({
+  title,
+  addBtnText,
+  role,
+  selectList,
+  selectLoading,
+  selectError,
+  subscribeAction,
+  cleanupAction,
+  addAction,
+  updateAction,
+  deleteAction,
+  FormComponent,
+  renderTitle,
+  renderDescription,
+}: CrudSectionProps<T>) {
+  const dispatch = useDispatch<AppDispatch>();
+  const list = useSelector(selectList);
+  const loading = useSelector(selectLoading);
+  const error = selectError ? useSelector(selectError) : null;
+
+  const [editingItem, setEditingItem] = useState<T | null>(null);
+  const [showForm, setShowForm] = useState(false);
+
+  useEffect(() => {
+    dispatch(subscribeAction());
+    return () => {
+      if (cleanupAction) dispatch(cleanupAction());
+    };
+  }, [dispatch, subscribeAction, cleanupAction]);
+
+  const handleAdd = async (item: Omit<T, "id">) => {
+    await dispatch(addAction(item));
+    setShowForm(false);
+    setEditingItem(null);
+  };
+
+  const handleUpdate = async (data: Omit<T, "id">, id?: string) => {
+    if (!id) return;
+    await dispatch(updateAction({ id, data }));
+    setShowForm(false);
+    setEditingItem(null);
+  };
+
+  const handleDelete = (id: string) => {
+    dispatch(deleteAction(id));
+  };
+
+  return (
+    <div className="p-4 sm:p-6 max-w-[1430px] mx-auto">
+      <div className="flex flex-col md:flex-row justify-between items-center mb-4 huge:max-w-[1390px] huge:mx-auto">
+        <h1 className="text-2xl font-bold text-gray-800 dark:text-white mb-6">
+          {title}
+        </h1>
+        {role === "admin" && (
+          <button
+            className="bg-purple60 hover:bg-purple65 text-white px-4 py-2 rounded"
+            onClick={() => {
+              setShowForm((prev) => !prev); 
+              setEditingItem(null); 
+            }}
+          >
+            {showForm ? "Close" : addBtnText}
+          </button>
+        )}
+      </div>
+
+      {error && <div className="text-red-500">{error}</div>}
+
+      {showForm ? (
+        <FormComponent
+          onSubmit={editingItem ? handleUpdate : handleAdd}
+          initialData={editingItem}
+          onCancel={() => {
+            setEditingItem(null);
+            setShowForm(false);
+          }}
+        />
+      ) : (
+        <Pagination
+          items={list}
+          renderItem={(item) => (
+            <GenericCard
+              key={item.id}
+              title={renderTitle(item)}
+              description={renderDescription(item)}
+              onEdit={() => {
+                setEditingItem(item);
+                setShowForm(true);
+              }}
+              onDelete={() => handleDelete(item.id)}
+            />
+          )}
+          loading={loading}
+        />
+      )}
+    </div>
+  );
+}
+export default CrudSection;
