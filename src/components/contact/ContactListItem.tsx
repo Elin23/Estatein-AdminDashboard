@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from "react";
-import { Check, Reply, ChevronDown, ChevronUp } from "lucide-react";
+import { CheckCircle, Mail } from "lucide-react";
 import type { ContactType } from "../../types";
 import EmailReplyModalUI from "../EmailForm/EmailReplyModalUI";
 import { composeContactEmailMessage } from "../EmailForm/composeEmailMessage";
@@ -22,8 +22,7 @@ const ContactListItem: React.FC<ContactListItemProps> = ({
   contact,
   onUpdateStatus,
 }) => {
-  const [isExpanded, setIsExpanded] = useState(false);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
   const dispatch = useDispatch<AppDispatch>();
   const sending = useSelector(selectEmailSending);
@@ -31,9 +30,12 @@ const ContactListItem: React.FC<ContactListItemProps> = ({
   const sendSuccess = useSelector(selectEmailSuccess);
 
   const statusColors: Record<ContactType["status"], string> = {
-    new: "bg-blue-100 text-blue-800",
-    read: "bg-gray-100 text-gray-800",
-    replied: "bg-green-100 text-green-800",
+    new: "bg-red-100 text-red-800",
+    read: "bg-green-100 text-green-800",
+    approved: "bg-green-100 text-green-800",
+    replied: "bg-blue-100 text-blue-800",
+    rejected: "bg-red-100 text-red-800",
+    reviewed: "bg-yellow-100 text-yellow-800",
   };
 
   const firstName = useMemo(() => {
@@ -86,9 +88,9 @@ const ContactListItem: React.FC<ContactListItemProps> = ({
   };
 
   return (
-    <div className="border-l-4 dark:border-white95 px-3.5 lg-custom:px-5 py-3 rounded-r-lg bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+    <div className="flex flex-col justify-between gap-4 p-6 bg-white dark:bg-gray-800 rounded shadow">
       <div className="flex justify-between gap-3 flex-wrap">
-        <h3 className="font-medium text-black dark:text-white95">
+        <h3 className="text-xl font-medium text-black dark:text-white95">
           {contact.name}
         </h3>
         <span
@@ -99,82 +101,56 @@ const ContactListItem: React.FC<ContactListItemProps> = ({
           {contact.status}
         </span>
       </div>
+      <p className="text-black dark:text-white95 break-words">
+        {contact.email}
+      </p>
 
-      <div className="flex justify-between items-start mt-4">
-        <div>
-          <p className="text-sm text-black dark:text-white95">
-            {contact.email}
-          </p>
-          <p className="text-sm text-black dark:text-white95 mt-1">
-            Received on {contact.createdAt.toLocaleDateString()}
-          </p>
-        </div>
+      <div>
+        <h4 className="text-lg font-medium text-black dark:text-white95">
+          Subject
+        </h4>
+        <p className="mt-1 text-gray-600 dark:text-gray-400">
+          {contact.subject}
+        </p>
+      </div>
+      <div>
+        <h4 className="text-lg font-medium text-black dark:text-white95">
+          Message
+        </h4>
+        <p className="mt-1 text-gray-600 dark:text-gray-400 break-words">
+          {contact.message}
+        </p>
+      </div>
+      <div className="flex flex-wrap items-center gap-4 pt-2">
+        {contact.status === "new" && (
+          <button
+            onClick={() => onUpdateStatus(contact.id, "read")}
+            className="flex items-center gap-1 px-3 py-1 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors text-sm cursor-pointer"
+          >
+            <CheckCircle className="w-4 h-4" /> Mark as Read
+          </button>
+        )}
+
         <button
-          onClick={() => setIsExpanded(!isExpanded)}
-          className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 cursor-pointer"
-          aria-label={isExpanded ? "Collapse" : "Expand"}
+          onClick={() => setIsModalOpen(true)}
+          className="flex items-center gap-1 px-3 py-1 bg-purple65 hover:bg-purple60 text-white rounded-md transition-colors text-sm cursor-pointer"
         >
-          {isExpanded ? (
-            <ChevronUp className="w-5 h-5" />
-          ) : (
-            <ChevronDown className="w-5 h-5" />
-          )}
+          <Mail className="w-4 h-4" /> Send Email
         </button>
+
+        {contact.status !== "replied" && (
+          <button
+            onClick={() => onUpdateStatus(contact.id, "replied")}
+            className="flex items-center gap-1 px-3 py-1 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors text-sm cursor-pointer"
+            disabled={sending}
+          >
+            <CheckCircle className="w-4 h-4" /> Mark as Replied
+          </button>
+        )}
       </div>
-
-      <div
-        className={`overflow-hidden transition-all duration-300 ${
-          isExpanded ? "max-h-[1000px] mt-4" : "max-h-0"
-        }`}
-      >
-        <div className="space-y-3">
-          <div>
-            <h4 className="text-sm font-medium text-black dark:text-white95">
-              Subject
-            </h4>
-            <p className="mt-1 text-gray-600 dark:text-gray-400">
-              {contact.subject}
-            </p>
-          </div>
-
-          <div>
-            <h4 className="text-sm font-medium text-black dark:text-white95">
-              Message
-            </h4>
-            <p className="mt-1 text-gray-600 dark:text-gray-400 whitespace-pre-wrap">
-              {contact.message}
-            </p>
-          </div>
-
-          <div className="flex flex-wrap items-center gap-4 pt-2">
-            {contact.status === "new" && (
-              <button
-                onClick={() => onUpdateStatus(contact.id, "read")}
-                className="flex items-center gap-1 text-sm text-blue-600 hover:text-blue-700"
-              >
-                <Check className="w-4 h-4" /> Mark as Read
-              </button>
-            )}
-
-            <button
-              onClick={() => setIsModalOpen(true)}
-              className="flex items-center gap-1 text-sm text-green-600 hover:text-green-700"
-            >
-              <Reply className="w-4 h-4" /> Reply by Email
-            </button>
-
-            {contact.status !== "replied" && (
-              <button
-                onClick={() => onUpdateStatus(contact.id, "replied")}
-                className="flex items-center gap-1 text-sm text-emerald-600 hover:text-emerald-700 disabled:opacity-50"
-                disabled={sending}
-              >
-                <Check className="w-4 h-4" /> Mark as Replied
-              </button>
-            )}
-          </div>
-        </div>
-      </div>
+      <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+        Received on {contact.createdAt.toLocaleDateString()}
+      </p>
 
       <EmailReplyModalUI
         open={isModalOpen}

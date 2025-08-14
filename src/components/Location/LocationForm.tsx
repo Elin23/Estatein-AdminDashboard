@@ -1,6 +1,8 @@
 import { useRef } from "react";
 import type { LocationData } from "../../types/forms";
 import FormField from "../InputField/FormField";
+import CancleBtn from "../buttons/CancleBtn";
+import GeneralBtn from "../buttons/GeneralBtn";
 
 interface LocationFormProps {
   initialData?: Partial<LocationData>;
@@ -165,21 +167,13 @@ function LocationForm({
       </div>
 
       <div className="flex gap-4 mt-4">
-        <button
-          type="submit"
-          disabled={loading}
-          className="2xl:py-4.5 2xl:px-11.5 lg-custom:py-3.5 lg-custom:px-[34px] 2xl:text-lg text-sm/[24px] rounded-lg text-white bg-purple60 disabled:opacity-50"
-        >
-          {loading ? "Saving..." : "Save"}
-        </button>
-        <button
-          type="button"
-          onClick={onCancel}
-          className="bg-gray-400 text-white px-6 py-3 rounded-lg text-sm/[24px]"
-        >
-          Cancel
-        </button>
-        
+        <GeneralBtn
+        btnContent={loading ? "Saving..." : "Save"}
+        btnType='add'
+        actionToDo={()=>formRef.current?.requestSubmit()}
+        disabled={loading}
+        />
+        <CancleBtn onCLick={onCancel} disabled={loading}/>
       </div>
     </form>
   );

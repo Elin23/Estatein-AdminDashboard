@@ -13,6 +13,9 @@ import {
   Link,
   User,
   Menu,
+  PersonStanding,
+    CircleQuestionMarkIcon,
+  Info,
 } from "lucide-react"
 import { useLocation, useNavigate } from 'react-router-dom';
 import SidebarLink from './SidebarLink';
@@ -53,12 +56,6 @@ const menuItems = [
     visible: ["sales", "support", "admin"],
   },
   {
-    icon: MapPin,
-    label: "Locations",
-    path: "/locations",
-    visible: ["support", "admin"],
-  },
-  {
     icon: Grid,
     label: "Achievements",
     path: "/achievements",
@@ -95,15 +92,21 @@ const menuItems = [
     visible: ["support", "admin"],
   },
   {
+    icon: PersonStanding,
+    label: "Valued Clients",
+    path: "/clients",
+    visible: ["support", "admin"],
+  },
+  {
     icon: MessageSquare,
     label: "Contact",
     path: "/contact",
     visible: ["support", "admin"],
   },
   {
-    icon: Link,
-    label: "SocialLinks",
-    path: "/social",
+    icon: Info,
+    label: "Company Info",
+    path: "/info",
     visible: ["support", "admin"],
   },
   {
@@ -112,11 +115,17 @@ const menuItems = [
     path: "/user-management",
     visible: ["admin"],
   },
+  {
+    icon: CircleQuestionMarkIcon,
+    label: "FAQs",
+    path: "/faqs",
+    visible: ["admin"],
+  },
 ]
 
 
 const Sidebar: React.FC = () => {
-    const userRole = useSelector((state: RootState) => state.auth.role) || ""
+  const userRole = useSelector((state: RootState) => state.auth.role) || ""
 
   const location = useLocation();
   const navigate = useNavigate();
@@ -207,15 +216,14 @@ const Sidebar: React.FC = () => {
 
 
       {/* Navigation */}
-    <nav className="flex-1 mt-2 overflow-y-auto">
+      <nav className="flex-1 mt-2 overflow-y-auto">
         {menuItems.map((item) =>
           item.visible.includes(userRole) ? (
             <SidebarLink
               key={item.path}
               {...item}
               isActive={location.pathname === item.path}
-                                unreadCount={item.path === '/' ? unreadCount : 0}
-
+              unreadCount={item.path === '/' ? unreadCount : 0}
               isCollapsed={isCollapsed}
             />
           ) : null

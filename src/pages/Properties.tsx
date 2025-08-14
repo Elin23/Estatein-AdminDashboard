@@ -13,6 +13,7 @@ import {
   deleteProperty,
   editProperty,
 } from "../redux/slices/propertiesSlice";
+import GeneralBtn from '../components/buttons/GeneralBtn';
 
 const Properties = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -182,13 +183,12 @@ const Properties = () => {
 
                 <div className="flex items-center w-full justify-between">
                   <div className="mt-4 flex justify-end">
-                    {(role === "admin" || role === "sales") && (
-                      <button
-                        onClick={() => handleDeleteProperty(property.id)}
-                        className="text-red-600 hover:text-red-800 transition-colors"
-                      >
-                        <Trash2 className="w-5 h-5" />
-                      </button>
+                    {(role === 'admin' || role === 'sales') && (
+                      <GeneralBtn 
+                      btnContent={<Trash2 className="w-5 h-5" />}
+                      btnType='delete'
+                      actionToDo={()=>handleDeleteProperty(property.id)}
+                      />
                     )}
                   </div>
                   <div className="mt-4 flex justify-end">

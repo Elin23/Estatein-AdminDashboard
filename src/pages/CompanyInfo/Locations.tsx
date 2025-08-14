@@ -1,18 +1,18 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import type { RootState, AppDispatch } from "../redux/store";
+import type { RootState, AppDispatch } from "../../redux/store";
 import {
   subscribeToLocations,
   saveLocation,
   deleteLocation,
-} from "../redux/slices/locationSlice";
+} from "../../redux/slices/locationSlice";
 
-import Pagination from "../components/UI/Pagination";
-import LocationForm from "../components/Location/LocationForm";
-import LocationCard from "../components/Location/LocationCard";
-import Modal from "../components/UI/Modal";
-import ExportButton from "../components/UI/ExportReportButton";
-import { exportLocationsToExcel } from "../lib/exportLocations";
+import Pagination from "../../components/UI/Pagination";
+import LocationForm from "../../components/Location/LocationForm";
+import LocationCard from "../../components/Location/LocationCard";
+import Modal from "../../components/UI/Modal";
+import ExportButton from "../../components/UI/ExportReportButton";
+import { exportLocationsToExcel } from "../../lib/exportLocations";
 
 function Locations() {
   const role = useSelector((state: RootState) => state.auth.role) || "";
@@ -40,7 +40,7 @@ function Locations() {
   };
 
   return (
-    <div className="p-6">
+    <div className="p-6 huge:max-w-[1390px] huge:mx-auto">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold text-gray-700 dark:text-gray-200">
           Our Locations
