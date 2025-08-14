@@ -27,7 +27,7 @@ const PropertyForm: React.FC<PropertyFormProps> = ({
   const [uploading, setUploading] = useState(false);
   const [imageUrls, setImageUrls] = useState<string[]>([]);
   const [features, setFeatures] = useState<string[]>([]);
-
+  const formRef = useRef<HTMLFormElement>(null);
   // State للـ dropdowns وحقول التحكم
   const [location, setLocation] = useState('');
   const [category, setCategory] = useState('');
