@@ -17,11 +17,11 @@ const SubmissionFilters: React.FC<SubmissionFiltersProps> = ({
   onCategoryChange,
 }) => {
   return (
-    <div className="flex gap-4 mb-6">
+    <div className="flex flex-col  sm:flex-row sm:items-center gap-3">
       <select
         value={selectedStatus}
         onChange={(e) => onStatusChange(e.target.value as FormSubmission['status'] | 'all')}
-        className="rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700"
+        className="rounded-md  bg-purple90 p-2.5 border-white90 dark:border-gray15 hover:text-purple75 transition-colors duration-300"
       >
         <option value="all">All Status</option>
         <option value="pending">Pending</option>
@@ -33,7 +33,7 @@ const SubmissionFilters: React.FC<SubmissionFiltersProps> = ({
       <select
         value={selectedCategory}
         onChange={(e) => onCategoryChange(e.target.value)}
-        className="rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700"
+        className="rounded-md  bg-purple90 p-2.5 border-white90 dark:border-gray15 hover:text-purple75 transition-colors duration-300"
       >
         <option value="">All Categories</option>
         {categories.map(category => (
