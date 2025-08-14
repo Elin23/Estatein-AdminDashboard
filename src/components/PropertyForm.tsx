@@ -71,40 +71,46 @@ const PropertyForm: React.FC<PropertyFormProps> = ({
     const realYear = yearValue.split("-")[0];
 
     const propertyData: PropertyFormData = {
-      title: formData.get('title') as string,
-      description: formData.get('description') as string,
+      title: formData.get("title") as string,
+      description: formData.get("description") as string,
       location,
       type: category,
       features,
       images: imageUrls,
-      mapUrl: formData.get('mapUrl') as string,
-      area: Number(formData.get('area')),
+      mapUrl: formData.get("mapUrl") as string,
+      area: Number(formData.get("area")),
       bathrooms: formData.get("bathrooms") as string,
       bedrooms: formData.get("bedrooms") as string,
       buildYear: realYear,
       price: Number(formData.get("price")),
       status: status as "available" | "sold",
+      tags: formData.get("tags") as string, 
+
       additionalFees: {
-        transferTax: Number(formData.get('transferTax')),
-        inspection: Number(formData.get('homeInspection')),
+        transferTax: Number(formData.get("transferTax")),
+        inspection: Number(formData.get("homeInspection")),
         insurance: Number(formData.get("annualInsurance")),
         legalFees: Number(formData.get("legalFees")),
       },
       monthlyCosts: {
         hoa: Number(formData.get("hoa")),
-        propertyTaxes: Number(formData.get("propertyTaxes"))
+        propertyTaxes: Number(formData.get("propertyTaxes")),
       },
       monthlyExpenses: {
         hoa: Number(formData.get("hoa")),
         insurance: Number(formData.get("annualInsurance")) / 12,
-        propertyTaxes: Number(formData.get("propertyTaxes"))
+        propertyTaxes: Number(formData.get("propertyTaxes")),
       },
       totalInitialCosts: {
         downPayment: Number(formData.get("downPayment")),
-        additionalFees: Number(formData.get('transferTax')) + Number(formData.get("legalFees")) + Number(formData.get('homeInspection')) + Number(formData.get("annualInsurance")),
+        additionalFees:
+          Number(formData.get("transferTax")) +
+          Number(formData.get("legalFees")) +
+          Number(formData.get("homeInspection")) +
+          Number(formData.get("annualInsurance")),
         listingPrice: Number(formData.get("price")),
-        mortgageAmount: Number(formData.get("mortgageAmount"))
-      }
+        mortgageAmount: Number(formData.get("mortgageAmount")),
+      },
     };
 
     if (editing) {
@@ -138,45 +144,52 @@ const PropertyForm: React.FC<PropertyFormProps> = ({
   }, [editing, propertyBeingEdited]);
 
   return (
-    <form onSubmit={handleSubmit} className="eco-form animate-fade-in huge:max-w-[1430px] mx-auto">
-      <h2 className="text-2xl font-bold text-gray-800 dark:text-white mb-6">Add New Property</h2>
+    <form
+      onSubmit={handleSubmit}
+      className="eco-form animate-fade-in huge:max-w-[1430px] mx-auto"
+    >
+      <h2 className="text-2xl font-bold text-gray-800 dark:text-white mb-6">
+        Add New Property
+      </h2>
 
-      {isloading && <div className="loading_shape w-full h-full bg-gray10 text-white text-6xl font-semibold text-center animate-pulse"></div>}
+      {isloading && (
+        <div className="loading_shape w-full h-full bg-gray10 text-white text-6xl font-semibold text-center animate-pulse"></div>
+      )}
 
       <div className="space-y-6">
-        <div className='flex w-full justify-between'>
-          <div className=' w-[47%] name/title'>
+        <div className="flex w-full justify-between">
+          <div className=" w-[47%] name/title">
             <FormField
-              name='title'
+              name="title"
               label="Title"
-              defaultValue={editing ? propertyBeingEdited?.title : ''}
+              defaultValue={editing ? propertyBeingEdited?.title : ""}
               required
             />
           </div>
-          <div className='w-[47%] price/totalPrice'>
+          <div className="w-[47%] price/totalPrice">
             <FormField
               type="number"
-              name='price'
+              name="price"
               label="Price"
-              defaultValue={editing ? propertyBeingEdited?.price : ''}
+              defaultValue={editing ? propertyBeingEdited?.price : ""}
               required
             />
           </div>
         </div>
 
-        <div className='description'>
+        <div className="description">
           <FormField
             name="description"
             label="Description"
             rows={4}
             required
-            defaultValue={editing ? propertyBeingEdited?.description : ''}
+            defaultValue={editing ? propertyBeingEdited?.description : ""}
             multiline
           />
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className='location'>
+          <div className="location">
             <FormField
               label="Location"
               name="location"
@@ -189,7 +202,7 @@ const PropertyForm: React.FC<PropertyFormProps> = ({
             />
           </div>
 
-          <div className='properyt_type'>
+          <div className="properyt_type">
             <FormField
               label="Category"
               name="category"
@@ -206,39 +219,39 @@ const PropertyForm: React.FC<PropertyFormProps> = ({
             />
           </div>
 
-          <div className='area'>
+          <div className="area">
             <FormField
               type="number"
-              name='area'
+              name="area"
               label="Area(sq ft)"
-              defaultValue={editing ? propertyBeingEdited?.area : ''}
+              defaultValue={editing ? propertyBeingEdited?.area : ""}
               required
             />
           </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className='buildYear'>
+          <div className="buildYear">
             <FormField
               type="date"
-              name='buildYear'
+              name="buildYear"
               label="Build Year"
-              defaultValue={editing ? propertyBeingEdited?.buildYear : ''}
+              defaultValue={editing ? propertyBeingEdited?.buildYear : ""}
               required
             />
           </div>
 
-          <div className='bedRooms'>
+          <div className="bedRooms">
             <FormField
               type="number"
-              name='bedrooms'
+              name="bedrooms"
               label="Bedrooms Count"
-              defaultValue={editing ? propertyBeingEdited?.bedrooms : ''}
+              defaultValue={editing ? propertyBeingEdited?.bedrooms : ""}
               required
             />
           </div>
 
-          <div className='bathRooms'>
+          <div className="bathRooms">
             <FormField
               label="Bathrooms Count"
               name="bathrooms"
@@ -274,10 +287,21 @@ const PropertyForm: React.FC<PropertyFormProps> = ({
             ]}
             className="grow"
           />
+          <FormField
+            label="tags"
+            name="tags"
+            required
+            placeholder="Enter Tag"
+            className="grow"
+            defaultValue={editing ? propertyBeingEdited?.tags : ""}
+          />
         </div>
 
+
         <div className="space-y-4 images_input_and_display">
-          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Images</label>
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+            Images
+          </label>
           <div className="flex gap-2 images_input">
             <FormField
               label="Upload Images"
@@ -287,10 +311,13 @@ const PropertyForm: React.FC<PropertyFormProps> = ({
               multiple
               onChange={(e) => {
                 handleImageUpload(e as React.ChangeEvent<HTMLInputElement>);
-              }} />
+              }}
+            />
           </div>
 
-          {uploading && <div className='w-10 h-10 animate-ping rounded-4xl bg-blue-700 mx-auto'></div>}
+          {uploading && (
+            <div className="w-10 h-10 animate-ping rounded-4xl bg-blue-700 mx-auto"></div>
+          )}
           <div className="grid grid-cols-2 md:grid-cols-3 gap-4 selected_images_display">
             {imageUrls.map((image, index) => (
               <div key={index} className="relative group animate-fade-in">
@@ -301,7 +328,9 @@ const PropertyForm: React.FC<PropertyFormProps> = ({
                 />
                 <button
                   type="button"
-                  onClick={() => setImageUrls(imageUrls.filter((_, i) => i !== index))}
+                  onClick={() =>
+                    setImageUrls(imageUrls.filter((_, i) => i !== index))
+                  }
                   className="absolute top-2 right-2 p-1 bg-red-500 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
                 >
                   <X className="w-4 h-4" />
@@ -312,19 +341,23 @@ const PropertyForm: React.FC<PropertyFormProps> = ({
         </div>
       </div>
 
-      <div className='features'>
+      <div className="features">
         <FeaturesInput features={features} setFeatures={setFeatures} />
       </div>
 
-      <div className='additional_fees w-full mt-5'>
-        <h3 className='text-xl font-bold text-gray-800 dark:text-white mb-3'>Additional Fees</h3>
+      <div className="additional_fees w-full mt-5">
+        <h3 className="text-xl font-bold text-gray-800 dark:text-white mb-3">
+          Additional Fees
+        </h3>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
           <FormField
             label="Transfer Tax"
             name="transferTax"
             type="number"
             required
-            defaultValue={editing ? propertyBeingEdited?.additionalFees?.transferTax : ""}
+            defaultValue={
+              editing ? propertyBeingEdited?.additionalFees?.transferTax : ""
+            }
           />
 
           <FormField
@@ -332,7 +365,9 @@ const PropertyForm: React.FC<PropertyFormProps> = ({
             name="legalFees"
             type="number"
             required
-            defaultValue={editing ? propertyBeingEdited?.additionalFees?.legalFees : ""}
+            defaultValue={
+              editing ? propertyBeingEdited?.additionalFees?.legalFees : ""
+            }
           />
 
           <FormField
@@ -340,7 +375,9 @@ const PropertyForm: React.FC<PropertyFormProps> = ({
             name="homeInspection"
             type="number"
             required
-            defaultValue={editing ? propertyBeingEdited?.additionalFees?.inspection : ""}
+            defaultValue={
+              editing ? propertyBeingEdited?.additionalFees?.inspection : ""
+            }
           />
 
           <FormField
@@ -348,7 +385,9 @@ const PropertyForm: React.FC<PropertyFormProps> = ({
             name="annualInsurance"
             type="number"
             required
-            defaultValue={editing ? propertyBeingEdited?.additionalFees?.insurance : ""}
+            defaultValue={
+              editing ? propertyBeingEdited?.additionalFees?.insurance : ""
+            }
           />
         </div>
       </div>

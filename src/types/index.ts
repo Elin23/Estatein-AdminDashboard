@@ -13,6 +13,7 @@ export interface Property {
   buildYear:string;
   features:string[];
   status:"available" | "sold";
+  tags: string;
   mapUrl:string;
   images: string[];
 
