@@ -114,6 +114,7 @@ const locationsSlice = createSlice({
   reducers: {
     setLocations(state, action: PayloadAction<Location[]>) {
       state.items = action.payload;
+      state.loading= true;
     },
     setLoading(state, action: PayloadAction<boolean>) {
       state.loading = action.payload;

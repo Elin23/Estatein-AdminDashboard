@@ -1,13 +1,13 @@
 import { useState, useMemo, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import type { RootState, AppDispatch } from "../redux/store";
+import type { RootState, AppDispatch } from "../../redux/store";
 import {
     subscribeToSocialLinks,
     saveSocialLink,
     deleteSocialLink,
     cleanupSubscription,
-} from "../redux/slices/socialLinksSlice";
-import SocialLinkForm from "../components/SocialMedia/SocialLinksForm";
+} from "../../redux/slices/socialLinksSlice";
+import SocialLinkForm from "../../components/SocialMedia/SocialLinksForm";
 
 const PLATFORMS = ["facebook", "linkedin", "twitter", "youtube"] as const;
 
@@ -58,10 +58,10 @@ export default function SocialLinks() {
     };
 
     return (
-        <div className="min-h-screen bg-white dark:bg-gray-900 text-gray-900 dark:text-white">
+        <div className="min-h-screen dark:bg-gray-900 text-gray-900 dark:text-white">
             <div className="container mx-auto px-4 py-6">
 
-                <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between mb-6 gap-4 lg:gap-0">
+                <div className="flex flex-col  lg:flex-row lg:items-center lg:justify-between mb-6 gap-4 lg:gap-0">
                     <div>
                         <h1 className="text-3xl font-extrabold">Social Links</h1>
                         <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
@@ -69,7 +69,7 @@ export default function SocialLinks() {
                         </p>
                     </div>
 
-                    <div className="flex flex-col sm:flex-row sm:items-center gap-3">
+                    <div className="flex flex-col  sm:flex-row sm:items-center gap-3">
                         <div className="flex items-center border border-black dark:border-gray-600 rounded-md px-3 py-1 shadow-sm flex-grow sm:flex-grow-0">
                             <svg
                                 className="w-4 h-4 text-gray-600 dark:text-gray-400 mr-2"
@@ -144,7 +144,7 @@ export default function SocialLinks() {
 
                 {/* Inline form */}
                 {(adding || editing) && (
-                    <div className="mb-6 max-w-xl">
+                    <div className="mb-6 max-w-xl ">
                         <SocialLinkForm
                             platform={active}
                             initialData={editing || undefined}
@@ -158,7 +158,7 @@ export default function SocialLinks() {
                 )}
 
                 {/* Table container مع overflow للتمرير الأفقي على الشاشات الصغيرة */}
-                <div className="border dark:border-gray-700 border-black rounded-lg shadow-sm ">
+                <div className="border dark:border-gray-700 border-black rounded-lg shadow-sm  bg-white">
                     <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-600 ">
                         <thead className="bg-gray-50 dark:bg-gray-700">
                             <tr>

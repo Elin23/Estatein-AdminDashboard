@@ -107,6 +107,7 @@ export interface TeamMember {
   name: string;
   role: string;
   clientImage: string;
+  twitterLink: string;
 }
 
 export type TeamMemberFormData = Omit<TeamMember, 'id' | 'createdAt' | 'imageUrl'>;
