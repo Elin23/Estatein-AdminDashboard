@@ -61,7 +61,7 @@ function ValuedClients() {
 
   return (
     <div className="p-6">
-      <div className="flex justify-between items-center mb-4 huge:max-w-[1390px] huge:mx-auto">
+      <div className="flex justify-between items-center flex-wrap mb-4 huge:max-w-[1390px] huge:mx-auto">
         <h1 className="text-2xl font-bold text-gray-800 dark:text-white mb-6">Valued Clients</h1>
         {role === 'admin' && (
           <button
