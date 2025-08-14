@@ -21,27 +21,26 @@ export default function Pagination<T>({
     itemsPerPage,
     getPaginationNumbers,
   } = usePagination(items);
-  
-  
+
   if (loading) {
-     return (
-       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4 huge:max-w-[1390px] huge:mx-auto">
-         {Array.from({ length: 3 }).map((_, idx) => (
-           <GenericCard key={idx} loading/>
-         ))}
-       </div>
-     );
-   }
     return (
-      <div>
-        <div
-          className="grid gap-4"
-          style={{
-            gridTemplateColumns: `repeat(${itemsPerPage}, minmax(0, 1fr))`,
-          }}
-        >
-          {paginatedItems.map((item, _) => renderItem(item))}
-        </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4 huge:max-w-[1390px] huge:mx-auto">
+        {Array.from({ length: 3 }).map((_, idx) => (
+          <GenericCard key={idx} loading />
+        ))}
+      </div>
+    );
+  }
+  return (
+    <div>
+      <div
+        className="grid gap-4"
+        style={{
+          gridTemplateColumns: `repeat(${itemsPerPage}, minmax(0, 1fr))`,
+        }}
+      >
+        {paginatedItems.map((item, _) => renderItem(item))}
+      </div>
 
         <div className="flex flex-col sm:flex-row justify-center items-center gap-2  sm:space-y-0 space-y-3 flex-wrap mt-6">
           <button
