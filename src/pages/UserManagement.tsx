@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import {
   getAuth,
   createUserWithEmailAndPassword,
-  deleteUser,
 } from "firebase/auth";
 import {
   getDatabase,
@@ -23,6 +22,7 @@ const UserManagement = () => {
   >([]);
   const [showForm, setShowForm] = useState(false);
   const [editingUid, setEditingUid] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true); // 🆕 حالة التحميل
 
   const auth = getAuth();
   const db = getDatabase();
@@ -41,6 +41,7 @@ const UserManagement = () => {
       } else {
         setUsers([]);
       }
+      setLoading(false); // 🆕 وقف التحميل
     });
 
     return () => unsubscribe();
@@ -174,61 +175,78 @@ const UserManagement = () => {
           </p>
         )}
 
-        <table className="max-[590px]:min-w-max w-full border-collapse border dark:border-white95 border-gray15 text-center">
-          <thead>
-            <tr className="bg-white95 dark:bg-gray-900">
-              <th className="text-xl text-black dark:text-white border dark:border-white95 border-gray15 p-3.5">
-                {" "}
-                Email{" "}
-              </th>
-              <th className="text-xl text-black dark:text-white border dark:border-white95 border-gray15 p-3.5">
-                {" "}
-                Role{" "}
-              </th>
-              <th className="text-xl text-black dark:text-white border dark:border-white95 border-gray15 p-3.5">
-                Actions
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {users.length === 0 && (
-              <tr>
-                <td
-                  colSpan={3}
-                  className="text-2xl text-black dark:text-white95 text-center p-4"
-                >
-                  No users found.
-                </td>
-              </tr>
-            )}
-            {users.map(({ uid, email, role }) => (
-              <tr key={uid}>
-                <td className="text-black dark:text-white99 border dark:border-white99 border-gray15 p-3.5">
-                  {email}
-                </td>
-                <td className="text-black dark:text-white99 border dark:border-white99 border-gray15 p-3.5">
-                  {role}
-                </td>
-                <td className=" border dark:border-white99 border-gray15 p-3.5 space-x-2">
-                  <div className="flex justify-center items-center gap-1.5 flex-wrap">
-                    <button
-                      onClick={() => handleEditUser({ uid, email, role })}
-                      className="px-3 py-1 bg-purple70 text-white rounded hover:bg-purple60 duration-300 cursor-pointer"
-                    >
-                      Edit
-                    </button>
-                    <button
-                      onClick={() => handleDeleteUser(uid)}
-                      className="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700 duration-300 cursor-pointer"
-                    >
-                      Delete
-                    </button>
-                  </div>
-                </td>
-              </tr>
+        {/* 🆕 Skeleton عند التحميل */}
+        {loading ? (
+          <div className="space-y-3">
+            {[...Array(3)].map((_, i) => (
+              <div
+                key={i}
+                className="animate-pulse flex justify-between items-center p-4 border rounded-lg"
+              >
+                <div className="h-4 bg-gray-300 dark:bg-gray-700 rounded w-1/3"></div>
+                <div className="h-4 bg-gray-300 dark:bg-gray-700 rounded w-1/4"></div>
+                <div className="flex gap-2">
+                  <div className="h-8 w-16 bg-gray-300 dark:bg-gray-700 rounded"></div>
+                  <div className="h-8 w-16 bg-gray-300 dark:bg-gray-700 rounded"></div>
+                </div>
+              </div>
             ))}
-          </tbody>
-        </table>
+          </div>
+        ) : (
+          <table className="max-[590px]:min-w-max w-full border-collapse border dark:border-white95 border-gray15 text-center">
+            <thead>
+              <tr className="bg-white95 dark:bg-gray-900">
+                <th className="text-xl text-black dark:text-white border dark:border-white95 border-gray15 p-3.5">
+                  Email
+                </th>
+                <th className="text-xl text-black dark:text-white border dark:border-white95 border-gray15 p-3.5">
+                  Role
+                </th>
+                <th className="text-xl text-black dark:text-white border dark:border-white95 border-gray15 p-3.5">
+                  Actions
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {users.length === 0 && (
+                <tr>
+                  <td
+                    colSpan={3}
+                    className="text-2xl text-black dark:text-white95 text-center p-4"
+                  >
+                    No users found.
+                  </td>
+                </tr>
+              )}
+              {users.map(({ uid, email, role }) => (
+                <tr key={uid}>
+                  <td className="text-black dark:text-white99 border dark:border-white99 border-gray15 p-3.5">
+                    {email}
+                  </td>
+                  <td className="text-black dark:text-white99 border dark:border-white99 border-gray15 p-3.5">
+                    {role}
+                  </td>
+                  <td className=" border dark:border-white99 border-gray15 p-3.5 space-x-2">
+                    <div className="flex justify-center items-center gap-1.5 flex-wrap">
+                      <button
+                        onClick={() => handleEditUser({ uid, email, role })}
+                        className="px-3 py-1 bg-purple70 text-white rounded hover:bg-purple60 duration-300 cursor-pointer"
+                      >
+                        Edit
+                      </button>
+                      <button
+                        onClick={() => handleDeleteUser(uid)}
+                        className="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700 duration-300 cursor-pointer"
+                      >
+                        Delete
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
       </div>
     </div>
   );
