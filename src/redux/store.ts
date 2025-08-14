@@ -16,6 +16,7 @@ import submissionsReducer from "./slices/submissionsSlice";
 import stepsReducer from "./slices/stepsSlice"; 
 import contactsReducer from "./slices/contactsSlice"; 
 import socialLinksReducer from "./slices/socialLinksSlice"; 
+import faqReducer from "./slices/faqSlice"; 
 
 
 
@@ -40,6 +41,7 @@ const rootReducer = combineReducers({
   steps: stepsReducer,
   contacts: contactsReducer,
   socialLinks: socialLinksReducer,
+  faqs: faqReducer,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
