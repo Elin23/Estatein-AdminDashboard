@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import type { Step } from '../../pages/Steps';
+import type { Step } from '../../types/Steps';
 import FormField from '../InputField/FormField';
 import GeneralBtn from '../buttons/GeneralBtn';
 import CancleBtn from '../buttons/CancleBtn';
@@ -62,7 +62,6 @@ export default function StepForm({
       className="bg-white dark:bg-gray-800 p-4 rounded shadow huge:max-w-[1390px] huge:mx-auto"
       ref={fromRef}
     >
-
       <FormField
         label="Step Num"
         name="stepNum"
@@ -91,16 +90,27 @@ export default function StepForm({
         required
       />
 
-
       <div className="flex justify-end space-x-2 mt-4">
-        <CancleBtn onCLick={onCancel} />
+        <button
+          type="button"
+          onClick={onCancel}
+          className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600"
+        >
+          Cancel
+        </button>
+        <button
+          type="submit"
+          className="px-4 py-2 bg-purple60 text-white rounded hover:bg-purple70"
+        >
+          {initialData ? "Update" : "Add"}
+        </button>
+        {/* <CancleBtn onCLick={onCancel} />
         <GeneralBtn
         btnContent={initialData ? 'Update' : 'Add'}
         disabled={loading}
         actionToDo={()=>fromRef.current?.requestSubmit}
         btnType={initialData ? 'update' : 'add'}
-        />
-
+        /> */}
       </div>
     </form>
   );

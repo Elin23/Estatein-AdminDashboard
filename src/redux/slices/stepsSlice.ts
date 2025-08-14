@@ -2,7 +2,7 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import { db } from "../../firebaseConfig";
 import { ref, onValue, push, set, update, remove } from "firebase/database";
-import type { Step } from "../../pages/Steps";
+import type { Step } from "../../types/Steps";
 
 interface StepsState {
   list: Step[];
@@ -129,9 +129,8 @@ const stepsSlice = createSlice({
         state.loading = true;
         state.error = null;
       })
-      .addCase(addStep.fulfilled, (state, action) => {
+      .addCase(addStep.fulfilled, (state) => {
         state.loading = false;
-        state.list.push(action.payload);
       })
       .addCase(addStep.rejected, (state, action) => {
         state.loading = false;

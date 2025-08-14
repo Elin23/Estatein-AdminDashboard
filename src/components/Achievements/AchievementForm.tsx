@@ -1,5 +1,5 @@
-import { useEffect, useRef, useState } from 'react';
-import type { Achievement } from '../../pages/Achievements';
+import { useEffect, useState } from 'react';
+import type { Achievement } from '../../types/Achievement';
 import FormField from '../InputField/FormField';
 import GeneralBtn from '../buttons/GeneralBtn';
 import CancleBtn from '../buttons/CancleBtn';
@@ -7,10 +7,9 @@ import CancleBtn from '../buttons/CancleBtn';
 interface AchievementFormProps {
   initialData?: Achievement | null;
   onCancel: () => void;
-  onSubmit: (data: Omit<Achievement, 'id'>, id?: string) => Promise<void>;
+  onSubmit: (data: Omit<Achievement, "id">, id?: string) => Promise<void>;
 }
-
-export default function AchievementForm({
+function AchievementForm({
   initialData = null,
   onCancel,
   onSubmit
@@ -83,3 +82,4 @@ export default function AchievementForm({
     </form>
   );
 }
+export default  AchievementForm;

@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
 import type { ValueItem } from "../../types/ValueItem";
 import FormField from "../InputField/FormField";
-
 interface ValueFormProps {
-  onSubmit: (value: Pick<ValueItem, "title" | "description"> | ValueItem) => void;
+  onSubmit: (
+    data: Pick<ValueItem, "title" | "description">,
+    id?: string
+  ) => Promise<void>;
   initialData?: ValueItem | null;
   onCancel: () => void;
 }
@@ -26,11 +28,13 @@ function ValueForm({ onSubmit, initialData = null, onCancel }: ValueFormProps) {
     e.preventDefault();
 
     if (initialData?.id) {
-      onSubmit({
-        id: initialData.id,
-        title,
-        description,
-      } as ValueItem);
+      onSubmit(
+        {
+          title,
+          description,
+        },
+        initialData.id
+      );
     } else {
       onSubmit({
         title,
@@ -62,7 +66,6 @@ function ValueForm({ onSubmit, initialData = null, onCancel }: ValueFormProps) {
         onChange={(e) => setDescription(e.target.value)}
         required
       />
-
 
       <div className="flex justify-end space-x-2 mt-4">
         <button

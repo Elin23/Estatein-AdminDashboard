@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import type { FaqType } from "../../types";
+import { useEffect, useState } from "react";
+import type { FaqType } from "../../types/FaqType";
 import GeneralBtn from "../buttons/GeneralBtn";
 import CancleBtn from "../buttons/CancleBtn";
 
