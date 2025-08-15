@@ -1,33 +1,33 @@
-import React, { useMemo, useState } from "react";
-import { CheckCircle, Mail } from "lucide-react";
-import type { ContactType } from "../../types";
-import EmailReplyModalUI from "../EmailForm/EmailReplyModalUI";
-import { composeContactEmailMessage } from "../EmailForm/composeEmailMessage";
-import { useDispatch, useSelector } from "react-redux";
-import type { AppDispatch } from "../../redux/store";
+import React, { memo, useMemo, useState } from "react"
+import { CheckCircle, Mail } from "lucide-react"
+import type { ContactType } from "../../types"
+import EmailReplyModalUI from "../EmailForm/EmailReplyModalUI"
+import { composeContactEmailMessage } from "../EmailForm/composeEmailMessage"
+import { useDispatch, useSelector } from "react-redux"
+import type { AppDispatch } from "../../redux/store"
 import {
   sendEmail,
   resetEmailState,
   selectEmailSending,
   selectEmailError,
   selectEmailSuccess,
-} from "../../redux/slices/emailSlice";
+} from "../../redux/slices/emailSlice"
 
 interface ContactListItemProps {
-  contact: ContactType;
-  onUpdateStatus: (id: string, status: ContactType["status"]) => void;
+  contact: ContactType
+  onUpdateStatus: (id: string, status: ContactType["status"]) => void
 }
 
 const ContactListItem: React.FC<ContactListItemProps> = ({
   contact,
   onUpdateStatus,
 }) => {
-  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
 
-  const dispatch = useDispatch<AppDispatch>();
-  const sending = useSelector(selectEmailSending);
-  const sendError = useSelector(selectEmailError);
-  const sendSuccess = useSelector(selectEmailSuccess);
+  const dispatch = useDispatch<AppDispatch>()
+  const sending = useSelector(selectEmailSending)
+  const sendError = useSelector(selectEmailError)
+  const sendSuccess = useSelector(selectEmailSuccess)
 
   const statusColors: Record<ContactType["status"], string> = {
     new: "bg-red-100 text-red-800",
@@ -36,29 +36,29 @@ const ContactListItem: React.FC<ContactListItemProps> = ({
     replied: "bg-blue-100 text-blue-800",
     rejected: "bg-red-100 text-red-800",
     reviewed: "bg-yellow-100 text-yellow-800",
-  };
+  }
 
   const firstName = useMemo(() => {
-    const n = (contact.name || "").trim();
-    return n ? n.split(" ")[0] : "";
-  }, [contact.name]);
+    const n = (contact.name || "").trim()
+    return n ? n.split(" ")[0] : ""
+  }, [contact.name])
 
   const { subject: defaultSubject, message: defaultMessage } = useMemo(
     () => composeContactEmailMessage(contact),
     [contact]
-  );
+  )
 
   const handleSendEmail = async ({
     to,
     subject,
     message,
   }: {
-    to: string;
-    subject: string;
-    message: string;
+    to: string
+    subject: string
+    message: string
   }) => {
-    const finalSubject = subject?.trim() || defaultSubject;
-    const finalMessage = message?.trim() || defaultMessage;
+    const finalSubject = subject?.trim() || defaultSubject
+    const finalMessage = message?.trim() || defaultMessage
 
     try {
       await dispatch(
@@ -72,20 +72,20 @@ const ContactListItem: React.FC<ContactListItemProps> = ({
             category: contact.subject || "General",
           },
         })
-      ).unwrap();
+      ).unwrap()
 
-      onUpdateStatus(contact.id, "replied");
-      setIsModalOpen(false);
-      dispatch(resetEmailState());
+      onUpdateStatus(contact.id, "replied")
+      setIsModalOpen(false)
+      dispatch(resetEmailState())
     } catch (e) {
-      console.error(e);
+      console.error(e)
     }
-  };
+  }
 
   const closeModal = () => {
-    setIsModalOpen(false);
-    dispatch(resetEmailState());
-  };
+    setIsModalOpen(false)
+    dispatch(resetEmailState())
+  }
 
   return (
     <div className="flex flex-col justify-between gap-4 p-6 bg-white dark:bg-gray-800 rounded-lg shadow">
@@ -165,7 +165,7 @@ const ContactListItem: React.FC<ContactListItemProps> = ({
         defaultMessage={defaultMessage}
       />
     </div>
-  );
-};
+  )
+}
 
-export default ContactListItem;
+export default memo(ContactListItem)

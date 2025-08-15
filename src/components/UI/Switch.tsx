@@ -22,7 +22,6 @@ const Switch = () => {
         className="hidden"
       />
 
-      {/* Moon */}
       <div
         className={`absolute transition-transform duration-500 grid place-items-center ${
           checked ? "rotate-[360deg] scale-0" : "delay-200 scale-100"
@@ -31,7 +30,6 @@ const Switch = () => {
         <MoonIcon className="md:size-5 size-3 text-gray15 dark:text-white" />
       </div>
 
-      {/* Sun */}
       <div
         className={`absolute transition-transform duration-500 grid place-items-center ${
           checked ? "scale-100 rotate-[360deg]" : "delay-200 scale-0"

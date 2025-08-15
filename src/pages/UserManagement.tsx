@@ -1,8 +1,5 @@
-import { useState, useEffect } from "react";
-import {
-  getAuth,
-  createUserWithEmailAndPassword,
-} from "firebase/auth";
+import { useState, useEffect, useCallback } from "react"
+import { getAuth, createUserWithEmailAndPassword } from "firebase/auth"
 import {
   getDatabase,
   ref,
@@ -10,96 +7,111 @@ import {
   onValue,
   remove,
   update,
-} from "firebase/database";
+} from "firebase/database"
+import Modal from "../components/UI/Modal"
 
 const UserManagement = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [role, setRole] = useState("admin");
-  const [message, setMessage] = useState("");
+  const [email, setEmail] = useState("")
+  const [password, setPassword] = useState("")
+  const [role, setRole] = useState("admin")
+  const [message, setMessage] = useState("")
   const [users, setUsers] = useState<
     { uid: string; email: string; role: string }[]
-  >([]);
-  const [showForm, setShowForm] = useState(false);
-  const [editingUid, setEditingUid] = useState<string | null>(null);
-  const [loading, setLoading] = useState(true); // 🆕 حالة التحميل
+  >([])
+  const [showForm, setShowForm] = useState(false)
+  const [editingUid, setEditingUid] = useState<string | null>(null)
+  const [loading, setLoading] = useState(true)
+  const [modalOpen, setModalOpen] = useState(false)
+  const [userToDelete, setUserToDelete] = useState<string | null>(null)
 
-  const auth = getAuth();
-  const db = getDatabase();
+  const auth = getAuth()
+  const db = getDatabase()
 
   useEffect(() => {
-    const usersRef = ref(db, "users");
+    const usersRef = ref(db, "users")
     const unsubscribe = onValue(usersRef, (snapshot) => {
-      const data = snapshot.val();
+      const data = snapshot.val()
       if (data) {
         const userList = Object.entries(data).map(([uid, val]: any) => ({
           uid,
           email: val.email,
           role: val.role,
-        }));
-        setUsers(userList);
+        }))
+        setUsers(userList)
       } else {
-        setUsers([]);
+        setUsers([])
       }
-      setLoading(false); // 🆕 وقف التحميل
-    });
+      setLoading(false)
+    })
 
-    return () => unsubscribe();
-  }, [db]);
+    return () => unsubscribe()
+  }, [db])
 
   const handleCreateOrUpdateUser = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setMessage("");
+    e.preventDefault()
+    setMessage("")
 
     try {
       if (editingUid) {
-        await update(ref(db, `users/${editingUid}`), { role });
-        setMessage("✅ User updated successfully!");
-        setEditingUid(null);
+        await update(ref(db, `users/${editingUid}`), { role })
+        setMessage("✅ User updated successfully!")
+        setEditingUid(null)
       } else {
         const userCredential = await createUserWithEmailAndPassword(
           auth,
           email,
           password
-        );
-        const uid = userCredential.user.uid;
+        )
+        const uid = userCredential.user.uid
         await set(ref(db, `users/${uid}`), {
           email,
           role,
-        });
-        setMessage("✅ User created successfully!");
+        })
+        setMessage("✅ User created successfully!")
       }
 
-      setEmail("");
-      setPassword("");
-      setRole("admin");
-      setShowForm(false);
+      setEmail("")
+      setPassword("")
+      setRole("admin")
+      setShowForm(false)
     } catch (error: any) {
-      console.error(error);
-      setMessage("❌ Error: " + error.message);
+      console.error(error)
+      setMessage("❌ Error: " + error.message)
     }
-  };
+  }
 
   const handleDeleteUser = async (uid: string) => {
     try {
-      await remove(ref(db, `users/${uid}`));
-      setMessage("✅ User deleted from database!");
+      await remove(ref(db, `users/${uid}`))
+      setMessage("✅ User deleted from database!")
     } catch (error: any) {
-      console.error(error);
-      setMessage("❌ Error deleting user: " + error.message);
+      console.error(error)
+      setMessage("❌ Error deleting user: " + error.message)
     }
-  };
+  }
+
+  const handleDeleteClick = useCallback((id: string) => {
+    setUserToDelete(id)
+    setModalOpen(true)
+  }, [])
+
+  const confirmDelete = useCallback(() => {
+    if (!userToDelete) return
+    handleDeleteUser(userToDelete)
+    setModalOpen(false)
+    setUserToDelete(null)
+  }, [userToDelete, handleDeleteUser])
 
   const handleEditUser = (user: {
-    uid: string;
-    email: string;
-    role: string;
+    uid: string
+    email: string
+    role: string
   }) => {
-    setEmail(user.email);
-    setRole(user.role);
-    setEditingUid(user.uid);
-    setShowForm(true);
-  };
+    setEmail(user.email)
+    setRole(user.role)
+    setEditingUid(user.uid)
+    setShowForm(true)
+  }
 
   return (
     <div className="p-6">
@@ -110,12 +122,12 @@ const UserManagement = () => {
 
         <button
           onClick={() => {
-            setShowForm(!showForm);
-            setEditingUid(null);
-            setEmail("");
-            setPassword("");
-            setRole("admin");
-            setMessage("");
+            setShowForm(!showForm)
+            setEditingUid(null)
+            setEmail("")
+            setPassword("")
+            setRole("admin")
+            setMessage("")
           }}
           className="bg-purple65 text-white px-4 py-2 rounded-lg hover:bg-purple60 cursor-pointer"
         >
@@ -175,7 +187,6 @@ const UserManagement = () => {
           </p>
         )}
 
-        {/* 🆕 Skeleton عند التحميل */}
         {loading ? (
           <div className="space-y-3">
             {[...Array(3)].map((_, i) => (
@@ -235,7 +246,7 @@ const UserManagement = () => {
                         Edit
                       </button>
                       <button
-                        onClick={() => handleDeleteUser(uid)}
+                        onClick={() => handleDeleteClick(uid)}
                         className="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700 duration-300 cursor-pointer"
                       >
                         Delete
@@ -248,8 +259,18 @@ const UserManagement = () => {
           </table>
         )}
       </div>
+      <Modal
+        title="Delete User"
+        message="Delete this user? This action cannot be undone."
+        isOpen={modalOpen}
+        onClose={() => setModalOpen(false)}
+        onConfirm={confirmDelete}
+        confirmText="Delete"
+        cancelText="Cancel"
+        showConfirm
+      />
     </div>
-  );
-};
+  )
+}
 
-export default UserManagement;
+export default UserManagement

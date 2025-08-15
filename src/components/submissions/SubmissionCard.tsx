@@ -1,69 +1,69 @@
-import React, { useEffect, useMemo, useState } from "react";
-import { Clock, CheckCircle, XCircle, AlertCircle, Mail } from "lucide-react";
-import type { FormSubmission } from "../../types";
-import EmailReplyModalUI from "../EmailForm/EmailReplyModalUI";
-import { useDispatch, useSelector } from "react-redux";
+import React, { memo, useEffect, useMemo, useState } from "react"
+import { Clock, CheckCircle, XCircle, AlertCircle, Mail } from "lucide-react"
+import type { FormSubmission } from "../../types"
+import EmailReplyModalUI from "../EmailForm/EmailReplyModalUI"
+import { useDispatch, useSelector } from "react-redux"
 import {
   resetEmailState,
   selectEmailError,
   selectEmailSending,
   selectEmailSuccess,
   sendEmail,
-} from "../../redux/slices/emailSlice";
-import type { AppDispatch, RootState } from "../../redux/store";
-import { composeEmailMessage } from "../EmailForm/composeEmailMessage";
+} from "../../redux/slices/emailSlice"
+import type { AppDispatch, RootState } from "../../redux/store"
+import { composeEmailMessage } from "../EmailForm/composeEmailMessage"
 
 interface SubmissionCardProps {
-  submission: FormSubmission;
-  onUpdateStatus: (id: string, status: FormSubmission["status"]) => void;
+  submission: FormSubmission
+  onUpdateStatus: (id: string, status: FormSubmission["status"]) => void
 }
 
 const SubmissionCard: React.FC<SubmissionCardProps> = ({
   submission,
   onUpdateStatus,
 }) => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const role = useSelector((state: RootState) => state.auth.role) || "";
+  const [isModalOpen, setIsModalOpen] = useState(false)
+  const role = useSelector((state: RootState) => state.auth.role) || ""
 
-  const dispatch = useDispatch<AppDispatch>();
-  const sending = useSelector(selectEmailSending);
-  const sendError = useSelector(selectEmailError);
-  const sendSuccess = useSelector(selectEmailSuccess);
+  const dispatch = useDispatch<AppDispatch>()
+  const sending = useSelector(selectEmailSending)
+  const sendError = useSelector(selectEmailError)
+  const sendSuccess = useSelector(selectEmailSuccess)
 
   const StatusIcon = {
     pending: AlertCircle,
     reviewed: Clock,
     approved: CheckCircle,
     rejected: XCircle,
-  }[submission.status];
+  }[submission.status]
 
   const firstName =
     (submission.data?.firstName as string) ||
     (submission.data?.name as string) ||
     (submission.data?.fullName as string) ||
-    "";
+    ""
 
   const email =
     (submission.data?.email as string) ||
     (submission.data?.Email as string) ||
-    "";
+    ""
 
   const { subject: defaultSubject, message: defaultMessage } = useMemo(
     () => composeEmailMessage(submission),
     [submission]
-  );
+  )
 
   const handleSendEmail = async ({
     to,
     subject,
     message,
   }: {
-    to: string;
-    subject: string;
-    message: string;
+    to: string
+    subject: string
+    message: string
   }) => {
-    const finalSubject = subject?.trim() ? subject : defaultSubject;
-    const finalMessage = message?.trim() ? message : defaultMessage;
+    const finalSubject = subject?.trim() ? subject : defaultSubject
+    const finalMessage = message?.trim() ? message : defaultMessage
 
     dispatch(
       sendEmail({
@@ -76,20 +76,20 @@ const SubmissionCard: React.FC<SubmissionCardProps> = ({
           category: submission.category,
         },
       })
-    );
-  };
+    )
+  }
 
   useEffect(() => {
     if (sendSuccess && !sending) {
-      const t = setTimeout(() => closeModal(), 1200);
-      return () => clearTimeout(t);
+      const t = setTimeout(() => closeModal(), 1200)
+      return () => clearTimeout(t)
     }
-  }, [sendSuccess, sending]);
+  }, [sendSuccess, sending])
 
   const closeModal = () => {
-    setIsModalOpen(false);
-    dispatch(resetEmailState());
-  };
+    setIsModalOpen(false)
+    dispatch(resetEmailState())
+  }
 
   return (
     <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 huge:max-w-[452px]">
@@ -183,7 +183,7 @@ const SubmissionCard: React.FC<SubmissionCardProps> = ({
         defaultMessage={defaultMessage}
       />
     </div>
-  );
-};
+  )
+}
 
-export default SubmissionCard;
+export default memo(SubmissionCard)

@@ -1,4 +1,4 @@
-import React from "react"
+import React, { memo } from "react"
 import { Switch } from "@headlessui/react"
 import { useSelector } from "react-redux"
 import type { RootState } from "../redux/store"
@@ -81,4 +81,4 @@ const TestimonialCard: React.FC<TestimonialCardProps> = ({
   )
 }
 
-export default TestimonialCard
+export default memo(TestimonialCard)

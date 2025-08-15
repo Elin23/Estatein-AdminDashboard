@@ -1,43 +1,43 @@
-import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import type { RootState, AppDispatch } from "../../redux/store";
+import { useEffect, useState } from "react"
+import { useDispatch, useSelector } from "react-redux"
+import type { RootState, AppDispatch } from "../../redux/store"
 import {
   subscribeToLocations,
   saveLocation,
   deleteLocation,
-} from "../../redux/slices/locationSlice";
+} from "../../redux/slices/locationSlice"
 
-import Pagination from "../../components/UI/Pagination";
-import LocationForm from "../../components/Location/LocationForm";
-import LocationCard from "../../components/Location/LocationCard";
-import Modal from "../../components/UI/Modal";
-import ExportButton from "../../components/UI/ExportReportButton";
-import { exportLocationsToExcel } from "../../lib/exportLocations";
+import Pagination from "../../components/UI/Pagination"
+import LocationForm from "../../components/Location/LocationForm"
+import LocationCard from "../../components/Location/LocationCard"
+import Modal from "../../components/UI/Modal"
+import ExportButton from "../../components/UI/ExportReportButton"
+import { exportLocationsToExcel } from "../../lib/exportLocations"
 
 function Locations() {
-  const role = useSelector((state: RootState) => state.auth.role) || "";
+  const role = useSelector((state: RootState) => state.auth.role) || ""
 
-  const dispatch = useDispatch<AppDispatch>();
+  const dispatch = useDispatch<AppDispatch>()
 
   const {
     items: locations,
     loading,
     error,
-  } = useSelector((state: RootState) => state.locations);
+  } = useSelector((state: RootState) => state.locations)
 
-  const [showForm, setShowForm] = useState(false);
-  const [editId, setEditId] = useState<string | null>(null);
-  const [modalOpen, setModalOpen] = useState(false);
-  const [locationToDelete, setLocationToDelete] = useState<string | null>(null);
+  const [showForm, setShowForm] = useState(false)
+  const [editId, setEditId] = useState<string | null>(null)
+  const [modalOpen, setModalOpen] = useState(false)
+  const [locationToDelete, setLocationToDelete] = useState<string | null>(null)
 
   useEffect(() => {
-    dispatch(subscribeToLocations());
-  }, [dispatch]);
+    dispatch(subscribeToLocations())
+  }, [dispatch])
 
   const handleEdit = (id: string) => {
-    setEditId(id);
-    setShowForm(true);
-  };
+    setEditId(id)
+    setShowForm(true)
+  }
 
   return (
     <div className="p-6 huge:max-w-[1390px] huge:mx-auto">
@@ -58,7 +58,10 @@ function Locations() {
 
           {role === "admin" && (
             <button
-              onClick={() => setShowForm((prev) => !prev)}
+              onClick={() => {
+                setEditId(null)
+                setShowForm((prev) => !prev)
+              }}
               className="bg-purple60 text-white px-4 py-2 rounded-lg hover:bg-[#5b2fc4]"
             >
               {showForm ? "Close Form" : "+ Add Location"}
@@ -69,7 +72,7 @@ function Locations() {
 
       {error && <p className="text-red-500">{error}</p>}
 
-      {showForm?  (
+      {showForm ? (
         <LocationForm
           initialData={
             editId ? locations.find((l) => l.id === editId)?.data : undefined
@@ -77,16 +80,14 @@ function Locations() {
           onSubmit={async (data) => {
             await dispatch(
               saveLocation({ locationData: data, id: editId || undefined })
-            );
-            setShowForm(false);
-            setEditId(null);
+            )
+            setShowForm(false)
+            setEditId(null)
           }}
           onCancel={() => setShowForm(false)}
           loading={loading}
         />
-      ): 
-
-      (
+      ) : (
         <Pagination
           items={locations}
           renderItem={({ id, data }) => (
@@ -95,8 +96,8 @@ function Locations() {
               data={data}
               onEdit={() => handleEdit(id)}
               onDelete={() => {
-                setLocationToDelete(id);
-                setModalOpen(true);
+                setLocationToDelete(id)
+                setModalOpen(true)
               }}
             />
           )}
@@ -110,13 +111,13 @@ function Locations() {
         message="Are you sure?"
         onClose={() => setModalOpen(false)}
         onConfirm={() => {
-          if (locationToDelete) dispatch(deleteLocation(locationToDelete));
-          setModalOpen(false);
+          if (locationToDelete) dispatch(deleteLocation(locationToDelete))
+          setModalOpen(false)
         }}
         showConfirm
       />
     </div>
-  );
+  )
 }
 
-export default Locations;
+export default Locations

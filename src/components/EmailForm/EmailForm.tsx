@@ -1,6 +1,6 @@
-import React from "react";
-import type { EmailFormProps } from "../../types/EmailReplyModal";
-import { emailFormData, type EmailFieldKey } from "../../data/emailFormData";
+import React from "react"
+import type { EmailFormProps } from "../../types/EmailReplyModal"
+import { emailFormData, type EmailFieldKey } from "../../data/emailFormData"
 
 export default function EmailForm({
   submitLabel = "Send",
@@ -14,35 +14,34 @@ export default function EmailForm({
   loading = false,
 }: EmailFormProps) {
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    if (!onSubmit || loading) return;
+    e.preventDefault()
+    if (!onSubmit || loading) return
 
-    const fd = new FormData(e.currentTarget);
-    const to = String(fd.get("to") || "").trim();
-    const subject = String(fd.get("subject") || "").trim();
-    const message = String(fd.get("message") || "").trim();
+    const fd = new FormData(e.currentTarget)
+    const to = String(fd.get("to") || "").trim()
+    const subject = String(fd.get("subject") || "").trim()
+    const message = String(fd.get("message") || "").trim()
 
-    onSubmit({ to, subject, message });
-  };
+    onSubmit({ to, subject, message })
+  }
 
   const prefills: Record<EmailFieldKey, string> = {
     to: defaultEmail,
     subject: defaultSubject,
     message: defaultMessage,
-  };
+  }
 
-  const labelCls =
-    "mb-2 block text-sm font-medium text-gray40 dark:text-gray65";
+  const labelCls = "mb-2 block text-sm font-medium text-gray40 dark:text-gray65"
 
   const inputBaseCls =
     "w-full rounded-xl border border-gray75 bg-white99 px-4 py-2.5 text-gray08 outline-none transition " +
     "placeholder:text-gray50 focus:border-purple60 focus:ring-2 focus:ring-purple90 text-left " +
-    "dark:border-gray15 dark:bg-gray-700 dark:text-white97 dark:focus:border-purple70 dark:focus:ring-purple90";
+    "dark:border-gray15 dark:bg-gray-700 dark:text-white97 dark:focus:border-purple70 dark:focus:ring-purple90"
 
   const textareaBaseCls =
     "w-full resize-y rounded-xl border border-gray75 bg-white99 px-4 py-3 text-gray08 outline-none transition " +
     "placeholder:text-gray50 focus:border-purple60 focus:ring-2 focus:ring-purple90 text-left " +
-    "dark:border-gray15 dark:bg-gray-700 dark:text-white97 dark:focus:border-purple70 dark:focus:ring-purple90";
+    "dark:border-gray15 dark:bg-gray-700 dark:text-white97 dark:focus:border-purple70 dark:focus:ring-purple90"
 
   return (
     <form
@@ -87,7 +86,6 @@ export default function EmailForm({
         </div>
       ))}
 
-      {/* Actions */}
       <div className="flex items-center justify-between gap-3">
         {showCancel && (
           <button
@@ -112,5 +110,5 @@ export default function EmailForm({
         </button>
       </div>
     </form>
-  );
+  )
 }

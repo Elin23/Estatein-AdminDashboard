@@ -1,60 +1,62 @@
-import { useEffect, useRef, useState } from 'react';
-import type { Step } from '../../types/Steps';
-import FormField from '../InputField/FormField';
-import GeneralBtn from '../buttons/GeneralBtn';
-import CancleBtn from '../buttons/CancleBtn';
+import { useEffect, useRef, useState } from "react"
+import type { Step } from "../../types/Steps"
+import FormField from "../InputField/FormField"
 
 interface StepFormProps {
-  initialData?: Step | null;
-  onCancel: () => void;
-  onSubmit: (data: Omit<Step, 'id'>, id?: string) => Promise<void>;
+  initialData?: Step | null
+  onCancel: () => void
+  onSubmit: (data: Omit<Step, "id">, id?: string) => Promise<void>
 }
 
 export default function StepForm({
   initialData = null,
   onCancel,
-  onSubmit
+  onSubmit,
 }: StepFormProps) {
-  const [stepNum, setStepNum] = useState('');
-  const [title, setTitle] = useState('');
-  const [description, setDescription] = useState('');
-  const [loading, setLoading] = useState(false);
+  const [stepNum, setStepNum] = useState("")
+  const [title, setTitle] = useState("")
+  const [description, setDescription] = useState("")
+  const [loading, setLoading] = useState(false)
   const fromRef = useRef<HTMLFormElement>(null)
- 
+
   useEffect(() => {
     if (initialData) {
-      setStepNum(initialData.stepNum);
-      setTitle(initialData.title);
-      setDescription(initialData.description);
+      setStepNum(initialData.stepNum)
+      setTitle(initialData.title)
+      setDescription(initialData.description)
     } else {
-      setStepNum('');
-      setTitle('');
-      setDescription('');
+      setStepNum("")
+      setTitle("")
+      setDescription("")
     }
-  }, [initialData]);
+  }, [initialData])
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+    e.preventDefault()
     if (!stepNum.trim() || !title.trim() || !description.trim()) {
-      return alert('Please fill all fields');
+      return alert("Please fill all fields")
     }
-    setLoading(true);
+    setLoading(true)
     try {
       await onSubmit(
-        { stepNum: stepNum.trim(), title: title.trim(), description: description.trim() },
+        {
+          stepNum: stepNum.trim(),
+          title: title.trim(),
+          description: description.trim(),
+        },
         initialData?.id
-      );
+      )
       if (!initialData) {
-        setStepNum('');
-        setTitle('');
-        setDescription('');
+        setStepNum("")
+        setTitle("")
+        setDescription("")
       }
     } catch {
-      alert('Save failed');
+      alert("Save failed")
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  };
+  }
 
   return (
     <form
@@ -94,24 +96,30 @@ export default function StepForm({
         <button
           type="button"
           onClick={onCancel}
+          disabled={loading}
           className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600"
         >
           Cancel
         </button>
         <button
           type="submit"
-          className="px-4 py-2 bg-purple60 text-white rounded hover:bg-purple70"
+          disabled={loading}
+          className={`px-4 py-2 text-white rounded 
+    ${
+      loading
+        ? "bg-gray-400 cursor-not-allowed"
+        : "bg-purple60 hover:bg-purple70"
+    }`}
         >
-          {initialData ? "Update" : "Add"}
+          {loading
+            ? initialData
+              ? "Updating..."
+              : "Saving..."
+            : initialData
+            ? "Update"
+            : "Add"}
         </button>
-        {/* <CancleBtn onCLick={onCancel} />
-        <GeneralBtn
-        btnContent={initialData ? 'Update' : 'Add'}
-        disabled={loading}
-        actionToDo={()=>fromRef.current?.requestSubmit}
-        btnType={initialData ? 'update' : 'add'}
-        /> */}
       </div>
     </form>
-  );
+  )
 }

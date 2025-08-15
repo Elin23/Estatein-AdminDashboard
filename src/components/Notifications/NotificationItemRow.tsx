@@ -1,19 +1,19 @@
-import React from "react";
-import type { NotificationItem } from "../../types/NotificationItem";
+import React, { memo } from "react"
+import type { NotificationItem } from "../../types/NotificationItem"
 
 type Props = {
-  item: NotificationItem;
-  unread: boolean;
-  onOpen: (id: string) => void;
-};
+  item: NotificationItem
+  unread: boolean
+  onOpen: (id: string) => void
+}
 
 const NotificationItemRow: React.FC<Props> = ({ item, unread, onOpen }) => {
   const handleKey = (e: React.KeyboardEvent<HTMLLIElement>) => {
     if (e.key === "Enter" || e.key === " ") {
-      e.preventDefault();
-      onOpen(item.id);
+      e.preventDefault()
+      onOpen(item.id)
     }
-  };
+  }
 
   return (
     <li
@@ -35,7 +35,9 @@ const NotificationItemRow: React.FC<Props> = ({ item, unread, onOpen }) => {
 
       <div className="mt-1.5 flex items-start justify-between gap-3">
         <div className="text-sm text-gray-800 dark:text-gray-100">
-          <strong className="font-medium">{item.name || item.email || "User"}</strong>
+          <strong className="font-medium">
+            {item.name || item.email || "User"}
+          </strong>
           {item.message ? <>: {item.message}</> : null}
         </div>
 
@@ -47,7 +49,7 @@ const NotificationItemRow: React.FC<Props> = ({ item, unread, onOpen }) => {
         )}
       </div>
     </li>
-  );
-};
+  )
+}
 
-export default NotificationItemRow;
+export default memo(NotificationItemRow)

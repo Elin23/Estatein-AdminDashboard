@@ -1,18 +1,18 @@
-import React from 'react';
-import { Save, Plus } from 'lucide-react';
-import FormField from './FormField';
-import type { FormField as FormFieldType } from '../../types';
+import React from "react"
+import { Save, Plus } from "lucide-react"
+import FormField from "./FormField"
+import type { FormField as FormFieldType } from "../../types"
 
 interface FormBuilderProps {
-  formName: string;
-  selectedCategory: string;
-  fields: FormFieldType[];
-  onFormNameChange: (name: string) => void;
-  onCategoryChange: (category: string) => void;
-  onAddField: () => void;
-  onUpdateField: (id: string, updates: Partial<FormFieldType>) => void;
-  onRemoveField: (id: string) => void;
-  onSave: () => void;
+  formName: string
+  selectedCategory: string
+  fields: FormFieldType[]
+  onFormNameChange: (name: string) => void
+  onCategoryChange: (category: string) => void
+  onAddField: () => void
+  onUpdateField: (id: string, updates: Partial<FormFieldType>) => void
+  onRemoveField: (id: string) => void
+  onSave: () => void
 }
 
 const FormBuilder: React.FC<FormBuilderProps> = ({
@@ -20,7 +20,6 @@ const FormBuilder: React.FC<FormBuilderProps> = ({
   selectedCategory,
   fields,
   onFormNameChange,
-  onCategoryChange,
   onAddField,
   onUpdateField,
   onRemoveField,
@@ -83,7 +82,7 @@ const FormBuilder: React.FC<FormBuilderProps> = ({
         </div>
       )}
     </div>
-  );
-};
+  )
+}
 
-export default FormBuilder;
+export default FormBuilder

@@ -20,7 +20,6 @@ export const SidebarProvider = ({ children }: { children: ReactNode }) => {
     setIsCollapsed((prev) => !prev)
   }
 
-  // تحديث الحالة تلقائياً حسب حجم الشاشة
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth < 768) {
@@ -30,7 +29,7 @@ export const SidebarProvider = ({ children }: { children: ReactNode }) => {
       }
     }
 
-    handleResize() // لتعيين الحالة أول مرة
+    handleResize()
     window.addEventListener("resize", handleResize)
     return () => window.removeEventListener("resize", handleResize)
   }, [])
