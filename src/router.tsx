@@ -16,6 +16,7 @@ import Unauthorized from "./pages/Unauthorized";
 import ProtectedRoute from "./components/auth/ProtectedRoute";
 import ValuedClients from "./pages/ValuedClients";
 import CompanyInfo from "./pages/CompanyInfo/CompanyInfo";
+import FAQ from "./pages/FAQ";
 
 const router = createBrowserRouter([
   {
@@ -45,7 +46,7 @@ const router = createBrowserRouter([
           { path: "steps", element: <Steps /> },
           { path: "clients", element: <ValuedClients /> },
           { path: "info", element: <CompanyInfo /> },
-
+          {path: "faqs" , element:<FAQ />}
 
         ],
       },

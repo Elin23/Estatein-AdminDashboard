@@ -1,6 +1,7 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import type { TeamMember } from '../../types/index';
 import FormField from '../InputField/FormField';
+import GeneralBtn from '../buttons/GeneralBtn';
 
 interface Props {
   initialData?: TeamMember;
@@ -15,7 +16,7 @@ export default function TeamForm({ initialData, onCancel, onSubmit }: Props) {
   const [twitterLink, setTwitterLink] = useState(initialData?.twitterLink ?? '');
   const [loading, setLoading] = useState(false);
   const [uploading, setUploading] = useState(false);
-
+  const fromRef = useRef<HTMLFormElement>(null)
   useEffect(() => {
     if (initialData) {
       setName(initialData.name);
@@ -86,6 +87,7 @@ export default function TeamForm({ initialData, onCancel, onSubmit }: Props) {
     <form
       onSubmit={handleSubmit}
       className="bg-white dark:bg-gray-800 p-4 rounded shadow huge:max-w-[1390px] huge:mx-auto"
+      ref={fromRef}
     >
       <FormField
         label="Name"
@@ -138,14 +140,14 @@ export default function TeamForm({ initialData, onCancel, onSubmit }: Props) {
         >
           Cancel
         </button>
-        <button
-          type="submit"
-          className="px-4 py-2 bg-purple-600 text-white rounded hover:bg-purple-700 disabled:opacity-50 disabled:cursor-not-allowed"
-          disabled={loading || uploading}
-        >
-          {initialData ? 'Update' : 'Add'}
-        </button>
+        <GeneralBtn
+        btnContent={initialData ? 'Update' : 'Add'}
+        btnType={initialData ? 'update' : 'add'}
+        actionToDo={()=>fromRef.current?.requestSubmit()}
+        disabled={loading || uploading}
+        />
       </div>
     </form>
   );
 }
+

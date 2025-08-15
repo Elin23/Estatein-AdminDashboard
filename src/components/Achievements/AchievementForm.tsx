@@ -1,14 +1,15 @@
 import { useEffect, useState } from 'react';
-import type { Achievement } from '../../pages/Achievements';
+import type { Achievement } from '../../types/Achievement';
 import FormField from '../InputField/FormField';
+import GeneralBtn from '../buttons/GeneralBtn';
+import CancleBtn from '../buttons/CancleBtn';
 
 interface AchievementFormProps {
   initialData?: Achievement | null;
   onCancel: () => void;
-  onSubmit: (data: Omit<Achievement, 'id'>, id?: string) => Promise<void>;
+  onSubmit: (data: Omit<Achievement, "id">, id?: string) => Promise<void>;
 }
-
-export default function AchievementForm({
+function AchievementForm({
   initialData = null,
   onCancel,
   onSubmit
@@ -28,8 +29,7 @@ export default function AchievementForm({
     }
   }, [initialData]);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = async () => {
     if (!title.trim() || !description.trim()) {
       return alert('Please fill title and description');
     }
@@ -72,22 +72,14 @@ export default function AchievementForm({
   
 
       <div className="flex justify-end space-x-2 mt-4">
-        <button
-          type="button"
-          onClick={onCancel}
-          className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600"
-          disabled={loading}
-        >
-          Cancel
-        </button>
-        <button
-          type="submit"
-          className="px-4 py-2 bg-purple60 text-white rounded hover:bg-purple70 disabled:opacity-50 disabled:cursor-not-allowed"
-          disabled={loading}
-        >
-          {initialData ? 'Update' : 'Add'}
-        </button>
+        <CancleBtn onCLick={onCancel} disabled={loading}/>
+        <GeneralBtn 
+          btnContent={`${initialData? 'Update' : 'Add'}`} 
+          btnType='add'
+          actionToDo={handleSubmit}
+          />
       </div>
     </form>
   );
 }
+export default  AchievementForm;

@@ -47,26 +47,28 @@ const Submissions = () => {
   };
   return (
     <div className="p-6 huge:max-w-[1390px] huge:mx-auto">
-      <div className="flex justify-between items-center mb-6">
+      <div className="flex flex-col  lg:flex-row lg:items-center lg:justify-between mb-6 gap-4 lg:gap-0">
         <h1 className="text-2xl font-bold text-gray-800 dark:text-white">
           Form Submissions
         </h1>
-
+        <div className="flex flex-col  sm:flex-row sm:items-center gap-3">
+        <SubmissionFilters
+          selectedStatus={selectedStatus}
+          onStatusChange={setSelectedStatus}
+          selectedCategory={selectedCategory}
+          categories={categories}
+          onCategoryChange={setSelectedCategory}
+        />
         <ExportButton
           data={filteredSubmissions}
           onExport={exportSubmissionsToExcel}
           buttonLabel="Export to Excel"
           disabled={filteredSubmissions.length === 0}
         />
+        </div>
       </div>
 
-      <SubmissionFilters
-        selectedStatus={selectedStatus}
-        onStatusChange={setSelectedStatus}
-        selectedCategory={selectedCategory}
-        categories={categories}
-        onCategoryChange={setSelectedCategory}
-      />
+      
 
       <Pagination
         items={filteredSubmissions}

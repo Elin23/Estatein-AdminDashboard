@@ -1,30 +1,31 @@
 // Property Types
 export interface Property {
-  createdAt?:string;
-  id:string;
-  title:string;
-  type:"villa" | "apartment" | "house" | string;
-  location:string;
-  price:number;
-  description:string;
-  bedrooms:string;
+  createdAt?: string;
+  id: string;
+  title: string;
+  type: "villa" | "apartment" | "house" | string;
+  location: string;
+  price: number;
+  description: string;
+  bedrooms: string;
   bathrooms: string;
   area: number;
-  buildYear:string;
-  features:string[];
-  status:"available" | "sold";
-  mapUrl:string;
+  buildYear: string;
+  features: string[];
+  status: "available" | "sold";
+  tags: string;
+  mapUrl: string;
   images: string[];
 
   additionalFees: {
-    transferTax:number,
-    legalFees:number,
+    transferTax: number,
+    legalFees: number,
     inspection: number,
-    insurance:number,
+    insurance: number,
   },
 
   monthlyCosts: {
-    propertyTaxes:number,
+    propertyTaxes: number,
     hoa: number,
   },
 
@@ -52,7 +53,7 @@ export interface ContactType {
   subject: string;
   message: string;
   createdAt: Date;
-  status: 'new' | 'read' | 'replied';
+  status: 'new' | 'read' | 'replied' | 'rejected' | "reviewed" | "approved";
 }
 
 // Form Types

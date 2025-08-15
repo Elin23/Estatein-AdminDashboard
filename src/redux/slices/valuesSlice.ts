@@ -80,13 +80,13 @@ export const addValue = createAsyncThunk<
 
 export const updateValue = createAsyncThunk<
   void,
-  ValueItem,
+  { id: string; data: Omit<ValueItem, "id"> },
   { rejectValue: string }
 >("values/update", async (payload, { rejectWithValue }) => {
   try {
     await update(ref(db, `values/${payload.id}`), {
-      title: payload.title.trim(),
-      description: payload.description.trim(),
+      title: payload.data.title.trim(),
+      description: payload.data.description.trim(),
     });
   } catch (err: any) {
     return rejectWithValue(err.message || "Failed to update value");

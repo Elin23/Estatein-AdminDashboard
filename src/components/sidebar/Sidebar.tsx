@@ -14,6 +14,7 @@ import {
   User,
   Menu,
   PersonStanding,
+    CircleQuestionMarkIcon,
   Info,
 } from "lucide-react"
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -112,6 +113,12 @@ const menuItems = [
     icon: User,
     label: "User Management",
     path: "/user-management",
+    visible: ["admin"],
+  },
+  {
+    icon: CircleQuestionMarkIcon,
+    label: "FAQs",
+    path: "/faqs",
     visible: ["admin"],
   },
 ]
