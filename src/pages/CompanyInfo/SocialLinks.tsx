@@ -59,7 +59,7 @@ export default function SocialLinks() {
 
     return (
         <div className="min-h-screen dark:bg-gray-900 text-gray-900 dark:text-white">
-            <div className="container mx-auto px-4 py-6">
+            <div className="container mx-auto ">
 
                 <div className="flex flex-col  lg:flex-row lg:items-center lg:justify-between mb-6 gap-4 lg:gap-0">
                     <div>

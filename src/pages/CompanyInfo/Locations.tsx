@@ -40,7 +40,7 @@ function Locations() {
   };
 
   return (
-    <div className="p-6 huge:max-w-[1390px] huge:mx-auto">
+    <div className=" huge:max-w-[1390px] huge:mx-auto">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold text-gray-700 dark:text-gray-200">
           Our Locations
