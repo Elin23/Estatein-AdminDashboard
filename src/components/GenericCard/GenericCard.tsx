@@ -51,7 +51,7 @@ export default function GenericCard({
   }
 
   return (
-    <div className="bg-white dark:bg-gray-800 p-4 rounded shadow huge:max-w-[452px] h-full">
+    <div className="bg-white dark:bg-gray-800 p-4 rounded shadow huge:max-w-[452px] h-full flex flex-col">
       {imageSrc && (
         <img
           src={imageSrc}
@@ -63,7 +63,7 @@ export default function GenericCard({
       {subtitle && <h4 className="text-md font-semibold text-purple70">{subtitle}</h4>}
       {title && <h3 className="text-lg font-bold text-gray-800 dark:text-white">{title}</h3>}
 
-      {description && <p className="text-gray-800 dark:text-white">{description}</p>}
+      {description && <p className="text-gray08 dark:text-gray75">{description}</p>}
 
 
       {twitterLink && (
@@ -83,7 +83,7 @@ export default function GenericCard({
 
 
       {(role === "admin") && (
-      <div className="mt-4 flex justify-end space-x-2">
+      <div className="mt-auto pt-4 flex justify-end items-end space-x-2">
         {onEdit && (
           <button onClick={onEdit} className="px-3 py-1 bg-purple70 text-white rounded hover:bg-purple60">
             Edit

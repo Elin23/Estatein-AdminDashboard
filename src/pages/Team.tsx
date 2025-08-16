@@ -44,15 +44,24 @@ export default function Team() {
 
   return (
     <div className="p-6 huge:max-w-[1390px] huge:mx-auto">
-      <div className="flex justify-between items-center mb-4 ">
+      <div className="flex flex-col lg-custom:flex-row justify-between  mb-4 ">
         <h1 className="text-2xl font-bold text-gray-800 dark:text-white mb-6">
           Our Team
         </h1>
 
-        <div className="flex gap-2">
+        <div className="flex flex-col  lg-custom:flex-row lg-custom:items-center gap-3">
+          <ExportButton
+            data={members}
+            onExport={exportTeamReport}
+            buttonLabel="Export to Excel"
+            disabled={members.length === 0}
+          />
+
           {role === "admin" && (
             <button
-              className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded"
+              className="px-4 py-2 rounded-xl text-white bg-blue-600 hover:bg-blue-700 transition-colors
+              ring-2 ring-blue-600  ring-offset-2     ring-offset-white dark:ring-offset-gray-900
+                  disabled:opacity-60 disabled:cursor-not-allowed"
               onClick={() => {
                 setEditing(null);
                 setShowForm(true);
@@ -62,12 +71,7 @@ export default function Team() {
             </button>
           )}
 
-          <ExportButton
-            data={members}
-            onExport={exportTeamReport}
-            buttonLabel="Export to Excel"
-            disabled={members.length === 0}
-          />
+
         </div>
       </div>
 

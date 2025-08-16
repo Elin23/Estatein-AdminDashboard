@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from "react"
 import {
   StepForward,
   Building2,
@@ -9,36 +9,34 @@ import {
   InboxIcon,
   MessageSquare,
   LogOut,
-  Aperture,
-  Link,
   User,
   Menu,
   PersonStanding,
-    CircleQuestionMarkIcon,
+  CircleQuestionMarkIcon,
   Info,
 } from "lucide-react"
-import { useLocation, useNavigate } from 'react-router-dom';
-import SidebarLink from './SidebarLink';
-import Switch from '../UI/Switch';
-import { useDispatch, useSelector } from "react-redux"
-import { logout } from '../../redux/slices/authSlice';
-import { getAuth, signOut } from 'firebase/auth';
-import { db } from '../../firebaseConfig';
-import { ref, onValue, query, limitToLast } from 'firebase/database';
+import { useLocation, useNavigate } from "react-router-dom"
+import SidebarLink from "./SidebarLink"
+import Switch from "../UI/Switch"
+import { logout } from "../../redux/slices/authSlice"
+import { getAuth, signOut } from "firebase/auth"
+import { db } from "../../firebaseConfig"
+import { ref, onValue, query, limitToLast } from "firebase/database"
 import type { RootState } from "../../redux/store"
 import { useSidebar } from "../../contexts/SidebarContext"
+import { useAppDispatch, useAppSelector } from "../../hooks/useAppSelector"
 
-const LAST_SEEN_KEY = 'notif:lastSeenAt';
-const SEEN_IDS_KEY = 'notif:seenIds';
-const SYNC_EVENT = 'notif:sync';
+const LAST_SEEN_KEY = "notif:lastSeenAt"
+const SEEN_IDS_KEY = "notif:seenIds"
+const SYNC_EVENT = "notif:sync"
 
 function loadSeenIds(): Set<string> {
   try {
-    const raw = localStorage.getItem(SEEN_IDS_KEY);
-    if (!raw) return new Set();
-    return new Set(JSON.parse(raw) as string[]);
+    const raw = localStorage.getItem(SEEN_IDS_KEY)
+    if (!raw) return new Set()
+    return new Set(JSON.parse(raw) as string[])
   } catch {
-    return new Set();
+    return new Set()
   }
 }
 
@@ -57,8 +55,8 @@ const menuItems = [
   },
   {
     icon: Grid,
-    label: "Achievements",
-    path: "/achievements",
+    label: "Achievements & Values",
+    path: "/achievementsAndValues",
     visible: ["support", "admin"],
   },
   {
@@ -83,12 +81,6 @@ const menuItems = [
     icon: StepForward,
     label: "Steps",
     path: "/steps",
-    visible: ["support", "admin"],
-  },
-  {
-    icon: Aperture,
-    label: "Our Values",
-    path: "/values",
     visible: ["support", "admin"],
   },
   {
@@ -123,57 +115,59 @@ const menuItems = [
   },
 ]
 
-
 const Sidebar: React.FC = () => {
-  const userRole = useSelector((state: RootState) => state.auth.role) || ""
+  const userRole = useAppSelector((state: RootState) => state.auth.role) || ""
 
-  const location = useLocation();
-  const navigate = useNavigate();
-  const dispatch = useDispatch();
-  const auth = getAuth();
+  const location = useLocation()
+  const navigate = useNavigate()
+  const dispatch = useAppDispatch()
+  const auth = getAuth()
   const { isCollapsed, toggleSidebar } = useSidebar()
-  const [unreadCount, setUnreadCount] = useState(0);
-  const [seenIds, setSeenIds] = useState<Set<string>>(() => loadSeenIds());
-  const lastSeenRef = useRef<number>(Number(localStorage.getItem(LAST_SEEN_KEY) || 0));
+  const [unreadCount, setUnreadCount] = useState(0)
+  const [seenIds, setSeenIds] = useState<Set<string>>(() => loadSeenIds())
+  const lastSeenRef = useRef<number>(
+    Number(localStorage.getItem(LAST_SEEN_KEY) || 0)
+  )
 
   useEffect(() => {
-    const notifRef = query(ref(db, 'notifications'), limitToLast(200));
+    const notifRef = query(ref(db, "notifications"), limitToLast(200))
     const off = onValue(
       notifRef,
       (snap) => {
-        const data = snap.val() || {};
-        let count = 0;
+        const data = snap.val() || {}
+        let count = 0
         for (const [id, v] of Object.entries<any>(data)) {
-          const ts = typeof v?.createdAt === 'number' ? v.createdAt : 0;
-          const isUnread = ts > lastSeenRef.current && !seenIds.has(id as string);
-          if (isUnread) count++;
+          const ts = typeof v?.createdAt === "number" ? v.createdAt : 0
+          const isUnread =
+            ts > lastSeenRef.current && !seenIds.has(id as string)
+          if (isUnread) count++
         }
-        setUnreadCount(count);
+        setUnreadCount(count)
       },
       () => setUnreadCount(0)
-    );
-    return () => off();
-  }, [seenIds]);
+    )
+    return () => off()
+  }, [seenIds])
 
   useEffect(() => {
     const handler = () => {
-      setSeenIds(loadSeenIds());
-      lastSeenRef.current = Number(localStorage.getItem(LAST_SEEN_KEY) || 0);
-    };
-    window.addEventListener(SYNC_EVENT, handler);
-    return () => window.removeEventListener(SYNC_EVENT, handler);
-  }, []);
+      setSeenIds(loadSeenIds())
+      lastSeenRef.current = Number(localStorage.getItem(LAST_SEEN_KEY) || 0)
+    }
+    window.addEventListener(SYNC_EVENT, handler)
+    return () => window.removeEventListener(SYNC_EVENT, handler)
+  }, [])
 
   useEffect(() => {
     const onStorage = (e: StorageEvent) => {
       if (e.key === SEEN_IDS_KEY || e.key === LAST_SEEN_KEY) {
-        setSeenIds(loadSeenIds());
-        lastSeenRef.current = Number(localStorage.getItem(LAST_SEEN_KEY) || 0);
+        setSeenIds(loadSeenIds())
+        lastSeenRef.current = Number(localStorage.getItem(LAST_SEEN_KEY) || 0)
       }
-    };
-    window.addEventListener('storage', onStorage);
-    return () => window.removeEventListener('storage', onStorage);
-  }, []);
+    }
+    window.addEventListener("storage", onStorage)
+    return () => window.removeEventListener("storage", onStorage)
+  }, [])
 
   const handleLogout = async () => {
     try {
@@ -187,35 +181,49 @@ const Sidebar: React.FC = () => {
 
   return (
     <div
-      className={`bg-white dark:bg-gray-800 h-screen fixed left-0 top-0 shadow-lg flex flex-col transition-all duration-300 z-50
+      className={`bg-white dark:bg-gray-800 h-screen items-center lg-custom:items-stretch fixed left-0 top-0 shadow-lg flex flex-col transition-all duration-300 z-50
         ${isCollapsed ? "w-16" : "w-64"}
       `}
     >
-      <div className="p-4 gap-4 flex flex-col md:flex-row items-start md:items-center justify-between">
-        <button className="rounded md:hidden" onClick={toggleSidebar}>
-          <Menu className="w-5 h-5 dark:text-gray-200 text-gray-800" />
-        </button>
+      <div className="p-4 gap-4 flex flex-col lg-custom:flex-row items-start md:items-center justify-between">
 
-        {!isCollapsed && (
-          <div className="flex items-center gap-2">
-            <img
-              src="/assets/imgs/logo.svg"
-              alt="Estatein Logo"
-              className="size-8"
-            />
+
+        <div className="flex items-center gap-2">
+                    {isCollapsed && (
+
+          <img
+            src="/assets/imgs/logo.svg"
+            alt="Estatein Logo"
+            className="size-6"
+          />
+          )}
+
+
+          {!isCollapsed && (
+          <>
+                               <img
+            src="/assets/imgs/logo.svg"
+            alt="Estatein Logo"
+            className="size-8"
+          />
             <h1 className="text-gray-800 dark:text-gray-200 font-bold">
               Estatein
             </h1>
-          </div>
-        )}
+          </>  
+
+          )}
+
+        </div>
+
+        <button className="rounded lg-custom:hidden" onClick={toggleSidebar}>
+          <Menu className="w-5 h-5 dark:text-gray-200 text-gray-800" />
+        </button>
 
         <div className="flex items-center gap-2">
           <Switch />
         </div>
       </div>
 
-
-      {/* Navigation */}
       <nav className="flex-1 mt-2 overflow-y-auto">
         {menuItems.map((item) =>
           item.visible.includes(userRole) ? (
@@ -223,7 +231,7 @@ const Sidebar: React.FC = () => {
               key={item.path}
               {...item}
               isActive={location.pathname === item.path}
-              unreadCount={item.path === '/' ? unreadCount : 0}
+              unreadCount={item.path === "/" ? unreadCount : 0}
               isCollapsed={isCollapsed}
             />
           ) : null

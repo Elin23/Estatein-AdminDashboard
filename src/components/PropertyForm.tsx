@@ -1,17 +1,17 @@
-import React, { useEffect, useState, type Dispatch } from 'react';
-import { X } from 'lucide-react';
-import type { Property, PropertyFormData } from '../types';
-import FeaturesInput from './form/FeaturesInput';
-import FormField from './InputField/FormField';
+import React, { useEffect, useState, type Dispatch } from "react"
+import { X } from "lucide-react"
+import type { Property, PropertyFormData } from "../types"
+import FeaturesInput from "./form/FeaturesInput"
+import FormField from "./InputField/FormField"
 
 interface PropertyFormProps {
-  onSubmit: (data: PropertyFormData) => void;
-  locations: string[];
-  isloading: boolean;
-  editing: boolean;
-  setEditing: Dispatch<React.SetStateAction<boolean>>;
-  propertyBeingEdited: Property | null;
-  onEdit: (id: any, property: any) => void;
+  onSubmit: (data: PropertyFormData) => void
+  locations: string[]
+  isloading: boolean
+  editing: boolean
+  setEditing: Dispatch<React.SetStateAction<boolean>>
+  propertyBeingEdited: Property | null
+  onEdit: (id: any, property: any) => void
 }
 
 const PropertyForm: React.FC<PropertyFormProps> = ({
@@ -19,30 +19,26 @@ const PropertyForm: React.FC<PropertyFormProps> = ({
   locations,
   isloading,
   editing,
-  setEditing,
   propertyBeingEdited,
-  onEdit
+  onEdit,
 }) => {
-  const [uploading, setUploading] = useState(false);
-  const [imageUrls, setImageUrls] = useState<string[]>([]);
-  const [features, setFeatures] = useState<string[]>([]);
-  const formRef = useRef<HTMLFormElement>(null);
-  // State للـ dropdowns وحقول التحكم
-  const [location, setLocation] = useState('');
-  const [category, setCategory] = useState('');
-  const [status, setStatus] = useState('');
+  const [uploading, setUploading] = useState(false)
+  const [imageUrls, setImageUrls] = useState<string[]>([])
+  const [features, setFeatures] = useState<string[]>([])
+  const [location, setLocation] = useState("")
+  const [category, setCategory] = useState("")
+  const [status, setStatus] = useState("")
 
-  // handle multiple images upload function
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files;
-    if (!files) return;
+    const files = e.target.files
+    if (!files) return
 
-    setUploading(true);
-    const uploadedUrls: string[] = [];
+    setUploading(true)
+    const uploadedUrls: string[] = []
 
     for (const file of Array.from(files)) {
-      const formData = new FormData();
-      formData.append("image", file);
+      const formData = new FormData()
+      formData.append("image", file)
 
       const res = await fetch(
         `https://api.imgbb.com/1/upload?key=edeee7c6c2851a590946b20e9ce00b5d`,
@@ -50,25 +46,24 @@ const PropertyForm: React.FC<PropertyFormProps> = ({
           method: "POST",
           body: formData,
         }
-      );
+      )
 
-      const data = await res.json();
+      const data = await res.json()
       if (data?.success) {
-        uploadedUrls.push(data.data.url);
+        uploadedUrls.push(data.data.url)
       }
     }
 
-    setImageUrls((prev) => [...prev, ...uploadedUrls]);
-    e.target.value = "";
-    setUploading(false);
-  };
+    setImageUrls((prev) => [...prev, ...uploadedUrls])
+    e.target.value = ""
+    setUploading(false)
+  }
 
-  // add property function
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const formData = new FormData(e.currentTarget);
-    const yearValue = formData.get("buildYear") as string;
-    const realYear = yearValue.split("-")[0];
+    e.preventDefault()
+    const formData = new FormData(e.currentTarget)
+    const yearValue = formData.get("buildYear") as string
+    const realYear = yearValue.split("-")[0]
 
     const propertyData: PropertyFormData = {
       title: formData.get("title") as string,
@@ -84,7 +79,7 @@ const PropertyForm: React.FC<PropertyFormProps> = ({
       buildYear: realYear,
       price: Number(formData.get("price")),
       status: status as "available" | "sold",
-      tags: formData.get("tags") as string, 
+      tags: formData.get("tags") as string,
 
       additionalFees: {
         transferTax: Number(formData.get("transferTax")),
@@ -111,37 +106,37 @@ const PropertyForm: React.FC<PropertyFormProps> = ({
         listingPrice: Number(formData.get("price")),
         mortgageAmount: Number(formData.get("mortgageAmount")),
       },
-    };
+    }
 
     if (editing) {
       onEdit(propertyBeingEdited!.id, propertyData)
     } else {
-      onSubmit(propertyData);
+      onSubmit(propertyData)
     }
 
-    e.currentTarget.reset();
-    setImageUrls([]);
-    setFeatures([]);
-    setLocation('');
-    setCategory('');
-    setStatus('');
-  };
+    e.currentTarget.reset()
+    setImageUrls([])
+    setFeatures([])
+    setLocation("")
+    setCategory("")
+    setStatus("")
+  }
 
   useEffect(() => {
     if (editing && propertyBeingEdited) {
-      setFeatures(propertyBeingEdited.features || []);
-      setImageUrls(propertyBeingEdited.images || []);
-      setLocation(propertyBeingEdited.location || '');
-      setCategory(propertyBeingEdited.type || '');
-      setStatus(propertyBeingEdited.status || '');
+      setFeatures(propertyBeingEdited.features || [])
+      setImageUrls(propertyBeingEdited.images || [])
+      setLocation(propertyBeingEdited.location || "")
+      setCategory(propertyBeingEdited.type || "")
+      setStatus(propertyBeingEdited.status || "")
     } else {
-      setFeatures([]);
-      setImageUrls([]);
-      setLocation('');
-      setCategory('');
-      setStatus('');
+      setFeatures([])
+      setImageUrls([])
+      setLocation("")
+      setCategory("")
+      setStatus("")
     }
-  }, [editing, propertyBeingEdited]);
+  }, [editing, propertyBeingEdited])
 
   return (
     <form
@@ -297,7 +292,6 @@ const PropertyForm: React.FC<PropertyFormProps> = ({
           />
         </div>
 
-
         <div className="space-y-4 images_input_and_display">
           <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
             Images
@@ -310,7 +304,7 @@ const PropertyForm: React.FC<PropertyFormProps> = ({
               accept=".png,.jpg,.jpeg,.webp"
               multiple
               onChange={(e) => {
-                handleImageUpload(e as React.ChangeEvent<HTMLInputElement>);
+                handleImageUpload(e as React.ChangeEvent<HTMLInputElement>)
               }}
             />
           </div>
@@ -402,7 +396,7 @@ const PropertyForm: React.FC<PropertyFormProps> = ({
         </button>
       </div>
     </form>
-  );
-};
+  )
+}
 
-export default PropertyForm;
+export default PropertyForm

@@ -19,7 +19,7 @@ export default function CompanyInfo() {
       <div
         role="tablist"
         aria-label="Sections"
-        className="flex items-center gap-2  w-full mb-4 "
+        className="flex  items-center gap-2  w-full mb-4 "
       >
         <button
           id="tab-locations-trigger"

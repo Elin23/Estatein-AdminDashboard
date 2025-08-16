@@ -1,4 +1,4 @@
-import React from "react"
+import React, { memo } from "react"
 import { Switch } from "@headlessui/react"
 import { useSelector } from "react-redux"
 import type { RootState } from "../redux/store"
@@ -25,8 +25,8 @@ const TestimonialCard: React.FC<TestimonialCardProps> = ({
 }) => {
   const role = useSelector((state: RootState) => state.auth.role) || ""
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-10 max-w-[450px] h-full">
-      <div className="flex justify-between items-start md:flex-row flex-col">
+    <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg pt-10 px-4 pb-4 w-full lg-custom:max-w-[450px] h-full">
+      <div className="flex justify-between items-start lg-custom:flex-row flex-col gap-4">
         <div>
           <h3 className="text-lg font-semibold text-gray-800 dark:text-white">
             {testimonial.subject}
@@ -81,4 +81,4 @@ const TestimonialCard: React.FC<TestimonialCardProps> = ({
   )
 }
 
-export default TestimonialCard
+export default memo(TestimonialCard)

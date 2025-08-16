@@ -52,11 +52,11 @@ const Testimonials = () => {
 
   return (
     <div className="p-6 max-w-[1430px] mx-auto ">
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-6 gap-4">
+      <div className="flex flex-col  lg-custom:flex-row justify-between lg-custom:items-center gap-3 mb-4">
         <h1 className="text-2xl font-bold text-gray-800 dark:text-white">
           Testimonials
         </h1>
-        <div className="flex flex-col sm:flex-row gap-4">
+        <div className="flex flex-col lg-custom:flex-row gap-4">
           <input
             type="text"
             placeholder="Search by name..."
@@ -101,7 +101,7 @@ const Testimonials = () => {
                 type="checkbox"
                 checked={selectedItems.includes(item.id)}
                 onChange={() => toggleSelect(item.id)}
-                className="absolute top-3 left-3 w-6 h-6 cursor-pointer border-2 border-gray-400 rounded-sm dark:border-gray-600"
+                className="absolute  top-3 left-3 w-6 h-6 cursor-pointer border-2 border-gray-400  rounded-full dark:border-gray-600"
               />
             )}
             <TestimonialCard

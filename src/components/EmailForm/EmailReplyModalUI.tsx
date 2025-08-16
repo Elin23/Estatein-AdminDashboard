@@ -1,5 +1,5 @@
-import type { EmailReplyProps } from "../../types/EmailReplyModal";
-import EmailForm from "./EmailForm";
+import type { EmailReplyProps } from "../../types/EmailReplyModal"
+import EmailForm from "./EmailForm"
 
 export default function EmailReplyModalUI({
   open = true,
@@ -13,7 +13,7 @@ export default function EmailReplyModalUI({
   defaultSubject = "",
   defaultMessage = "",
 }: EmailReplyProps) {
-  if (!open) return null;
+  if (!open) return null
 
   return (
     <div
@@ -22,7 +22,6 @@ export default function EmailReplyModalUI({
       aria-modal="true"
     >
       <div className="w-full max-w-lg rounded-2xl bg-white99 p-6 shadow-2xl ring-1 ring-gray08 dark:bg-gray-800">
-        {/* Header */}
         <div className="mb-5 flex items-center justify-between">
           <button
             type="button"
@@ -38,7 +37,6 @@ export default function EmailReplyModalUI({
           </h3>
         </div>
 
-        {/* Alerts */}
         {success && (
           <div className="mb-3 flex items-start gap-2 rounded-lg border border-purple90 bg-purple97 px-3 py-2 text-sm text-purple60">
             <span>Email queued successfully. You can close this window.</span>
@@ -51,7 +49,6 @@ export default function EmailReplyModalUI({
           </div>
         )}
 
-        {/* Form */}
         <EmailForm
           submitLabel={loading ? "Sending..." : "Send"}
           cancelLabel="Cancel"
@@ -64,5 +61,5 @@ export default function EmailReplyModalUI({
         />
       </div>
     </div>
-  );
+  )
 }

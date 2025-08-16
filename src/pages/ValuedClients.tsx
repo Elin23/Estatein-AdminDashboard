@@ -1,73 +1,92 @@
-import { useState, useEffect } from "react";
-import { db } from "../firebaseConfig";
-import { ref, onValue, push, set, update, remove } from "firebase/database";
-import { useSelector } from "react-redux";
-import type { RootState } from "../redux/store";
-import ValuedClientsForm from "../components/ValuedClients/ValuedClientsForm";
-import ValuedClientCard from "../components/ValuedClients/ValuedClientCard";
-import type { ValuedClient } from "../types/ValuedClient";
+import { useState, useEffect, useCallback } from "react"
+import { db } from "../firebaseConfig"
+import { ref, onValue, push, set, update, remove } from "firebase/database"
+import { useSelector } from "react-redux"
+import type { RootState } from "../redux/store"
+import ValuedClientsForm from "../components/ValuedClients/ValuedClientsForm"
+import ValuedClientCard from "../components/ValuedClients/ValuedClientCard"
+import type { ValuedClient } from "../types/ValuedClient"
+import Modal from "../components/UI/Modal"
 
 function ValuedClients() {
-  const role = useSelector((state: RootState) => state.auth.role) || "";
-  const [clients, setClients] = useState<ValuedClient[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [editingClient, setEditingClient] = useState<ValuedClient | null>(null);
-  const [showForm, setShowForm] = useState(false);
+  const role = useSelector((state: RootState) => state.auth.role) || ""
+  const [clients, setClients] = useState<ValuedClient[]>([])
+  const [loading, setLoading] = useState(true)
+  const [editingClient, setEditingClient] = useState<ValuedClient | null>(null)
+  const [showForm, setShowForm] = useState(false)
+  const [modalOpen, setModalOpen] = useState(false)
+  const [clientToDelete, setClientToDelete] = useState<string | null>(null)
+
+  const handleDelete = async (id: string) => {
+    await remove(ref(db, `clients/${id}`))
+  }
+
+  const handleDeleteClick = useCallback((id: string) => {
+    setClientToDelete(id)
+    setModalOpen(true)
+  }, [])
+
+  const confirmDelete = useCallback(() => {
+    if (!clientToDelete) return
+    handleDelete(clientToDelete)
+    setModalOpen(false)
+    setClientToDelete(null)
+  }, [clientToDelete, handleDelete])
 
   useEffect(() => {
-    const clientsRef = ref(db, "clients");
+    const clientsRef = ref(db, "clients")
     const unsubscribe = onValue(clientsRef, (snapshot) => {
       if (snapshot.exists()) {
-        const data = snapshot.val() as Record<string, Omit<ValuedClient, "id">>;
+        const data = snapshot.val() as Record<string, Omit<ValuedClient, "id">>
         const list: ValuedClient[] = Object.entries(data).map(
           ([id, value]) => ({
             id,
             ...value,
           })
-        );
-        setClients(list);
+        )
+        setClients(list)
       } else {
-        setClients([]);
+        setClients([])
       }
-      setLoading(false);
-    });
-    return () => unsubscribe();
-  }, []);
+      setLoading(false)
+    })
+    return () => unsubscribe()
+  }, [])
 
   const handleAdd = async (newClient: Omit<ValuedClient, "id">) => {
-    const newRef = push(ref(db, "clients"));
-    await set(newRef, newClient);
-    setShowForm(false);
-  };
+    const newRef = push(ref(db, "clients"))
+    await set(newRef, newClient)
+    setShowForm(false)
+  }
 
   const handleUpdate = async (data: Omit<ValuedClient, "id">, id?: string) => {
-    if (!id) return;
-    await update(ref(db, `clients/${id}`), data);
-    setEditingClient(null);
-    setShowForm(false);
-  };
-
-  const handleDelete = async (id: string) => {
-    await remove(ref(db, `clients/${id}`));
-  };
+    if (!id) return
+    await update(ref(db, `clients/${id}`), data)
+    setEditingClient(null)
+    setShowForm(false)
+  }
 
   const handleEditClick = (client: ValuedClient) => {
-    setEditingClient(client);
-    setShowForm(true);
-  };
+    setEditingClient(client)
+    setShowForm(true)
+  }
 
   const handleAddClick = () => {
-    setEditingClient(null);
-    setShowForm(true);
-  };
+    setEditingClient(null)
+    setShowForm(true)
+  }
 
   return (
     <div className="p-6">
-      <div className="flex justify-between items-center flex-wrap mb-4 huge:max-w-[1390px] huge:mx-auto">
-        <h1 className="text-2xl font-bold text-gray-800 dark:text-white mb-6">Valued Clients</h1>
-        {role === 'admin' && (
+      <div className="flex flex-col lg-custom:flex-row justify-between lg-custom:items-center flex-wrap mb-4 huge:max-w-[1390px] huge:mx-auto">
+        <h1 className=" text-2xl font-bold text-gray-800 dark:text-white mb-6">
+          Valued Clients
+        </h1>
+        {role === "admin" && (
           <button
-            className="bg-purple60 hover:bg-purple65  text-white px-4 py-2 rounded"
+            className="px-4 py-2 rounded-xl text-white bg-blue-600 hover:bg-blue-700 transition-colors
+              ring-2 ring-blue-600  ring-offset-2     ring-offset-white dark:ring-offset-gray-900
+                  disabled:opacity-60 disabled:cursor-not-allowed"
             onClick={handleAddClick}
           >
             + Add Valued Client
@@ -80,8 +99,8 @@ function ValuedClients() {
           onSubmit={editingClient ? handleUpdate : handleAdd}
           initialData={editingClient}
           onCancel={() => {
-            setEditingClient(null);
-            setShowForm(false);
+            setEditingClient(null)
+            setShowForm(false)
           }}
         />
       )}
@@ -96,12 +115,22 @@ function ValuedClients() {
                 key={client.id}
                 client={client}
                 onEdit={() => handleEditClick(client)}
-                onDelete={() => handleDelete(client.id)}
+                onDelete={() => handleDeleteClick(client.id)}
               />
             ))}
       </div>
+      <Modal
+        title="Delete Client"
+        message="Delete this client? This action cannot be undone."
+        isOpen={modalOpen}
+        onClose={() => setModalOpen(false)}
+        onConfirm={confirmDelete}
+        confirmText="Delete"
+        cancelText="Cancel"
+        showConfirm
+      />
     </div>
-  );
+  )
 }
 
-export default ValuedClients;
+export default ValuedClients

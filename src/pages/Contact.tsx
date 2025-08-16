@@ -35,7 +35,7 @@ const Contact = () => {
 
   return (
     <div className="p-6">
-      <div className="flex justify-between items-center gap-5 flex-wrap mb-6">
+      <div className="flex flex-col lg-custom:flex-row justify-between lg-custom:items-center gap-5 flex-wrap mb-6">
         <h1 className="text-2xl font-bold text-gray-800 dark:text-white ">
           Contact Requests
         </h1>

@@ -1,14 +1,14 @@
 import { useSelector } from "react-redux";
-import type { RootState } from "../redux/store";
-import type { ValueItem } from "../types/ValueItem";
-import ValueForm from "../components/Values/ValuesForm";
+import type { RootState } from "../../redux/store";
+import type { ValueItem } from "../../types/ValueItem";
+import ValueForm from "../../components/Values/ValuesForm";
 import {
   subscribeToValues,
   addValue,
   updateValue,
   deleteValue,
-} from "../redux/slices/valuesSlice";
-import CrudSection from "../components/CrudSection";
+} from "../../redux/slices/valuesSlice";
+import CrudSection from "../../components/CrudSection";
 
 function Values() {
   const role = useSelector((state: RootState) => state.auth.role) || "";

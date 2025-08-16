@@ -1,29 +1,29 @@
-import { useEffect, useState, type ComponentType } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import Pagination from "./UI/Pagination";
-import GenericCard from "./GenericCard/GenericCard";
-import type { RootState, AppDispatch } from "../redux/store";
+import { useEffect, useState, type ComponentType } from "react"
+import { useDispatch, useSelector } from "react-redux"
+import Pagination from "./UI/Pagination"
+import GenericCard from "./GenericCard/GenericCard"
+import type { RootState, AppDispatch } from "../redux/store"
 
 type CrudSectionProps<T> = {
-  title: string;
-  addBtnText: string;
-  role: string;
-  selectList: (state: RootState) => T[];
-  selectLoading: (state: RootState) => boolean;
-  selectError?: (state: RootState) => string | null;
-  subscribeAction: () => any;
-  cleanupAction?: () => any;
-  addAction: (item: Omit<T, "id">) => any;
-  updateAction: (payload: { id: string; data: Omit<T, "id"> }) => any;
-  deleteAction: (id: string) => any;
+  title: string
+  addBtnText: string
+  role: string
+  selectList: (state: RootState) => T[]
+  selectLoading: (state: RootState) => boolean
+  selectError?: (state: RootState) => string | null
+  subscribeAction: () => any
+  cleanupAction?: () => any
+  addAction: (item: Omit<T, "id">) => any
+  updateAction: (payload: { id: string; data: Omit<T, "id"> }) => any
+  deleteAction: (id: string) => any
   FormComponent: ComponentType<{
-    onSubmit: (data: Omit<T, "id">, id?: string) => Promise<void>;
-    initialData?: T | null;
-    onCancel: () => void;
-  }>;
-  renderTitle: (item: T) => string;
-  renderDescription: (item: T) => string;
-};
+    onSubmit: (data: Omit<T, "id">, id?: string) => Promise<void>
+    initialData?: T | null
+    onCancel: () => void
+  }>
+  renderTitle: (item: T) => string
+  renderDescription: (item: T) => string
+}
 
 function CrudSection<T extends { id: string }>({
   title,
@@ -41,50 +41,52 @@ function CrudSection<T extends { id: string }>({
   renderTitle,
   renderDescription,
 }: CrudSectionProps<T>) {
-  const dispatch = useDispatch<AppDispatch>();
-  const list = useSelector(selectList);
-  const loading = useSelector(selectLoading);
-  const error = selectError ? useSelector(selectError) : null;
+  const dispatch = useDispatch<AppDispatch>()
+  const list = useSelector(selectList)
+  const loading = useSelector(selectLoading)
+  const error = selectError ? useSelector(selectError) : null
 
-  const [editingItem, setEditingItem] = useState<T | null>(null);
-  const [showForm, setShowForm] = useState(false);
+  const [editingItem, setEditingItem] = useState<T | null>(null)
+  const [showForm, setShowForm] = useState(false)
 
   useEffect(() => {
-    dispatch(subscribeAction());
+    dispatch(subscribeAction())
     return () => {
-      if (cleanupAction) dispatch(cleanupAction());
-    };
-  }, [dispatch, subscribeAction, cleanupAction]);
+      if (cleanupAction) dispatch(cleanupAction())
+    }
+  }, [dispatch, subscribeAction, cleanupAction])
 
   const handleAdd = async (item: Omit<T, "id">) => {
-    await dispatch(addAction(item));
-    setShowForm(false);
-    setEditingItem(null);
-  };
+    await dispatch(addAction(item))
+    setShowForm(false)
+    setEditingItem(null)
+  }
 
   const handleUpdate = async (data: Omit<T, "id">, id?: string) => {
-    if (!id) return;
-    await dispatch(updateAction({ id, data }));
-    setShowForm(false);
-    setEditingItem(null);
-  };
+    if (!id) return
+    await dispatch(updateAction({ id, data }))
+    setShowForm(false)
+    setEditingItem(null)
+  }
 
   const handleDelete = (id: string) => {
-    dispatch(deleteAction(id));
-  };
+    dispatch(deleteAction(id))
+  }
 
   return (
     <div className="p-4 sm:p-6 max-w-[1430px] mx-auto">
-      <div className="flex flex-col md:flex-row justify-between items-center mb-4 huge:max-w-[1390px] huge:mx-auto">
+      <div className="flex flex-col lg-custom:flex-row justify-between lg-custom:items-center  mb-4 ">
         <h1 className="text-2xl font-bold text-gray-800 dark:text-white mb-6">
           {title}
         </h1>
         {role === "admin" && (
           <button
-            className="bg-purple60 hover:bg-purple65 text-white px-4 py-2 rounded"
-            onClick={() => {
-              setShowForm((prev) => !prev); 
-              setEditingItem(null); 
+className="px-4 py-2 rounded-xl text-white bg-blue-600 hover:bg-blue-700 transition-colors
+              ring-2 ring-blue-600  ring-offset-2     ring-offset-white dark:ring-offset-gray-900
+                  disabled:opacity-60 disabled:cursor-not-allowed"            
+                  onClick={() => {
+              setShowForm((prev) => !prev)
+              setEditingItem(null)
             }}
           >
             {showForm ? "Close" : addBtnText}
@@ -99,8 +101,8 @@ function CrudSection<T extends { id: string }>({
           onSubmit={editingItem ? handleUpdate : handleAdd}
           initialData={editingItem}
           onCancel={() => {
-            setEditingItem(null);
-            setShowForm(false);
+            setEditingItem(null)
+            setShowForm(false)
           }}
         />
       ) : (
@@ -112,8 +114,8 @@ function CrudSection<T extends { id: string }>({
               title={renderTitle(item)}
               description={renderDescription(item)}
               onEdit={() => {
-                setEditingItem(item);
-                setShowForm(true);
+                setEditingItem(item)
+                setShowForm(true)
               }}
               onDelete={() => handleDelete(item.id)}
             />
@@ -122,6 +124,6 @@ function CrudSection<T extends { id: string }>({
         />
       )}
     </div>
-  );
+  )
 }
-export default CrudSection;
+export default CrudSection

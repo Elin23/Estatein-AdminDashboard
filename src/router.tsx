@@ -1,12 +1,9 @@
 import { createBrowserRouter } from "react-router-dom";
 import Dashboard from './pages/Dashboard';
 import Properties from './pages/Properties';
-import Locations from './pages/CompanyInfo/Locations';
 import Submissions from './pages/Submissions';
 import MainLayout from './layout/MainLayout';
-import Achievements from './pages/Achievements';
 import Team from './pages/Team';
-import Values from './pages/Values';
 import Contact from './pages/Contact';
 import Steps from "./pages/Steps";
 import Testimonials from "./pages/Testimonials";
@@ -17,6 +14,7 @@ import ProtectedRoute from "./components/auth/ProtectedRoute";
 import ValuedClients from "./pages/ValuedClients";
 import CompanyInfo from "./pages/CompanyInfo/CompanyInfo";
 import FAQ from "./pages/FAQ";
+import AchievementsAndValues from "./pages/AchievementsAndValues/AchievementsAndValues";
 
 const router = createBrowserRouter([
   {
@@ -38,11 +36,10 @@ const router = createBrowserRouter([
       {
         element: <ProtectedRoute allowedRoles={["support", "admin"]} />,
         children: [
-          { path: "achievements", element: <Achievements /> },
+          { path: "achievementsAndValues", element: <AchievementsAndValues /> },
           { path: "contact", element: <Contact /> },
           { path: "testimonials", element: <Testimonials /> },
           { path: "team", element: <Team /> },
-          { path: "values", element: <Values /> },
           { path: "steps", element: <Steps /> },
           { path: "clients", element: <ValuedClients /> },
           { path: "info", element: <CompanyInfo /> },
