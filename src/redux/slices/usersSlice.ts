@@ -1,150 +1,115 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import type { PayloadAction } from "@reduxjs/toolkit";
-import { 
-  getAuth, 
-  createUserWithEmailAndPassword,
-} from "firebase/auth";
-import { ref, onValue, set, update, remove } from "firebase/database";
-import { db } from "../../firebaseConfig";
-import type { User } from "../../types";
+import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
+import { getDatabase, ref, onValue, remove, set } from "firebase/database";
+
+export type User = {
+  uid: string;
+  email: string;
+  role: string;
+};
 
 interface UsersState {
-  items: User[];
+  users: User[];
   loading: boolean;
   error: string | null;
   unsubscribe?: () => void;
 }
 
 const initialState: UsersState = {
-  items: [],
+  users: [],
   loading: false,
   error: null,
 };
 
-// Subscribe to users
-export const subscribeToUsers = createAsyncThunk<
-  void,
-  void,
-  { rejectValue: string; state: any }
->("users/subscribe", async (_, { dispatch, rejectWithValue, getState }) => {
-  try {
-    const state = getState();
-    const currentUnsub = state.users.unsubscribe;
-    if (currentUnsub) currentUnsub();
+export const subscribeToUsers = createAsyncThunk(
+  "users/subscribe",
+  async (_, { dispatch, rejectWithValue }) => {
+    try {
+      const db = getDatabase();
+      const usersRef = ref(db, "users");
 
-    dispatch(setUsersLoading(true));
-
-    const usersRef = ref(db, "users");
-    const unsubscribe = onValue(
-      usersRef,
-      (snapshot) => {
-        if (snapshot.exists()) {
-          const data = snapshot.val();
-          const usersList: User[] = Object.entries(data).map(
-            ([id, value]: [string, any]) => ({
-              id,
-              ...(value as Omit<User, "id">),
-            })
-          );
-          dispatch(setUsers(usersList));
-        } else {
-          dispatch(setUsers([]));
+      const unsubscribe = onValue(
+        usersRef,
+        (snapshot) => {
+          const data = snapshot.val() || {};
+          const userList: User[] = Object.entries(data).map(([uid, val]: [string, any]) => ({
+            uid,
+            email: val.email,
+            role: val.role,
+          }));
+          dispatch(setUsers(userList));
+        },
+        (error) => {
+          dispatch(setError(error.message || "فشل في تحميل المستخدمين"));
         }
-        dispatch(setUsersLoading(false));
-      },
-      (error) => {
-        dispatch(setUsersError(error.message));
-        dispatch(setUsersLoading(false));
+      );
+
+      dispatch(setUnsubscribe(() => unsubscribe));
+    } catch (err: any) {
+      return rejectWithValue(err.message);
+    }
+  }
+);
+
+export const createUser = createAsyncThunk(
+  "users/create",
+  async (
+    { email, password, role, uid }: { email: string; password?: string; role: string; uid?: string },
+    { rejectWithValue }
+  ) => {
+    try {
+      const auth = getAuth();
+      const db = getDatabase();
+
+      let uidToUse = uid;
+
+      if (!uid) {
+        const userCredential = await createUserWithEmailAndPassword(auth, email, password!);
+        uidToUse = userCredential.user.uid;
       }
-    );
 
-    dispatch(setUnsubscribe(() => unsubscribe));
-  } catch (error: any) {
-    dispatch(setUsersLoading(false));
-    return rejectWithValue(error.message);
-  }
-});
+      await set(ref(db, `users/${uidToUse}`), {
+        email,
+        role,
+      });
 
-// Create user (both Firebase Auth and database)
-export const createUser = createAsyncThunk<
-  { success: boolean; message: string },
-  { email: string; password: string; role: string },
-  { rejectValue: string }
->("users/create", async ({ email, password, role }, { rejectWithValue, dispatch }) => {
-  try {
-    dispatch(setUsersLoading(true));
-    
-    const auth = getAuth();
-    
-    // Create user in Firebase Auth
-    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-    const uid = userCredential.user.uid;
-    
-    // Add user to database
-    const userData: Omit<User, "id"> = {
-      email,
-      role: role as User["role"],
-      createdAt: Date.now(),
-    };
-    
-    await set(ref(db, `users/${uid}`), userData);
-    
-    return { success: true, message: "User created successfully!" };
-  } catch (error: any) {
-    const errorMessage = error.code === 'auth/email-already-in-use' 
-      ? 'Email already exists'
-      : error.message || "Failed to create user";
-    return rejectWithValue(errorMessage);
-  } finally {
-    dispatch(setUsersLoading(false));
+      return { uid: uidToUse, email, role };
+    } catch (err: any) {
+      return rejectWithValue(err.message);
+    }
   }
-});
+);
 
-// Update user role
-export const updateUserRole = createAsyncThunk<
-  { success: boolean; message: string },
-  { uid: string; role: string },
-  { rejectValue: string }
->("users/updateRole", async ({ uid, role }, { rejectWithValue }) => {
-  try {
-    await update(ref(db, `users/${uid}`), { role: role as User["role"] });
-    return { success: true, message: "User updated successfully!" };
-  } catch (error: any) {
-    const errorMessage = error.message || "Failed to update user";
-    return rejectWithValue(errorMessage);
+export const deleteUser = createAsyncThunk(
+  "users/delete",
+  async (uid: string, { rejectWithValue }) => {
+    try {
+      const db = getDatabase();
+      await remove(ref(db, `users/${uid}`));
+      return uid;
+    } catch (err: any) {
+      return rejectWithValue(err.message);
+    }
   }
-});
-
-// Delete user
-export const deleteUserAccount = createAsyncThunk<
-  { success: boolean; message: string },
-  string,
-  { rejectValue: string }
->("users/delete", async (uid, { rejectWithValue }) => {
-  try {
-    await remove(ref(db, `users/${uid}`));
-    return { success: true, message: "User deleted successfully!" };
-  } catch (error: any) {
-    const errorMessage = error.message || "Failed to delete user";
-    return rejectWithValue(errorMessage);
-  }
-});
+);
 
 const usersSlice = createSlice({
   name: "users",
   initialState,
   reducers: {
-    setUsers(state, action: PayloadAction<User[]>) {
-      state.items = action.payload;
+    setUsers(state, action) {
+      state.users = action.payload;
+      state.loading = false;
       state.error = null;
     },
-    setUsersLoading(state, action: PayloadAction<boolean>) {
+    setError(state, action) {
+      state.error = action.payload;
+      state.loading = false;
+    },
+    setLoading(state, action) {
       state.loading = action.payload;
     },
-    setUsersError(state, action: PayloadAction<string | null>) {
-      state.error = action.payload;
-    },
-    setUnsubscribe(state, action: PayloadAction<() => void>) {
+    setUnsubscribe(state, action) {
       state.unsubscribe = action.payload;
     },
     cleanupSubscription(state) {
@@ -158,30 +123,32 @@ const usersSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      // Create user
+      .addCase(createUser.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(createUser.fulfilled, (state) => {
+        state.loading = false;
+      })
       .addCase(createUser.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload ?? "Failed to create user";
+        state.error = action.payload as string;
       })
-      // Update user role
-      .addCase(updateUserRole.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload ?? "Failed to update user";
+      .addCase(deleteUser.pending, (state) => {
+        state.loading = true;
+        state.error = null;
       })
-      // Delete user
-      .addCase(deleteUserAccount.rejected, (state, action) => {
+      .addCase(deleteUser.fulfilled, (state, action) => {
         state.loading = false;
-        state.error = action.payload ?? "Failed to delete user";
+        state.users = state.users.filter((user) => user.uid !== action.payload);
+      })
+      .addCase(deleteUser.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
       });
   },
 });
 
-export const {
-  setUsers,
-  setUsersLoading,
-  setUsersError,
-  setUnsubscribe,
-  cleanupSubscription,
-} = usersSlice.actions;
+export const { setUsers, setError, setLoading, setUnsubscribe, cleanupSubscription } = usersSlice.actions;
 
 export default usersSlice.reducer;
