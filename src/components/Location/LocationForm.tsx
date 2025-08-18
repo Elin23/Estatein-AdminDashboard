@@ -1,12 +1,12 @@
 import { useRef } from "react";
-import type { LocationData } from "../../types/forms";
 import FormField from "../InputField/FormField";
 import CancleBtn from "../buttons/CancleBtn";
 import GeneralBtn from "../buttons/GeneralBtn";
+import type { Location } from "../../types";
 
 interface LocationFormProps {
-  initialData?: Partial<LocationData> | null;
-  onSubmit: (data: LocationData) => void;
+  initialData?: Partial<Location> | null;
+  onSubmit: (data: Omit<Location, "id">, id?: string) => Promise<void> | void;
   onCancel: () => void;
   loading?: boolean;
 }

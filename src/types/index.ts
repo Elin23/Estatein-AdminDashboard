@@ -134,3 +134,10 @@ export interface Testimonial {
   show: boolean;
   subject: string;
 }
+
+export interface User {
+  id: string; // uid
+  email: string;
+  role: "admin" | "support" | "sales";
+  createdAt?: number;
+}
