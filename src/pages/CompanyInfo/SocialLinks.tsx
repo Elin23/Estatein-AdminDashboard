@@ -88,7 +88,6 @@ export default function SocialLinks() {
                 onClick={() => {
                   setAdding(true);
                   setEditing(null);
-                  window.scrollTo({ top: 0, behavior: "smooth" });
                 }}
                 className="px-4 py-2 rounded-xl text-white bg-blue-600 hover:bg-blue-700 transition-colors ring-2 ring-blue-600 ring-offset-2 ring-offset-white dark:ring-offset-gray-900 disabled:opacity-60 disabled:cursor-not-allowed"
               >
@@ -109,9 +108,8 @@ export default function SocialLinks() {
                 setEditing(null);
                 setQuery("");
               }}
-              className={`px-4 py-2 rounded-md font-medium whitespace-nowrap ${
-                active === p ? "bg-white text-purple-700 ring-1 ring-purple-200 shadow-sm" : "bg-transparent text-gray-600 hover:bg-white/60"
-              }`}
+              className={`px-4 py-2 rounded-md font-medium whitespace-nowrap ${active === p ? "bg-white text-purple-700 ring-1 ring-purple-200 shadow-sm" : "bg-transparent text-gray-600 hover:bg-white/60"
+                }`}
             >
               <div className="flex items-center gap-2">
                 <PlatformBadge name={p} />
@@ -122,67 +120,79 @@ export default function SocialLinks() {
           ))}
         </div>
 
-        {/* Add / Edit Form */}
-        {(adding || editing) && (
-          <div className="mb-6 max-w-xl">
-            <SocialLinkForm
-              platform={active}
-              initialData={editing || undefined}
-              onCancel={() => {
-                setAdding(false);
-                setEditing(null);
-              }}
-              onSubmit={handleSave}
-            />
-          </div>
-        )}
+        <div ref={tableAnchorRef} className="w-full">
+          {adding || editing ? (
+            <div className="mb-6 max-w-full">
+              <SocialLinkForm
+                platform={active}
+                initialData={editing || undefined}
+                onCancel={() => {
+                  setAdding(false);
+                  setEditing(null);
+                }}
+                onSubmit={handleSave}
+              />
+            </div>
+          ) : null}
+        </div>
 
-        <div ref={tableAnchorRef} className="w-full" />
-        <TablePortal anchorRef={tableAnchorRef}>
-          <div className="table-scroll-wrapper overflow-x-auto w-full border dark:border-gray-700 border-black rounded-lg shadow-sm bg-white">
-            <table className="w-full min-w-[640px] divide-y divide-gray-200 dark:divide-gray-600">
-              <colgroup>
-                <col style={{ width: "56px" }} />
-                <col />
-                <col style={{ width: "160px" }} />
-              </colgroup>
+        {!adding && !editing && (
+          <TablePortal anchorRef={tableAnchorRef}>
+            <div className="table-scroll-wrapper overflow-x-auto w-full border dark:border-gray-700 border-black rounded-lg shadow-sm bg-white">
+              <table className="w-full min-w-[640px] divide-y divide-gray-200 dark:divide-gray-600">
+                <colgroup>
+                  <col style={{ width: "56px" }} />
+                  <col />
+                  <col style={{ width: "160px" }} />
+                </colgroup>
 
-              <thead className="bg-gray-50 dark:bg-gray-700">
-                <tr>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-white uppercase tracking-wider">#</th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-white uppercase tracking-wider">URL</th>
-                  <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 dark:text-white uppercase tracking-wider">Actions</th>
-                </tr>
-              </thead>
-
-              <tbody className="divide-y divide-gray-100 dark:divide-gray-600">
-                {filtered.length === 0 ? (
+                <thead className="bg-gray-50 dark:bg-gray-700">
                   <tr>
-                    <td colSpan={3} className="px-6 py-8 text-center text-gray-500 dark:text-gray-400">No {active} links yet.</td>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-white uppercase tracking-wider">#</th>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-white uppercase tracking-wider">URL</th>
+                    <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 dark:text-white uppercase tracking-wider">Actions</th>
                   </tr>
-                ) : (
-                  filtered.map((link, idx) => (
-                    <tr key={link.id}>
-                      <td className="px-4 py-4 whitespace-nowrap truncate text-sm text-gray-600 dark:text-gray-400">{idx + 1}</td>
-                      <td className="px-4 py-4 text-sm text-purple-700 break-words max-w-[70ch]">
-                        <a href={link.url} target="_blank" rel="noopener noreferrer" className="hover:underline inline-block break-words">
-                          {link.url}
-                        </a>
-                      </td>
+                </thead>
 
-                      {role === "admin" && (
-                        <td className="px-4 py-4 text-right text-sm font-medium flex justify-end gap-2 flex-wrap min-w-[160px] actions-cell">
-                          <button onClick={() => { setEditing(link); setAdding(false); window.scrollTo({ top: 0, behavior: "smooth" }); }} className="px-3 py-1 rounded-md bg-purple-600 text-white hover:bg-purple-700 whitespace-nowrap">Edit</button>
-                          <button onClick={() => handleDelete(link.id)} className="px-3 py-1 rounded-md bg-red-500 text-white hover:bg-red-600 whitespace-nowrap">Delete</button>
-                        </td>
-                      )}
+                <tbody className="divide-y divide-gray-100 dark:divide-gray-600">
+                  {filtered.length === 0 ? (
+                    <tr>
+                      <td colSpan={3} className="px-6 py-8 text-center text-gray-500 dark:text-gray-400">No {active} links yet.</td>
                     </tr>
-                  ))
-                )}
-              </tbody>
-            </table>
-          </div>
-        </TablePortal>
+                  ) : (
+                    filtered.map((link, idx) => (
+                      <tr key={link.id}>
+                        <td className="px-4 py-4 whitespace-nowrap truncate text-sm text-gray-600 dark:text-gray-400">{idx + 1}</td>
+                        <td className="px-4 py-4 text-sm text-purple-700 break-words max-w-[70ch]">
+                          <a href={link.url} target="_blank" rel="noopener noreferrer" className="hover:underline inline-block break-words">
+                            {link.url}
+                          </a>
+                        </td>
+
+                        {role === "admin" && (
+                          <td className="px-4 py-4 text-right text-sm font-medium flex justify-end gap-2 flex-wrap min-w-[160px] actions-cell">
+                            <button
+                              onClick={() => {
+                                setEditing(link);
+                                setAdding(false);
+                              }}
+                              className="px-3 py-1 rounded-md bg-purple-600 text-white hover:bg-purple-700 whitespace-nowrap"
+                            >
+                              Edit
+                            </button>
+                            <button onClick={() => handleDelete(link.id)} className="px-3 py-1 rounded-md bg-red-500 text-white hover:bg-red-600 whitespace-nowrap">
+                              Delete
+                            </button>
+                          </td>
+                        )}
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </TablePortal>
+        )}
       </div>
     </div>
   );
