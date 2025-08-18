@@ -8,7 +8,7 @@ import {
 import SocialLinkForm from "../../components/SocialMedia/SocialLinksForm"
 import { useAppDispatch, useAppSelector } from "../../hooks/useAppSelector"
 
-const PLATFORMS = ["facebook", "linkedin", "twitter", "youtube"] as const
+const PLATFORMS = ["facebook", "linkedin", "twitter", "youtube", "instagram"] as const
 
 const PlatformBadge = ({ name }: { name: string }) => (
   <span className="px-2 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-purple-700 capitalize">
