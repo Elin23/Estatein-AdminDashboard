@@ -150,7 +150,7 @@ export const createGenericSlice = <T extends { id: string }>(
           state.loading = true;
           state.error = null;
         })
-        .addCase(thunks.addItem.fulfilled, (state, action) => {
+        .addCase(thunks.addItem.fulfilled, (state) => {
           state.loading = false;
         })
         .addCase(thunks.addItem.rejected, (state, action) => {

@@ -128,7 +128,6 @@ export default function BotCommands() {
             No commands yet.
           </div>
         )}
-
         {!loading &&
           visibleItems.map((item) => (
             <div
