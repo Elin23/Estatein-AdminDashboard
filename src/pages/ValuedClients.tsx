@@ -1,4 +1,3 @@
-// pages/ValuedClients.tsx
 import { useSelector } from "react-redux";
 import type { RootState } from "../redux/store";
 import type { ValuedClient } from "../types/ValuedClient";

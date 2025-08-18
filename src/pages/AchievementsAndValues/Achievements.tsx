@@ -19,7 +19,7 @@ function Achievements() {
       title="Achievements"
       addBtnText="+ Add Achievement"
       role={role}
-      selectList={(state) => state.achievements.list}
+      selectList={(state) => state.achievements.items}
       selectLoading={(state) => state.achievements.loading}
       selectError={(state) => state.achievements.error}
       subscribeAction={subscribeToAchievements}

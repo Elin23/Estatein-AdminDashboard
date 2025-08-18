@@ -1,19 +1,19 @@
 import * as XLSX from "xlsx";
-import type { Location } from "../redux/slices/locationSlice"; 
+import type { Location } from "../types";
 
 export function exportLocationsToExcel(locations: Location[]) {
   if (!locations.length) return;
 
   const dataToExport = locations.map((loc) => ({
     ID: loc.id,
-    Branch: loc.data.branch,
-    Address: loc.data.address,
-    Details: loc.data.details,
-    Email: loc.data.email,
-    Phone: loc.data.phone,
-    City: loc.data.city,
-    Category: loc.data.category,
-    CreatedAt: new Date(loc.data.createdAt).toLocaleDateString(),
+    Branch: loc.branch,
+    Address: loc.address,
+    Details: loc.details,
+    Email: loc.email,
+    Phone: loc.phone,
+    City: loc.city,
+    Category: loc.category,
+    CreatedAt: new Date(loc.createdAt).toLocaleDateString(),
   }));
 
   const worksheet = XLSX.utils.json_to_sheet(dataToExport);

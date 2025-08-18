@@ -6,10 +6,10 @@ import GenericCard from "../components/GenericCard/GenericCard";
 import CrudSection from "../components/CrudSection";
 import { exportTeamReport } from "../lib/exportTeamReport";
 import {
-  subscribeTeam,
   deleteMember,
   addMember,
   updateMember,
+  subscribeToTeam,
 } from "../redux/slices/teamSlice";
 
 function Team() {
@@ -20,10 +20,10 @@ function Team() {
         title=""
         addBtnText="+ Add Member"
         role={role}
-        selectList={(state) => state.team.members}
+        selectList={(state) => state.team.items}
         selectLoading={(state) => state.team.loading}
         selectError={(state) => state.team.error}
-        subscribeAction={subscribeTeam}
+        subscribeAction={subscribeToTeam}
         exportReport={exportTeamReport}
         addAction={addMember}
         updateAction={updateMember}
