@@ -60,6 +60,7 @@ function AchievementForm({
         value={title}
         onChange={(e) => setTitle(e.target.value)}
         required
+        placeholder="Enter achievement title"
       />
       <FormField
         label="Description"
@@ -67,6 +68,7 @@ function AchievementForm({
         onChange={(e) => setDescription(e.target.value)}
         required
         multiline
+        placeholder="Enter achievement description"
       />
 
   

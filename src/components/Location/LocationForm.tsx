@@ -67,14 +67,13 @@ function LocationForm({
     <form
       ref={formRef}
       onSubmit={handleSubmit}
-      className="p-4 lg-custom:p-[40px] 2xl:p-[50px] gap-[24px] lg-custom:gap-[40px] 2xl:gap-[50px] flex flex-col w-full rounded-xl border  bg-white dark:bg-gray-800"
+      className="bg-white dark:bg-gray-800 p-4 rounded shadow huge:max-w-[1390px] huge:mx-auto"
     >
-      <h2 className="2xl:text-2xl text-xl font-bold text-gray-800 dark:text-white">
+      <h2 className="text-xl font-semibold text-black dark:text-white mb-3">
         {initialData.branch ? "Edit Location" : "Add Location"}
       </h2>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-        <div className="flex flex-col w-full relative">
+      <div className="grid grid-cols-1 lg-custom:grid-cols-2 gap-4">
           <FormField
             id="branch"
             name="branch"
@@ -83,10 +82,8 @@ function LocationForm({
             placeholder="Branch Name"
             required
           />
-        </div>
 
 
-        <div className="flex flex-col w-full relative">
           <FormField
             id="address"
             name="address"
@@ -95,9 +92,7 @@ function LocationForm({
             placeholder="Address"
             required
           />
-        </div>
 
-        <div className="flex flex-col w-full relative">
           <FormField
             id="category"
             name="category"
@@ -110,9 +105,8 @@ function LocationForm({
               { value: "international", label: "International" },
             ]}
           />
-        </div>
 
-        <div className="flex flex-col w-full relative md:col-span-2">
+        <div className="flex flex-col w-full relative lg-custom:col-span-2">
           <FormField
             id="details"
             name="details"
@@ -120,7 +114,6 @@ function LocationForm({
             placeholder="Location Details"
             defaultValue={initialData.details}
             multiline
-            rows={4}
             required
           />
         </div>
@@ -130,7 +123,7 @@ function LocationForm({
         Contact
       </h2>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+      <div className="grid grid-cols-1 lg-custom:grid-cols-3 gap-5">
         <div className="flex flex-col w-full relative">
           <FormField
             type="email"
@@ -166,14 +159,13 @@ function LocationForm({
         </div>
       </div>
 
-      <div className="flex gap-4 mt-4">
+      <div className="flex justify-end mt-4">
         <GeneralBtn
-        btnContent={loading ? "Saving..." : "Save"}
+        btnContent={loading ? "Saving..." : "Add Location"}
         btnType='add'
         actionToDo={()=>formRef.current?.requestSubmit()}
         disabled={loading}
         />
-        <CancleBtn onCLick={onCancel} disabled={loading}/>
       </div>
     </form>
   );

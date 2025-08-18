@@ -1,62 +1,69 @@
-import { useEffect, useState } from "react"
-import { db } from "../../firebaseConfig"
+import { useEffect, useMemo, useState } from "react";
 import {
-  limitToLast,
-  onChildAdded,
-  onValue,
+  getDatabase,
+  ref as r,
   query,
-  ref,
-} from "firebase/database"
-import type { NotificationItem } from "../../types/NotificationItem"
+  orderByChild,
+  limitToLast,
+  onValue,
+} from "firebase/database";
 
-export function useNotificationsFeed(limit: number = 100) {
-  const [items, setItems] = useState<NotificationItem[]>([])
-  const [latestTs, setLatestTs] = useState<number>(0)
+export type NotificationItem = {
+  id: string;
+  formType?: string;
+  name?: string;
+  email?: string;
+  message?: string;
+  createdAt: number; 
+};
+
+export function useNotificationsFeed(limit = 100) {
+  const [items, setItems] = useState<NotificationItem[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const listRef = query(ref(db, "notifications"), limitToLast(limit))
+    const db = getDatabase();
+    const q = query(
+      r(db, "notifications"),
+      orderByChild("createdAt"),
+      limitToLast(limit)
+    );
 
-    const offAll = onValue(listRef, (snap) => {
-      const data = snap.val() || {}
-      const arr: NotificationItem[] = Object.entries<any>(data)
-        .map(([id, v]) => ({
-          id,
-          name: v?.name || "",
-          email: v?.email || "",
-          message: v?.message || "",
-          formType: v?.formType || "",
-          createdAt:
-            typeof v?.createdAt === "number" ? v.createdAt : Date.now(),
-        }))
-        .sort((a, b) => b.createdAt - a.createdAt)
+    const unsub = onValue(
+      q,
+      (snap) => {
+        const val = snap.val();
+        if (!val) {
+          setItems([]);
+          setLoading(false);
+          return;
+        }
 
-      setItems(arr)
-      if (arr[0]) setLatestTs(arr[0].createdAt)
-    })
+        const list: NotificationItem[] = Object.entries(val).map(
+          ([id, v]: any) => ({
+            id,
+            formType: v?.formType ?? "form",
+            name: v?.name ?? "",
+            email: v?.email ?? "",
+            message: v?.message ?? "",
+            createdAt: typeof v?.createdAt === "number" ? v.createdAt : Date.now(),
+          })
+        );
 
-    const offAdd = onChildAdded(listRef, (snap) => {
-      const v = snap.val()
-      const item: NotificationItem = {
-        id: snap.key || crypto.randomUUID(),
-        name: v?.name || "",
-        email: v?.email || "",
-        message: v?.message || "",
-        formType: v?.formType || "",
-        createdAt: typeof v?.createdAt === "number" ? v.createdAt : Date.now(),
+        list.sort((a, b) => b.createdAt - a.createdAt);
+        setItems(list);
+        setLoading(false);
+      },
+      () => {
+        setItems([]);
+        setLoading(false);
       }
-      setItems((prev) => {
-        if (prev.some((p) => p.id === item.id)) return prev
-        const next = [item, ...prev].slice(0, limit)
-        if (item.createdAt > latestTs) setLatestTs(item.createdAt)
-        return next
-      })
-    })
+    );
 
-    return () => {
-      offAll()
-      offAdd()
-    }
-  }, [limit])
+    return () => unsub();
+  }, [limit]);
 
-  return { items, latestTs, setItems }
+  const latestTs = useMemo(() => (items[0]?.createdAt ?? 0), [items]);
+
+  return { items, latestTs, loading };
 }
