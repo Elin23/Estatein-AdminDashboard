@@ -14,6 +14,7 @@ import {
   editProperty,
 } from "../redux/slices/propertiesSlice"
 import PropertiesCard from "../components/Properties/PropertiesCard"
+import PropertiesCardSkeleton from "../components/Properties/PropertiesCardSkeleton"
 
 const Properties = () => {
   const dispatch = useDispatch<AppDispatch>()
@@ -111,8 +112,10 @@ const Properties = () => {
       )}
 
       {loading ? (
-        <div className="w-full h-full text-4xl text-center flex justify-center bg-blue-700 p-10 text-white">
-          loading...
+        <div className="grid grid-cols-1 lg-custom:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-4 mt-4 huge:max-w-[1390px] huge:mx-auto">
+          {Array.from({ length:4 }).map((_, idx) => (
+            <PropertiesCardSkeleton key={idx} />
+          ))}
         </div>
       ) : (
         <Pagination

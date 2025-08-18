@@ -67,10 +67,11 @@ export default function StepForm({
       <FormField
         label="Step Num"
         name="stepNum"
-        type="text"
+        type="number"
         value={stepNum}
         onChange={(e) => setStepNum(e.target.value)}
         required
+        placeholder="ex. 01"
       />
 
       <FormField
@@ -80,6 +81,7 @@ export default function StepForm({
         value={title}
         onChange={(e) => setTitle(e.target.value)}
         required
+        placeholder="Enter step title"
       />
 
       <FormField
@@ -90,6 +92,7 @@ export default function StepForm({
         value={description}
         onChange={(e) => setDescription(e.target.value)}
         required
+        placeholder="Enter step description"
       />
 
       <div className="flex justify-end space-x-2 mt-4">
@@ -105,19 +108,18 @@ export default function StepForm({
           type="submit"
           disabled={loading}
           className={`px-4 py-2 text-white rounded 
-    ${
-      loading
-        ? "bg-gray-400 cursor-not-allowed"
-        : "bg-purple60 hover:bg-purple70"
-    }`}
+    ${loading
+              ? "bg-gray-400 cursor-not-allowed"
+              : "bg-purple60 hover:bg-purple70"
+            }`}
         >
           {loading
             ? initialData
               ? "Updating..."
               : "Saving..."
             : initialData
-            ? "Update"
-            : "Add"}
+              ? "Update"
+              : "Add"}
         </button>
       </div>
     </form>

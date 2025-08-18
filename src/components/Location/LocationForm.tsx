@@ -1,6 +1,5 @@
 import { useRef } from "react";
 import FormField from "../InputField/FormField";
-import CancleBtn from "../buttons/CancleBtn";
 import GeneralBtn from "../buttons/GeneralBtn";
 import type { Location } from "../../types";
 
@@ -12,14 +11,13 @@ interface LocationFormProps {
 }
 
 function LocationForm({
-  initialData = {},
+  initialData = null,
   onSubmit,
-  onCancel,
   loading,
 }: LocationFormProps) {
-
   const formRef = useRef<HTMLFormElement>(null);
-  const handleSubmit = (e: React.FormEvent) => {
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const form = formRef.current;
     if (!form) return;
@@ -35,20 +33,12 @@ function LocationForm({
     const city = get("city");
     const category = get("category");
 
-    if (
-      !branch ||
-      !address ||
-      !details ||
-      !email ||
-      !phone ||
-      !city ||
-      !category
-    ) {
+    if (!branch || !address || !details || !email || !phone || !city || !category) {
       alert("Please fill in all fields before saving.");
       return;
     }
 
-    onSubmit({
+    const payload: Omit<Location, "id"> = {
       branch,
       address,
       details,
@@ -56,63 +46,60 @@ function LocationForm({
       phone,
       city,
       category,
-      createdAt: initialData?.createdAt || Date.now(),
-    });
+      createdAt: initialData?.createdAt ?? Date.now(),
+      ...(initialData?.id ? { updatedAt: Date.now() } : {}),
+    };
 
+    await onSubmit(payload, initialData?.id ?? undefined);
     form.reset();
   };
 
+  const isEditing = Boolean(initialData?.id);
 
   return (
     <form
       ref={formRef}
       onSubmit={handleSubmit}
-      className="p-4 lg-custom:p-[40px] 2xl:p-[50px] gap-[24px] lg-custom:gap-[40px] 2xl:gap-[50px] flex flex-col w-full rounded-xl border  bg-white dark:bg-gray-800"
+      className="bg-white dark:bg-gray-800 p-4 rounded shadow huge:max-w-[1390px] huge:mx-auto"
     >
-      <h2 className="2xl:text-2xl text-xl font-bold text-gray-800 dark:text-white">
-        {initialData?.branch ? "Edit Location" : "Add Location"}
+      <h2 className="text-xl font-semibold text-black dark:text-white mb-3">
+        {isEditing ? "Edit Location" : "Add Location"}
       </h2>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-        <div className="flex flex-col w-full relative">
-          <FormField
-            id="branch"
-            name="branch"
-            label="Branch Name"
-            defaultValue={initialData?.branch}
-            placeholder="Branch Name"
-            required
-          />
-        </div>
+      <div className="grid grid-cols-1 lg-custom:grid-cols-2 gap-4">
+        <FormField
+          id="branch"
+          name="branch"
+          label="Branch Name"
+          defaultValue={initialData?.branch}
+          placeholder="Branch Name"
+          required
+        />
 
+        <FormField
+          id="address"
+          name="address"
+          label="Address"
+          defaultValue={initialData?.address}
+          placeholder="Address"
+          required
+        />
 
-        <div className="flex flex-col w-full relative">
-          <FormField
-            id="address"
-            name="address"
-            label="Address"
-            defaultValue={initialData?.address}
-            placeholder="Address"
-            required
-          />
-        </div>
+        <FormField
+          id="category"
+          name="category"
+          label="Category"
+          placeholder="Select Category"
+          defaultValue={initialData?.category || ""}
+          select
+          options={[
+            { value: "regional", label: "Regional" },
+            { value: "international", label: "International" },
+          ]}
+          required
+        />
 
-        <div className="flex flex-col w-full relative">
-          <FormField
-            id="category"
-            name="category"
-            label="Category"
-            placeholder="Select Category"
-            defaultValue={initialData?.category || ""}
-            select
-            options={[
-              { value: "regional", label: "Regional" },
-              { value: "international", label: "International" },
-            ]}
-          />
-        </div>
-
-        <div className="flex flex-col w-full relative md:col-span-2">
+        <div className="flex flex-col w-full relative lg-custom:col-span-2">
           <FormField
             id="details"
             name="details"
@@ -120,7 +107,6 @@ function LocationForm({
             placeholder="Location Details"
             defaultValue={initialData?.details}
             multiline
-            rows={4}
             required
           />
         </div>
@@ -130,7 +116,7 @@ function LocationForm({
         Contact
       </h2>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+      <div className="grid grid-cols-1 lg-custom:grid-cols-3 gap-5">
         <div className="flex flex-col w-full relative">
           <FormField
             type="email"
@@ -166,14 +152,13 @@ function LocationForm({
         </div>
       </div>
 
-      <div className="flex gap-4 mt-4">
+      <div className="flex justify-end gap-3 mt-4">
         <GeneralBtn
-        btnContent={loading ? "Saving..." : "Save"}
-        btnType='add'
-        actionToDo={()=>formRef.current?.requestSubmit()}
-        disabled={loading}
+          btnContent={loading ? "Saving..." : isEditing ? "Save Changes" : "Add Location"}
+          btnType="add"
+          actionToDo={() => formRef.current?.requestSubmit()}
+          disabled={!!loading}
         />
-        <CancleBtn onCLick={onCancel} disabled={loading}/>
       </div>
     </form>
   );
