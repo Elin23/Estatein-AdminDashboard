@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk, type Draft } from "@reduxjs/toolkit";
-import { ref, onValue, push, set, update, remove } from "firebase/database";
+import { ref, onValue, push, set, remove } from "firebase/database";
 import { db } from "../../firebaseConfig";
 
 interface GenericState<T> {

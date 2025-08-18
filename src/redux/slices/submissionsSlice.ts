@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
-import { onValue, ref, update, off } from "firebase/database"; 
+import { onValue, ref, update } from "firebase/database"; 
 import { db } from "../../firebaseConfig";
 import type { FormSubmission } from "../../types";
 
