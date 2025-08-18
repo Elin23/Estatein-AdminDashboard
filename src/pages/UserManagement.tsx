@@ -172,7 +172,7 @@ const UserManagement = () => {
             >
               <option value="admin">Admin</option>
               <option value="support">Support</option>
-              <option value="user">Sales</option>
+              <option value="sales">Sales</option>
             </select>
 
             <button

@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import { db } from "../../firebaseConfig";
-import { ref, onValue, push, set, remove } from "firebase/database";
+import { ref, onValue, push, set, remove, update } from "firebase/database";
 import type { TeamMember } from "../../types/index";
 
 interface TeamState {
@@ -42,23 +42,35 @@ export const subscribeTeam = createAsyncThunk(
   }
 );
 
-export const addOrUpdateMember = createAsyncThunk(
-  "team/addOrUpdateMember",
-  async ({
-    memberData,
-    id,
-  }: {
-    memberData: Omit<TeamMember, "id">;
-    id?: string;
-  }) => {
-    if (id) {
-      await set(ref(db, `team/${id}`), memberData);
-    } else {
-      const newRef = push(ref(db, "team"));
-      await set(newRef, memberData);
-    }
+export const addMember = createAsyncThunk<
+  void,
+  Omit<TeamMember, "id">,
+  { rejectValue: string }
+>("team/add", async (payload, { rejectWithValue }) => {
+  try {
+    const newRef = push(ref(db, "team"));
+    await set(newRef, payload);
+  } catch (err: any) {
+    return rejectWithValue(err.message || "Failed to add team");
   }
-);
+});
+
+export const updateMember = createAsyncThunk<
+  void,
+  { id: string; data: Omit<TeamMember, "id"> },
+  { rejectValue: string }
+>("team/update", async (payload, { rejectWithValue }) => {
+  try {
+    await update(ref(db, `team/${payload.id}`), {
+      name: payload.data.name.trim(),
+      role: payload.data.role.trim(),
+      twitterLink: payload.data.twitterLink.trim(),
+      clientImage: payload.data.clientImage.trim(),
+    });
+  } catch (err: any) {
+    return rejectWithValue(err.message || "Failed to update team");
+  }
+});
 
 export const deleteMember = createAsyncThunk(
   "team/deleteMember",

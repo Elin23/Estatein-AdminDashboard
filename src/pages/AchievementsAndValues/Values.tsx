@@ -9,6 +9,7 @@ import {
   deleteValue,
 } from "../../redux/slices/valuesSlice";
 import CrudSection from "../../components/CrudSection";
+import GenericCard from "../../components/GenericCard/GenericCard";
 
 function Values() {
   const role = useSelector((state: RootState) => state.auth.role) || "";
@@ -26,8 +27,15 @@ function Values() {
       updateAction={updateValue}
       deleteAction={deleteValue}
       FormComponent={ValueForm}
-      renderTitle={(item) => item.title}
-      renderDescription={(item) => item.description}
+      renderItem={(item, { onEdit, onDelete }) => (
+        <GenericCard
+          key={item.id}
+          title={item.title}
+          description={item.description}
+          onEdit={onEdit}
+          onDelete={onDelete}
+        />
+      )}
     />
   );
 }

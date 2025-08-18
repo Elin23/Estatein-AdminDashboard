@@ -9,6 +9,7 @@ import {
 } from "../../redux/slices/achievementsSlice";
 import { useSelector } from "react-redux";
 import CrudSection from "../../components/CrudSection";
+import GenericCard from "../../components/GenericCard/GenericCard";
 
 function Achievements() {
   const role = useSelector((state: RootState) => state.auth.role) || "";
@@ -26,8 +27,15 @@ function Achievements() {
       updateAction={updateAchievement}
       deleteAction={deleteAchievement}
       FormComponent={AchievementForm}
-      renderTitle={(item) => item.title}
-      renderDescription={(item) => item.description}
+      renderItem={(item, { onEdit, onDelete }) => (
+        <GenericCard
+          key={item.id}
+          title={item.title}
+          description={item.description}
+          onEdit={onEdit}
+          onDelete={onDelete}
+        />
+    )}
     />
   );
 }
