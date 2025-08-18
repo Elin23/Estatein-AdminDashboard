@@ -65,22 +65,18 @@ export const createGenericThunks = <T extends { id: string }>(sliceName: string,
   );
 
   const addItem = createAsyncThunk<
-    T,
-    Omit<T, "id">,
-    { rejectValue: string }
-  >(`${sliceName}/add`, async (newItem, { rejectWithValue }) => {
-    try {
-      const newRef = push(ref(db, collectionName));
-      const itemWithId: T = {
-        id: newRef.key!,
-        ...newItem,
-      } as T;
-      await set(newRef, newItem);
-      return itemWithId;
-    } catch (error: any) {
-      return rejectWithValue(error.message);
-    }
-  });
+  { id: string },
+  Omit<T, "id">,
+  { rejectValue: string }
+>(`${sliceName}/add`, async (newItem, { rejectWithValue }) => {
+  try {
+    const newRef = push(ref(db, collectionName));
+    await set(newRef, newItem);
+    return { id: newRef.key! };
+  } catch (error: any) {
+    return rejectWithValue(error.message);
+  }
+});
 
   const updateItem = createAsyncThunk<
     { id: string; data: Partial<Omit<T, "id">> },
@@ -156,7 +152,6 @@ export const createGenericSlice = <T extends { id: string }>(
         })
         .addCase(thunks.addItem.fulfilled, (state, action) => {
           state.loading = false;
-          state.items.push(action.payload as any);
         })
         .addCase(thunks.addItem.rejected, (state, action) => {
           state.loading = false;
