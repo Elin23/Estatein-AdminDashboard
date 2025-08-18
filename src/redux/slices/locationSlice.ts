@@ -2,22 +2,8 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import { db } from "../../firebaseConfig";
 import { ref, onValue, push, set, update, remove } from "firebase/database";
+import type { Location } from "../../types";
 
-export interface LocationData {
-  branch: string;
-  address: string;
-  details: string;
-  email: string;
-  phone: string;
-  city: string;
-  category: string;
-  createdAt: number;
-}
-
-export interface Location {
-  id: string;
-  data: LocationData;
-}
 
 interface LocationState {
   items: Location[];
@@ -50,12 +36,10 @@ export const subscribeToLocations = createAsyncThunk<
       (snapshot) => {
         if (snapshot.exists()) {
           const data = snapshot.val();
-          const locationsList: Location[] = Object.entries(data).map(
-            ([id, value]) => ({
-              id,
-              data: value as LocationData,
-            })
-          );
+          const locationsList: Location[] = Object.entries(data).map(([id, value]) => ({
+            id,
+            ...(value as Omit<Location, "id">),
+          }));
           dispatch(setLocations(locationsList)); 
         } else {
           dispatch(setLocations([]));
@@ -77,21 +61,38 @@ export const subscribeToLocations = createAsyncThunk<
   }
 });
 
-export const saveLocation = createAsyncThunk<
+
+export const addLocation = createAsyncThunk<
   void,
-  { locationData: Omit<LocationData, "createdAt">; id?: string },
+  Omit<Location, "id">,
   { rejectValue: string }
->("locations/save", async ({ locationData, id }, { rejectWithValue }) => {
+>("locations/add", async (payload, { rejectWithValue }) => {
   try {
-    const fullData = { ...locationData, createdAt: Date.now() };
-    if (id) {
-      await update(ref(db, `locations/${id}`), fullData);
-    } else {
-      const newRef = push(ref(db, "locations"));
-      await set(newRef, fullData);
-    }
+    const newRef = push(ref(db, "locations"));
+    await set(newRef, payload);
   } catch (err: any) {
-    return rejectWithValue(err.message || "Failed to save location.");
+    return rejectWithValue(err.message || "Failed to add location");
+  }
+});
+
+export const updateLocation = createAsyncThunk<
+  void,
+  { id: string; data: Omit<Location, "id"> },
+  { rejectValue: string }
+>("locations/update", async (payload, { rejectWithValue }) => {
+  try {
+    await update(ref(db, `locations/${payload.id}`), {
+      address: payload.data.address.trim(),
+      branch: payload.data.branch.trim(),
+      category: payload.data.category.trim(),
+      city: payload.data.city.trim(),
+      createdAt: payload.data.createdAt,
+      details: payload.data.details.trim(),
+      email: payload.data.email.trim(),
+      phone: payload.data.phone.trim()
+    });
+  } catch (err: any) {
+    return rejectWithValue(err.message || "Failed to update team");
   }
 });
 
@@ -136,14 +137,25 @@ const locationsSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(saveLocation.pending, (state) => {
+      .addCase(addLocation.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(saveLocation.fulfilled, (state) => {
+      .addCase(addLocation.fulfilled, (state) => {
         state.loading = false;
       })
-      .addCase(saveLocation.rejected, (state, action) => {
+      .addCase(addLocation.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload || "Failed to save location";
+      })
+      .addCase(updateLocation.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(updateLocation.fulfilled, (state) => {
+        state.loading = false;
+      })
+      .addCase(updateLocation.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload || "Failed to save location";
       })

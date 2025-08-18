@@ -10,6 +10,7 @@ import type { RootState } from "../redux/store";
 import type { FaqType } from "../types/FaqType";
 import { useSelector } from "react-redux";
 import CrudSection from "../components/CrudSection";
+import GenericCard from "../components/GenericCard/GenericCard";
 
 function FAQ() {
   const role = useSelector((state: RootState) => state.auth.role) || "";
@@ -27,8 +28,15 @@ function FAQ() {
       updateAction={editFaq}
       deleteAction={deleteFaq}
       FormComponent={FaqsFrom}
-      renderTitle={(item) => item.question}
-      renderDescription={(item) => item.answer}
+      renderItem={(item, { onEdit, onDelete }) => (
+        <GenericCard
+          key={item.id}
+          title={item.question}
+          description={item.answer}
+          onEdit={onEdit}
+          onDelete={onDelete}
+        />
+      )}
     />
   );
 }

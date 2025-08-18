@@ -5,7 +5,7 @@ import CancleBtn from "../buttons/CancleBtn";
 import GeneralBtn from "../buttons/GeneralBtn";
 
 interface LocationFormProps {
-  initialData?: Partial<LocationData>;
+  initialData?: Partial<LocationData> | null;
   onSubmit: (data: LocationData) => void;
   onCancel: () => void;
   loading?: boolean;
@@ -70,7 +70,7 @@ function LocationForm({
       className="p-4 lg-custom:p-[40px] 2xl:p-[50px] gap-[24px] lg-custom:gap-[40px] 2xl:gap-[50px] flex flex-col w-full rounded-xl border  bg-white dark:bg-gray-800"
     >
       <h2 className="2xl:text-2xl text-xl font-bold text-gray-800 dark:text-white">
-        {initialData.branch ? "Edit Location" : "Add Location"}
+        {initialData?.branch ? "Edit Location" : "Add Location"}
       </h2>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
@@ -79,7 +79,7 @@ function LocationForm({
             id="branch"
             name="branch"
             label="Branch Name"
-            defaultValue={initialData.branch}
+            defaultValue={initialData?.branch}
             placeholder="Branch Name"
             required
           />
@@ -91,7 +91,7 @@ function LocationForm({
             id="address"
             name="address"
             label="Address"
-            defaultValue={initialData.address}
+            defaultValue={initialData?.address}
             placeholder="Address"
             required
           />
@@ -103,7 +103,7 @@ function LocationForm({
             name="category"
             label="Category"
             placeholder="Select Category"
-            defaultValue={initialData.category || ""}
+            defaultValue={initialData?.category || ""}
             select
             options={[
               { value: "regional", label: "Regional" },
@@ -118,7 +118,7 @@ function LocationForm({
             name="details"
             label="Location Details"
             placeholder="Location Details"
-            defaultValue={initialData.details}
+            defaultValue={initialData?.details}
             multiline
             rows={4}
             required
@@ -137,7 +137,7 @@ function LocationForm({
             id="email"
             name="email"
             label="Email"
-            defaultValue={initialData.email}
+            defaultValue={initialData?.email}
             placeholder="Email"
             required
           />
@@ -148,7 +148,7 @@ function LocationForm({
             id="phone"
             name="phone"
             label="Phone Number"
-            defaultValue={initialData.phone}
+            defaultValue={initialData?.phone}
             placeholder="Phone Number"
             required
           />
@@ -159,7 +159,7 @@ function LocationForm({
             id="city"
             name="city"
             label="City"
-            defaultValue={initialData.city}
+            defaultValue={initialData?.city}
             placeholder="City"
             required
           />

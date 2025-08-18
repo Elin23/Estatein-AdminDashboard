@@ -17,7 +17,7 @@ import stepsReducer from "./slices/stepsSlice";
 import contactsReducer from "./slices/contactsSlice"; 
 import socialLinksReducer from "./slices/socialLinksSlice"; 
 import faqReducer from "./slices/faqSlice"; 
-
+import clientsReducer from './slices/ClientsSlice'
 
 
 const persistConfig = {
@@ -42,6 +42,7 @@ const rootReducer = combineReducers({
   contacts: contactsReducer,
   socialLinks: socialLinksReducer,
   faqs: faqReducer,
+  clients: clientsReducer
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
