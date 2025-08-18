@@ -1,87 +1,119 @@
-import { useState, useEffect, useCallback } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import type { AppDispatch, RootState } from "../redux/store";
-import { cleanupSubscription, createUser, deleteUserAccount, subscribeToUsers, updateUserRole } from "../redux/slices/usersSlice";
-import Modal from "../components/UI/Modal";
-
+import { useState, useEffect, useCallback, useRef } from "react"
+import { getAuth, createUserWithEmailAndPassword } from "firebase/auth"
+import {
+  getDatabase,
+  ref,
+  set,
+  onValue,
+  remove,
+  update,
+} from "firebase/database"
+import Modal from "../components/UI/Modal"
+import TablePortal from "../components/TablePortal"
 
 const UserManagement = () => {
-  const dispatch = useDispatch<AppDispatch>();
-  const { items: users, loading, error } = useSelector((state: RootState) => state.users);
-  
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [role, setRole] = useState("admin");
-  const [message, setMessage] = useState("");
-  const [showForm, setShowForm] = useState(false);
-  const [editingUid, setEditingUid] = useState<string | null>(null);
-  const [modalOpen, setModalOpen] = useState(false);
-  const [userToDelete, setUserToDelete] = useState<string | null>(null);
+  const [email, setEmail] = useState("")
+  const [password, setPassword] = useState("")
+  const [role, setRole] = useState("admin")
+  const [message, setMessage] = useState("")
+  const [users, setUsers] = useState<
+    { uid: string; email: string; role: string }[]
+  >([])
+  const [showForm, setShowForm] = useState(false)
+  const [editingUid, setEditingUid] = useState<string | null>(null)
+  const [loading, setLoading] = useState(true)
+  const [modalOpen, setModalOpen] = useState(false)
+  const [userToDelete, setUserToDelete] = useState<string | null>(null)
+
+  const auth = getAuth()
+  const db = getDatabase()
+  const tableAnchorRef = useRef<HTMLDivElement | null>(null)
 
   useEffect(() => {
-    dispatch(subscribeToUsers());
-    
-    return () => {
-      dispatch(cleanupSubscription());
-    };
-  }, [dispatch]);
+    const usersRef = ref(db, "users")
+    const unsubscribe = onValue(usersRef, (snapshot) => {
+      const data = snapshot.val()
+      if (data) {
+        const userList = Object.entries(data).map(([uid, val]: any) => ({
+          uid,
+          email: val.email,
+          role: val.role,
+        }))
+        setUsers(userList)
+      } else {
+        setUsers([])
+      }
+      setLoading(false)
+    })
+
+    return () => unsubscribe()
+  }, [db])
 
   const handleCreateOrUpdateUser = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setMessage("");
+    e.preventDefault()
+    setMessage("")
 
     try {
-      let result: { success: boolean; message: string };
-      
       if (editingUid) {
-        result = await dispatch(updateUserRole({ uid: editingUid, role })).unwrap();
+        await update(ref(db, `users/${editingUid}`), { role })
+        setMessage("✅ User updated successfully!")
+        setEditingUid(null)
       } else {
-        result = await dispatch(createUser({ email, password, role })).unwrap();
+        const userCredential = await createUserWithEmailAndPassword(
+          auth,
+          email,
+          password
+        )
+        const uid = userCredential.user.uid
+        await set(ref(db, `users/${uid}`), {
+          email,
+          role,
+        })
+        setMessage("✅ User created successfully!")
       }
 
-      if (result.success) {
-        setMessage(`${result.message}`);
-        setEmail("");
-        setPassword("");
-        setRole("admin");
-        setEditingUid(null);
-        setShowForm(false);
-      }
+      setEmail("")
+      setPassword("")
+      setRole("admin")
+      setShowForm(false)
     } catch (error: any) {
-      setMessage(`Error: ${error}`);
+      console.error(error)
+      setMessage("❌ Error: " + error.message)
     }
-  };
+  }
 
   const handleDeleteUser = async (uid: string) => {
     try {
-      const result = await dispatch(deleteUserAccount(uid)).unwrap();
-      if (result.success) {
-        setMessage(`${result.message}`);
-      }
+      await remove(ref(db, `users/${uid}`))
+      setMessage("✅ User deleted from database!")
     } catch (error: any) {
-      setMessage(`Error: ${error}`);
+      console.error(error)
+      setMessage("❌ Error deleting user: " + error.message)
     }
-  };
+  }
 
   const handleDeleteClick = useCallback((id: string) => {
-    setUserToDelete(id);
-    setModalOpen(true);
-  }, []);
+    setUserToDelete(id)
+    setModalOpen(true)
+  }, [])
 
   const confirmDelete = useCallback(() => {
-    if (!userToDelete) return;
-    handleDeleteUser(userToDelete);
-    setModalOpen(false);
-    setUserToDelete(null);
-  }, [userToDelete]);
+    if (!userToDelete) return
+    handleDeleteUser(userToDelete)
+    setModalOpen(false)
+    setUserToDelete(null)
+  }, [userToDelete, handleDeleteUser])
 
-  const handleEditUser = (user: { id: string; email: string; role: string }) => {
-    setEmail(user.email);
-    setRole(user.role);
-    setEditingUid(user.id);
-    setShowForm(true);
-    setMessage("");
-  };
+  const handleEditUser = (user: {
+    uid: string
+    email: string
+    role: string
+  }) => {
+    setEmail(user.email)
+    setRole(user.role)
+    setEditingUid(user.uid)
+    setShowForm(true)
+  }
 
   return (
     <div className="p-6 max-w-[1430px] mx-auto">
@@ -92,12 +124,12 @@ const UserManagement = () => {
 
         <button
           onClick={() => {
-            setShowForm(!showForm);
-            setEditingUid(null);
-            setEmail("");
-            setPassword("");
-            setRole("admin");
-            setMessage("");
+            setShowForm(!showForm)
+            setEditingUid(null)
+            setEmail("")
+            setPassword("")
+            setRole("admin")
+            setMessage("")
           }}
           className="px-4 py-2 rounded-xl text-white bg-blue-600 hover:bg-blue-700 transition-colors
               ring-2 ring-blue-600  ring-offset-2     ring-offset-white dark:ring-offset-gray-900
@@ -107,7 +139,6 @@ const UserManagement = () => {
         </button>
       </div>
 
-      <div className="p-5 shadow-lg rounded-lg bg-white dark:bg-gray-800">
         {showForm && (
           <form
             onSubmit={handleCreateOrUpdateUser}
@@ -146,8 +177,7 @@ const UserManagement = () => {
 
             <button
               type="submit"
-              disabled={loading}
-              className="w-full font-medium text-lg py-2 rounded bg-purple70 text-white hover:bg-purple60 duration-300 cursor-pointer disabled:opacity-50"
+              className="w-full font-medium text-lg py-2 rounded bg-purple70 text-white hover:bg-purple60 duration-300 cursor-pointer"
             >
               {editingUid ? "Update User" : "Create User"}
             </button>
@@ -157,12 +187,6 @@ const UserManagement = () => {
         {message && (
           <p className="mb-4 text-center font-semibold text-black dark:text-white95">
             {message}
-          </p>
-        )}
-
-        {error && (
-          <p className="mb-4 text-center font-semibold text-red-500">
-            Error: {error}
           </p>
         )}
 
@@ -183,62 +207,77 @@ const UserManagement = () => {
             ))}
           </div>
         ) : (
-          <table className="max-[590px]:min-w-max w-full border-collapse border dark:border-white95 border-gray15 text-center">
-            <thead>
-              <tr className="bg-white95 dark:bg-gray-900">
-                <th className="text-xl text-black dark:text-white border dark:border-white95 border-gray15 p-3.5">
-                  Email
-                </th>
-                <th className="text-xl text-black dark:text-white border dark:border-white95 border-gray15 p-3.5">
-                  Role
-                </th>
-                <th className="text-xl text-black dark:text-white border dark:border-white95 border-gray15 p-3.5">
-                  Actions
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {users.length === 0 && (
-                <tr>
-                  <td
-                    colSpan={3}
-                    className="text-2xl text-black dark:text-white95 text-center p-4"
-                  >
-                    No users found.
-                  </td>
-                </tr>
-              )}
-              {users.map((user) => (
-                <tr key={user.id}>
-                  <td className="text-black dark:text-white99 border dark:border-white99 border-gray15 p-3.5">
-                    {user.email}
-                  </td>
-                  <td className="text-black dark:text-white99 border dark:border-white99 border-gray15 p-3.5">
-                    {user.role}
-                  </td>
-                  <td className=" border dark:border-white99 border-gray15 p-3.5 space-x-2">
-                    <div className="flex justify-center items-center gap-1.5 flex-wrap">
-                      <button
-                        onClick={() => handleEditUser({ id: user.id, email: user.email, role: user.role })}
-                        className="px-3 py-1 bg-purple70 text-white rounded hover:bg-purple60 duration-300 cursor-pointer"
-                      >
-                        Edit
-                      </button>
-                      <button
-                        onClick={() => handleDeleteClick(user.id)}
-                        className="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700 duration-300 cursor-pointer"
-                      >
-                        Delete
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+          <>
+            <div ref={tableAnchorRef} className="w-full" />
+            
+            <TablePortal anchorRef={tableAnchorRef}>
+              <div className="table-scroll-wrapper overflow-x-auto w-full border dark:border-white95 border-gray15 rounded-lg shadow-sm bg-white dark:bg-gray-800">
+                <table className="w-full min-w-[640px] divide-y divide-gray-200 dark:divide-gray-600">
+                  <colgroup>
+                    <col style={{ width: "40%" }} />
+                    <col style={{ width: "30%" }} />
+                    <col style={{ width: "30%" }} />
+                  </colgroup>
+
+                  <thead>
+                    <tr className="bg-white95 dark:bg-gray-900">
+                      <th className="text-xl text-black dark:text-white border dark:border-white95 border-gray15 p-3.5">
+                        Email
+                      </th>
+                      <th className="text-xl text-black dark:text-white border dark:border-white95 border-gray15 p-3.5">
+                        Role
+                      </th>
+                      <th className="text-xl text-black dark:text-white border dark:border-white95 border-gray15 p-3.5">
+                        Actions
+                      </th>
+                    </tr>
+                  </thead>
+
+                  <tbody>
+                    {users.length === 0 && (
+                      <tr>
+                        <td
+                          colSpan={3}
+                          className="text-2xl text-black dark:text-white95 text-center p-4"
+                        >
+                          No users found.
+                        </td>
+                      </tr>
+                    )}
+                    {users.map(({ uid, email, role }) => (
+                      <tr key={uid} className="hover:bg-gray-50 dark:hover:bg-gray-700">
+                        <td className="text-black dark:text-white99 border dark:border-white99 border-gray15 p-3.5">
+                          {email}
+                        </td>
+                        <td className="text-black dark:text-white99 border dark:border-white99 border-gray15 p-3.5">
+                          {role}
+                        </td>
+                        <td className="border dark:border-white99 border-gray15 p-3.5">
+                          <div className="flex justify-center items-center gap-1.5 flex-wrap">
+                            <button
+                              onClick={() => handleEditUser({ uid, email, role })}
+                              className="px-3 py-1 bg-purple70 text-white rounded hover:bg-purple60 duration-300 cursor-pointer"
+                            >
+                              Edit
+                            </button>
+                            <button
+                              onClick={() => handleDeleteClick(uid)}
+                              className="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700 duration-300 cursor-pointer"
+                            >
+                              Delete
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </TablePortal>
+          </>
         )}
-      </div>
       
+
       <Modal
         title="Delete User"
         message="Delete this user? This action cannot be undone."
@@ -250,7 +289,7 @@ const UserManagement = () => {
         showConfirm
       />
     </div>
-  );
-};
+  )
+}
 
-export default UserManagement;
+export default UserManagement
