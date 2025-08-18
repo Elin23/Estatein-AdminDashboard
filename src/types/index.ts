@@ -114,6 +114,7 @@ export interface TeamMember {
   role: string;
   clientImage: string;
   twitterLink: string;
+  email: string;
 }
 
 export type TeamMemberFormData = Omit<TeamMember, 'id' | 'createdAt' | 'imageUrl'>;
@@ -134,4 +135,11 @@ export interface Testimonial {
   review: string;
   show: boolean;
   subject: string;
+}
+
+export interface User {
+  id: string; // uid
+  email: string;
+  role: "admin" | "support" | "sales";
+  createdAt?: number;
 }

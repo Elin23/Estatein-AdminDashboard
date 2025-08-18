@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import type { FaqType } from "../../types/FaqType";
 import GeneralBtn from "../buttons/GeneralBtn";
-import CancleBtn from "../buttons/CancleBtn";
+import FormField from "../InputField/FormField";
 
 interface FaqsFromProps {
   initialData?: FaqType | null;
@@ -50,35 +50,38 @@ export default function FaqsFrom({ initialData = null, onCancel, onSubmit }: Faq
       onSubmit={formSubmit}
       className="bg-white dark:bg-gray-800 p-4 rounded shadow huge:max-w-[1390px] huge:mx-auto"
     >
-      <div className="mb-2">
-        <label className="block text-sm font-medium mb-1 text-black dark:text-white">
-          Question
-        </label>
-        <input
-          type="text"
-          className="w-full px-3 py-2 border border-black dark:border-white rounded text-black dark:text-white bg-transparent"
-          value={question}
-          onChange={(e) => setQuestion(e.target.value)}
-          required
-        />
-      </div>
 
-      <div className="mb-2">
-        <label className="block text-sm font-medium mb-1 text-black dark:text-white">
-          Answer
-        </label>
-        <textarea
-          className="w-full px-3 py-2 border border-black dark:border-white rounded text-black dark:text-white bg-transparent"
-          value={answer}
-          onChange={(e) => setAnswer(e.target.value)}
-          required
-        />
-      </div>
+      <FormField
+        label="Question"
+        name="question"
+        type="text"
+        value={question}
+        onChange={(e) => setQuestion(e.target.value)}
+        required
+        placeholder="Enter question"
+      />
+
+      <FormField
+        label="Answer"
+        name="answer"
+        type="text"
+        value={answer}
+        onChange={(e) => setAnswer(e.target.value)}
+        required
+        placeholder="Enter answer"
+      />
+
+
 
       <div className="flex justify-end space-x-2 mt-4">
-        <CancleBtn onCLick={onCancel} disabled={loading}/>
         <GeneralBtn
-          btnContent={initialData ? "Update" : "Add"} 
+          btnContent="Cancel"
+          btnType="cancel"
+          actionToDo={onCancel}
+          disabled={loading}
+        />
+                <GeneralBtn
+          btnContent={initialData ? "Update" : "Add"}
           btnType={initialData ? 'update' : 'add'}
           actionToDo={formSubmit}
         />

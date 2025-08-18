@@ -1,12 +1,11 @@
 import { useRef } from "react";
-import type { Location } from "../../types"; // use Location instead of LocationData
 import FormField from "../InputField/FormField";
-import CancleBtn from "../buttons/CancleBtn";
 import GeneralBtn from "../buttons/GeneralBtn";
+import type { Location } from "../../types";
 
 interface LocationFormProps {
   initialData?: Location | null;
-  onSubmit: (data: Omit<Location, "id">, id?: string) => Promise<void>;
+  onSubmit: (data: Omit<Location, "id">, id?: string) => Promise<void> | void;
   onCancel: () => void;
   loading?: boolean;
 }
@@ -37,16 +36,8 @@ function LocationForm({
     const mapLink = get("mapLink");
 
 
-    if (
-      !branch ||
-      !address ||
-      !details ||
-      !email ||
-      !phone ||
-      !city ||
-      !category ||
-      !mapLink
-    ) {
+    if (!branch || !address || !details || !email || !phone || !city || !category ||
+      !mapLink) {
       alert("Please fill in all fields before saving.");
       return;
     }
@@ -72,21 +63,36 @@ function LocationForm({
       },
       initialData?.id
     );
+    const payload: Omit<Location, "id"> = {
+      branch,
+      address,
+      details,
+      email,
+      phone,
+      city,
+      category,
+       mapLink,
+      createdAt: initialData?.createdAt ?? Date.now(),
+      ...(initialData?.id ? { updatedAt: Date.now() } : {}),
+    };
 
+    await onSubmit(payload, initialData?.id ?? undefined);
     form.reset();
   };
+
+  const isEditing = Boolean(initialData?.id);
 
   return (
     <form
       ref={formRef}
       onSubmit={handleSubmit}
-      className="p-4 lg-custom:p-[40px] 2xl:p-[50px] gap-[24px] lg-custom:gap-[40px] 2xl:gap-[50px] flex flex-col w-full rounded-xl border bg-white dark:bg-gray-800"
+      className="bg-white dark:bg-gray-800 p-4 rounded shadow huge:max-w-[1390px] huge:mx-auto"
     >
-      <h2 className="2xl:text-2xl text-xl font-bold text-gray-800 dark:text-white">
-        {initialData?.branch ? "Edit Location" : "Add Location"}
+      <h2 className="text-xl font-semibold text-black dark:text-white mb-3">
+        {isEditing ? "Edit Location" : "Add Location"}
       </h2>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+      <div className="grid grid-cols-1 lg-custom:grid-cols-2 gap-4">
         <FormField
           id="branch"
           name="branch"
@@ -116,35 +122,38 @@ function LocationForm({
             { value: "regional", label: "Regional" },
             { value: "international", label: "International" },
           ]}
+          required
         />
 
-        <FormField
-          id="details"
-          name="details"
-          label="Location Details"
-          placeholder="Location Details"
-          defaultValue={initialData?.details}
-          multiline
-          rows={4}
-          required
-          className="md:col-span-2"
-        />
+        <div className="flex flex-col w-full relative lg-custom:col-span-2">
+          <FormField
+            id="details"
+            name="details"
+            label="Location Details"
+            placeholder="Location Details"
+            defaultValue={initialData?.details}
+            multiline
+            required
+          />
+        </div>
       </div>
 
       <h2 className="2xl:text-2xl text-xl font-bold text-gray-800 dark:text-white mt-4">
         Contact
       </h2>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-        <FormField
-          type="email"
-          id="email"
-          name="email"
-          label="Email"
-          defaultValue={initialData?.email}
-          placeholder="Email"
-          required
-        />
+      <div className="grid grid-cols-1 lg-custom:grid-cols-3 gap-5">
+        <div className="flex flex-col w-full relative">
+          <FormField
+            type="email"
+            id="email"
+            name="email"
+            label="Email"
+            defaultValue={initialData?.email}
+            placeholder="Email"
+            required
+          />
+        </div>
 
         <FormField
           id="phone"
@@ -174,14 +183,19 @@ function LocationForm({
         />
       </div>
 
-      <div className="flex gap-4 mt-4">
+      <div className="flex justify-end gap-3 mt-4">
         <GeneralBtn
-          btnContent={loading ? "Saving..." : "Save"}
-          btnType="add"
-          actionToDo={() => formRef.current?.requestSubmit()}
+          btnContent="Cancel"
+          btnType="cancel"
+          actionToDo={onCancel}
           disabled={loading}
         />
-        <CancleBtn onCLick={onCancel} disabled={loading} />
+        <GeneralBtn
+          btnContent={loading ? "Saving..." : isEditing ? "Save Changes" : "Add Location"}
+          btnType="add"
+          actionToDo={() => formRef.current?.requestSubmit()}
+          disabled={!!loading}
+        />
       </div>
     </form>
   );

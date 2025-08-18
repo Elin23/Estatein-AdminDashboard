@@ -25,7 +25,7 @@ const TestimonialCard: React.FC<TestimonialCardProps> = ({
 }) => {
   const role = useSelector((state: RootState) => state.auth.role) || ""
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg pt-10 px-4 pb-4 w-full lg-custom:max-w-[450px] h-full">
+    <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg pt-10 px-4 pb-4 w-full lg-custom:max-w-[450px] h-full">
       <div className="flex justify-between items-start lg-custom:flex-row flex-col gap-4">
         <div>
           <h3 className="text-lg font-semibold text-gray-800 dark:text-white">

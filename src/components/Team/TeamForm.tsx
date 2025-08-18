@@ -14,6 +14,7 @@ export default function TeamForm({ initialData, onCancel, onSubmit }: Props) {
   const [role, setRole] = useState(initialData?.role ?? '');
   const [clientImage, setClientImage] = useState(initialData?.clientImage ?? '');
   const [twitterLink, setTwitterLink] = useState(initialData?.twitterLink ?? '');
+  const [email, setEmail] = useState(initialData?.email ?? '');
   const [loading, setLoading] = useState(false);
   const [uploading, setUploading] = useState(false);
   const fromRef = useRef<HTMLFormElement>(null)
@@ -23,12 +24,14 @@ export default function TeamForm({ initialData, onCancel, onSubmit }: Props) {
       setRole(initialData.role);
       setClientImage(initialData.clientImage);
       setTwitterLink(initialData.twitterLink ?? '');
+      setEmail(initialData.email ?? '');
 
     } else {
       setName('');
       setRole('');
       setClientImage('');
       setTwitterLink('');
+      setEmail('');
 
     }
   }, [initialData]);
@@ -66,7 +69,7 @@ export default function TeamForm({ initialData, onCancel, onSubmit }: Props) {
     setLoading(true);
     try {
       await onSubmit(
-        { name: name.trim(), role: role.trim(), clientImage, twitterLink: twitterLink.trim() },
+        { name: name.trim(), role: role.trim(), clientImage, twitterLink: twitterLink.trim(), email: email.trim() },
         initialData?.id
       );
       if (!initialData) {
@@ -74,6 +77,7 @@ export default function TeamForm({ initialData, onCancel, onSubmit }: Props) {
         setRole('');
         setClientImage('');
         setTwitterLink('');
+        setEmail('');
 
       }
     } catch {
@@ -115,6 +119,14 @@ export default function TeamForm({ initialData, onCancel, onSubmit }: Props) {
         onChange={(e) => setTwitterLink(e.target.value)}
       />
 
+    <FormField
+        label="Email"
+        name="email"
+        type="email"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+      />
+
       <FormField
         label="Photo"
         name="photo"
@@ -132,18 +144,16 @@ export default function TeamForm({ initialData, onCancel, onSubmit }: Props) {
       )}
 
       <div className="flex justify-end space-x-2 mt-4">
-        <button
-          type="button"
-          onClick={onCancel}
-          className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600"
-          disabled={loading || uploading}
-        >
-          Cancel
-        </button>
         <GeneralBtn
-        btnContent={initialData ? 'Update' : 'Add'}
-        btnType={initialData ? 'update' : 'add'}
-        actionToDo={()=>fromRef.current?.requestSubmit()}
+          btnContent="Cancel"
+          btnType="cancel"
+          actionToDo={onCancel}
+          disabled={loading}
+        />
+        <GeneralBtn
+          btnContent={initialData ? 'Update' : 'Add'}
+          btnType={initialData ? 'update' : 'add'}
+          actionToDo={() => fromRef.current?.requestSubmit()}
         disabled={loading || uploading}
         />
       </div>

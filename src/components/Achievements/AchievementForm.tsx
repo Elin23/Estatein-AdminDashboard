@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import type { Achievement } from '../../types/Achievement';
 import FormField from '../InputField/FormField';
 import GeneralBtn from '../buttons/GeneralBtn';
-import CancleBtn from '../buttons/CancleBtn';
 
 interface AchievementFormProps {
   initialData?: Achievement | null;
@@ -60,6 +59,7 @@ function AchievementForm({
         value={title}
         onChange={(e) => setTitle(e.target.value)}
         required
+        placeholder="Enter achievement title"
       />
       <FormField
         label="Description"
@@ -67,19 +67,25 @@ function AchievementForm({
         onChange={(e) => setDescription(e.target.value)}
         required
         multiline
+        placeholder="Enter achievement description"
       />
 
-  
+
 
       <div className="flex justify-end space-x-2 mt-4">
-        <CancleBtn onCLick={onCancel} disabled={loading}/>
-        <GeneralBtn 
-          btnContent={`${initialData? 'Update' : 'Add'}`} 
-          btnType='add'
+        <GeneralBtn
+          btnContent="Cancel"
+          btnType='cancel'
+          actionToDo={onCancel}
+          disabled={loading}
+        />
+        <GeneralBtn
+          btnContent={`${initialData ? 'Update' : 'Add'}`}
+          btnType={initialData ? "update" : "add"}
           actionToDo={handleSubmit}
-          />
+        />
       </div>
     </form>
   );
 }
-export default  AchievementForm;
+export default AchievementForm;

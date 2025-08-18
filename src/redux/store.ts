@@ -18,7 +18,8 @@ import contactsReducer from "./slices/contactsSlice";
 import socialLinksReducer from "./slices/socialLinksSlice"; 
 import faqReducer from "./slices/faqSlice"; 
 import clientsReducer from './slices/ClientsSlice'
-
+import usersReducer from './slices/usersSlice'
+import botCommandsReducer from "./slices/botCommandsSlice";
 
 const persistConfig = {
   key: "root",
@@ -42,7 +43,9 @@ const rootReducer = combineReducers({
   contacts: contactsReducer,
   socialLinks: socialLinksReducer,
   faqs: faqReducer,
-  clients: clientsReducer
+  clients: clientsReducer,
+  users: usersReducer,
+  botCommands: botCommandsReducer,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

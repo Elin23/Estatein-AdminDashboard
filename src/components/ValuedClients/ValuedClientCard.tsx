@@ -1,6 +1,7 @@
 import { useSelector } from "react-redux";
 import type { RootState } from "../../redux/store";
 import type { ValuedClient } from "../../types/ValuedClient";
+import GeneralBtn from "../buttons/GeneralBtn";
 
 interface ValuedClientCardProps {
   client?: ValuedClient;
@@ -41,7 +42,7 @@ export default function ValuedClientCard({
   const displayUrl = normalizedWebsite ? normalizedWebsite.replace(/^https?:\/\//i, "") : "";
 
   return (
-    <div className="bg-white dark:bg-gray-800 p-4 rounded shadow huge:max-w-[452px] h-full flex flex-col">
+    <div className="bg-white dark:bg-gray-800 p-4 rounded-2xl shadow huge:max-w-[452px] h-full flex flex-col">
       {since && (
         <h4 className="text-md font-semibold text-purple70">
           Since {since}
@@ -86,21 +87,20 @@ export default function ValuedClientCard({
       {role === "admin" && (onEdit || onDelete) && (
         <div className="mt-auto pt-4 flex justify-end space-x-2">
           {onEdit && (
-            <button
-              onClick={onEdit}
-              className="px-3 py-1 bg-purple70 text-white rounded hover:bg-purple60"
-            >
-              Edit
-            </button>
+            <GeneralBtn
+              btnContent="Edit"
+              actionToDo={onEdit}
+              btnType="update"
+            />
           )}
-          {onDelete && (
-            <button
-              onClick={onDelete}
-              className="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700"
-            >
-              Delete
-            </button>
-          )}
+      {onDelete && (
+          <GeneralBtn
+          btnContent="Delete"
+          actionToDo={onDelete}
+          btnType="delete"
+          targetLabel={title}
+          />
+        )}
         </div>
       )}
     </div>

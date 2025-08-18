@@ -19,7 +19,7 @@ function Steps() {
       title="Steps"
       addBtnText="+ Add Step"
       role={role}
-      selectList={(state) => state.steps.list}
+      selectList={(state) => state.steps.items}
       selectLoading={(state) => state.steps.loading}
       selectError={(state) => state.steps.error}
       subscribeAction={subscribeToSteps}

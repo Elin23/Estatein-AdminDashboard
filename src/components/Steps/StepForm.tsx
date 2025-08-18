@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react"
 import type { Step } from "../../types/Steps"
 import FormField from "../InputField/FormField"
+import GeneralBtn from "../buttons/GeneralBtn"
 
 interface StepFormProps {
   initialData?: Step | null
@@ -31,25 +32,28 @@ export default function StepForm({
     }
   }, [initialData])
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    if (!stepNum.trim() || !title.trim() || !description.trim()) {
-      return alert("Please fill all fields")
+  const handleSubmit = async () => {
+    const s = stepNum.trim();
+    const t = title.trim();
+    const d = description.trim();
+
+    if (!s || !t || !d) {
+      alert("Please fill all fields");
+      return;
     }
-    setLoading(true)
+
+    setLoading(true);
     try {
       await onSubmit(
-        {
-          stepNum: stepNum.trim(),
-          title: title.trim(),
-          description: description.trim(),
-        },
+        { stepNum: s, title: t, description: d },
         initialData?.id
-      )
+      );
+
+      
       if (!initialData) {
-        setStepNum("")
-        setTitle("")
-        setDescription("")
+        setStepNum("");
+        setTitle("");
+        setDescription("");
       }
     } catch {
       alert("Save failed")
@@ -60,17 +64,21 @@ export default function StepForm({
 
   return (
     <form
-      onSubmit={handleSubmit}
+      onSubmit={(e) => {
+        e.preventDefault();
+        void handleSubmit();
+      }}
       className="bg-white dark:bg-gray-800 p-4 rounded shadow huge:max-w-[1390px] huge:mx-auto"
       ref={fromRef}
     >
       <FormField
         label="Step Num"
         name="stepNum"
-        type="text"
+        type="number"
         value={stepNum}
         onChange={(e) => setStepNum(e.target.value)}
         required
+        placeholder="ex. 01"
       />
 
       <FormField
@@ -80,6 +88,7 @@ export default function StepForm({
         value={title}
         onChange={(e) => setTitle(e.target.value)}
         required
+        placeholder="Enter step title"
       />
 
       <FormField
@@ -90,35 +99,22 @@ export default function StepForm({
         value={description}
         onChange={(e) => setDescription(e.target.value)}
         required
+        placeholder="Enter step description"
       />
 
       <div className="flex justify-end space-x-2 mt-4">
-        <button
-          type="button"
-          onClick={onCancel}
+        <GeneralBtn
+          btnContent="Cancel"
+          btnType="cancel"
+          actionToDo={onCancel}
           disabled={loading}
-          className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600"
-        >
-          Cancel
-        </button>
-        <button
-          type="submit"
-          disabled={loading}
-          className={`px-4 py-2 text-white rounded 
-    ${
-      loading
-        ? "bg-gray-400 cursor-not-allowed"
-        : "bg-purple60 hover:bg-purple70"
-    }`}
-        >
-          {loading
-            ? initialData
-              ? "Updating..."
-              : "Saving..."
-            : initialData
-            ? "Update"
-            : "Add"}
-        </button>
+        />
+
+        <GeneralBtn
+          btnContent={initialData ? "Update" : "Add"}
+          btnType={initialData ? "update" : "add"}
+          actionToDo={handleSubmit} 
+        />
       </div>
     </form>
   )
