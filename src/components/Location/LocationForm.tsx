@@ -1,6 +1,5 @@
 import { useRef } from "react";
 import FormField from "../InputField/FormField";
-import CancleBtn from "../buttons/CancleBtn";
 import GeneralBtn from "../buttons/GeneralBtn";
 import type { Location } from "../../types";
 
@@ -16,7 +15,6 @@ interface LocationFormProps {
 function LocationForm({
   initialData = null,
   onSubmit,
-  onCancel,
   loading,
 }: LocationFormProps) {
   const formRef = useRef<HTMLFormElement>(null);
@@ -50,9 +48,7 @@ function LocationForm({
       phone,
       city,
       category,
-      // createdAt مطلوب في نوع Location
       createdAt: initialData?.createdAt ?? Date.now(),
-      // نحدّث updatedAt عند التعديل فقط
       ...(initialData?.id ? { updatedAt: Date.now() } : {}),
     };
 
