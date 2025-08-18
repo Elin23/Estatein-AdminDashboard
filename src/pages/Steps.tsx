@@ -9,6 +9,7 @@ import {
   deleteStep,
 } from "../redux/slices/stepsSlice";
 import CrudSection from "../components/CrudSection";
+import GenericCard from "../components/GenericCard/GenericCard";
 
 function Steps() {
   const role = useSelector((state: RootState) => state.auth.role) || "";
@@ -26,8 +27,16 @@ function Steps() {
       updateAction={updateStep}
       deleteAction={deleteStep}
       FormComponent={StepForm}
-      renderTitle={(item) => `${item.stepNum}. ${item.title}`}
-      renderDescription={(item) => item.description}
+      renderItem={(step, { onEdit, onDelete }) => (
+        <GenericCard
+          key={step.id}
+          title={`${step.stepNum}. ${step.title}`}
+          description={step.description}
+          onEdit={onEdit}
+          onDelete={onDelete}
+          hasImage={true}
+        />
+        )}
     />
   );
 }

@@ -2,17 +2,7 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import { ref, onValue, update } from "firebase/database";
 import { db } from "../../firebaseConfig";
-
-export interface Testimonial {
-  id: string;
-  clientImage: string;
-  location: string;
-  name: string;
-  rate: number;
-  review: string;
-  show: boolean;
-  subject: string;
-}
+import type { Testimonial } from "../../types";
 
 interface TestimonialsState {
   list: Testimonial[];

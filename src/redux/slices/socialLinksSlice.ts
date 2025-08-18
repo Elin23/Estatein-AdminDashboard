@@ -3,12 +3,8 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import { ref, onValue, push, set, remove } from "firebase/database";
 import { db } from "../../firebaseConfig";
+import type { SocialLink } from "../../types";
 
-export interface SocialLink {
-  id: string;
-  platform: string;
-  url: string;
-}
 
 interface SocialLinksState {
   list: SocialLink[];

@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import { db } from "../../firebaseConfig";
-import { ref, onValue } from "firebase/database";
+import { ref, onValue, update, serverTimestamp } from "firebase/database";
 import type { ContactType } from "../../types";
 
 interface ContactsState {
@@ -17,6 +17,12 @@ const initialState: ContactsState = {
   error: null,
 };
 
+function toDate(v: any): Date {
+  if (v instanceof Date) return v;
+  if (typeof v === "number" || typeof v === "string") return new Date(v);
+  return new Date();
+}
+
 export const subscribeToContacts = createAsyncThunk<
   void,
   void,
@@ -25,7 +31,7 @@ export const subscribeToContacts = createAsyncThunk<
   try {
     const state = getState();
     const currentUnsub = state.contacts.unsubscribe;
-    if (currentUnsub) currentUnsub();
+    if (currentUnsub) currentUnsub(); 
 
     dispatch(setLoading(true));
 
@@ -38,14 +44,19 @@ export const subscribeToContacts = createAsyncThunk<
           const list: ContactType[] = Object.entries(data).map(
             ([id, value]) => {
               const val = value as any;
+              const name =
+                [val?.firstName, val?.lastName].filter(Boolean).join(" ") ||
+                val?.name ||
+                "";
+
               return {
                 id,
-                name: val.firstName + " " + val.lastName,
-                email: val.email,
-                subject: val.inquiryType || "No Subject",
-                message: val.message || "No Message",
-                createdAt: val.createdAt ? new Date(val.createdAt) : new Date(),
-                status: val.status || "new",
+                name,
+                email: val?.email ?? "",
+                subject: val?.inquiryType || val?.subject || "No Subject",
+                message: val?.message || "No Message",
+                createdAt: toDate(val?.createdAt),
+                status: (val?.status as ContactType["status"]) || "new",
               };
             }
           );
@@ -61,10 +72,28 @@ export const subscribeToContacts = createAsyncThunk<
       }
     );
 
-    dispatch(setUnsubscribe(() => unsubscribe));
+    dispatch(setUnsubscribe(unsubscribe));
   } catch (error: any) {
     dispatch(setLoading(false));
     return rejectWithValue(error.message);
+  }
+});
+
+export const updateContactStatus = createAsyncThunk<
+  { id: string; status: ContactType["status"] },
+  { id: string; status: ContactType["status"] },
+  { rejectValue: string }
+>("contacts/updateStatus", async ({ id, status }, { rejectWithValue }) => {
+  try {
+    const contactRef = ref(db, `forms/contact/${id}`);
+    const patch: any = { status };
+    if (status === "replied") {
+      patch.repliedAt = serverTimestamp();
+    }
+    await update(contactRef, patch);
+    return { id, status };
+  } catch (e: any) {
+    return rejectWithValue(e?.message ?? "Failed to update status");
   }
 });
 
@@ -82,24 +111,33 @@ const contactsSlice = createSlice({
     setError(state, action: PayloadAction<string | null>) {
       state.error = action.payload;
     },
-    updateContactStatus(
-      state,
-      action: PayloadAction<{ id: string; status: ContactType["status"] }>
-    ) {
-      const { id, status } = action.payload;
-      state.list = state.list.map((c) => (c.id === id ? { ...c, status } : c));
-    },
     setUnsubscribe(state, action: PayloadAction<() => void>) {
       state.unsubscribe = action.payload;
     },
     cleanupSubscription(state) {
       if (state.unsubscribe) {
-        state.unsubscribe();
+        state.unsubscribe();  
         state.unsubscribe = undefined;
       }
       state.loading = false;
       state.error = null;
     },
+  },
+  extraReducers: (builder) => {
+    builder
+      .addCase(updateContactStatus.pending, (state, action) => {
+        const { id, status } = action.meta.arg;
+        state.list = state.list.map((c) =>
+            c.id === id ? { ...c, status } : c
+        );
+      })
+      .addCase(updateContactStatus.fulfilled, () => {})
+      .addCase(updateContactStatus.rejected, (state, action) => {
+        state.error =
+          (action.payload as string) ||
+          action.error.message ||
+          "Failed to update status";
+      });
   },
 });
 
@@ -107,8 +145,8 @@ export const {
   setContacts,
   setLoading,
   setError,
-  updateContactStatus,
   setUnsubscribe,
   cleanupSubscription,
 } = contactsSlice.actions;
+
 export default contactsSlice.reducer;

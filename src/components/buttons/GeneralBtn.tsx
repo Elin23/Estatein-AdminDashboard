@@ -16,9 +16,9 @@ function GeneralBtn({
 }: GeneralBtnProps) {
   const [showModal, setShowModal] = useState<boolean>(false)
   const deleteStyles =
-    "px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700"
+    "text-[10px] md:text-base px-2  md:px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700"
   const updateAndADdStyles =
-    "bg-purple60 hover:bg-purple65  text-white px-4 py-2 rounded"
+    "text-[10px] md:text-base px-2 md:px-3 py-1 bg-purple60 hover:bg-purple65  text-white  rounded"
   const handleBtnClicked = (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault()
     setShowModal(true)

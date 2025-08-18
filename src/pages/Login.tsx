@@ -21,6 +21,7 @@ const Login = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setError("")
+
     try {
       const userCredential = await signInWithEmailAndPassword(
         auth,
@@ -35,35 +36,33 @@ const Login = () => {
 
       if (!snapshot.exists()) {
         console.warn("No user data found in Realtime Database for this UID")
-        setError("Role not found for this user")
+        setError("Your account information is no longer available. Please contact support.")
         return
       }
 
       const userData = snapshot.val()
-      console.log(" User data from Realtime Database:", userData)
+      console.log("User data from Realtime Database:", userData)
 
       if (!userData.role) {
-        console.warn(" Role is missing in user data")
-        setError("Role is missing for this user")
+        console.warn("Role is missing in user data")
+        setError("Your account information is no longer available. Please contact support.")
         return
       }
 
       dispatch(loginSuccess({ email, role: userData.role }))
-
       navigate("/")
+
     } catch (err: any) {
       console.error("Login error:", err)
-      if (err.code === "auth/user-not-found") {
-        setError("User not found")
-      } else if (err.code === "auth/wrong-password") {
-        setError("Incorrect password")
-      } else if (err.code === "auth/invalid-email") {
-        setError("Invalid email address")
+
+      if (err.code === "auth/invalid-credential") {
+        setError("The email or password you entered is incorrect. Please try again.")
       } else {
-        setError(err.message || "Failed to login")
+        setError("Unable to log in. Please try again or contact support.")
       }
     }
   }
+
   return (
     <LoginContainer>
       <LoginHeader isLogin={true} />

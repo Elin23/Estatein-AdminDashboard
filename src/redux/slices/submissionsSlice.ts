@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
-import { onValue, ref, update, off } from "firebase/database"; 
+import { onValue, ref, update } from "firebase/database"; 
 import { db } from "../../firebaseConfig";
 import type { FormSubmission } from "../../types";
 
@@ -59,9 +59,7 @@ export const subscribeToSubmissions = createAsyncThunk<
                   const dateMs = typeof ts === "number" ? ts : Date.now();
 
                   const formName =
-                    formType === "contact"
-                      ? "Contact Form"
-                      : formType === "inquiry"
+                    formType === "inquiry"
                       ? "Inquiry Form"
                       : "Property Form";
 
@@ -148,13 +146,11 @@ export const changeSubmissionStatus = createAsyncThunk<
       return rejectWithValue("Submission not found");
     }
 
-    // Optimistic update
     dispatch(updateSubmissionStatus({ id, status }));
 
     try {
       await update(ref(db, `forms/${sub.formType}/${id}`), { status });
     } catch (error: any) {
-      // Revert on failure
       dispatch(updateSubmissionStatus({ id, status: sub.status }));
       return rejectWithValue(error.message || "Failed to update status");
     }

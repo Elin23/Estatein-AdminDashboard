@@ -139,7 +139,6 @@ const UserManagement = () => {
         </button>
       </div>
 
-      {/* ✅ شرط العرض: إذا showForm true بيظهر الفورم، غير هيك بيظهر الجدول */}
       {showForm ? (
         <form
           onSubmit={handleCreateOrUpdateUser}
@@ -173,7 +172,7 @@ const UserManagement = () => {
           >
             <option value="admin">Admin</option>
             <option value="support">Support</option>
-            <option value="user">Sales</option>
+            <option value="sales">Sales</option>
           </select>
 
           <button
