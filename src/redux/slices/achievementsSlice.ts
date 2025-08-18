@@ -2,12 +2,8 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import { db } from "../../firebaseConfig";
 import { ref, onValue, push, set, update, remove } from "firebase/database";
+import type { Achievement } from "../../types/Achievement";
 
-export interface Achievement {
-  id: string;
-  title: string;
-  description: string;
-}
 
 interface AchievementsState {
   list: Achievement[];

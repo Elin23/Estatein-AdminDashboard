@@ -86,9 +86,14 @@ export interface FormSubmission {
 // Location Types
 export interface Location {
   id: string;
-  name: string;
-  state: string;
-  createdAt: Date;
+  branch: string;
+  address: string;
+  details: string;
+  email: string;
+  phone: string;
+  city: string;
+  category: string;
+  createdAt: number;
 }
 
 export type LocationFormData = Omit<Location, 'id' | 'createdAt'>;
@@ -112,3 +117,21 @@ export interface TeamMember {
 }
 
 export type TeamMemberFormData = Omit<TeamMember, 'id' | 'createdAt' | 'imageUrl'>;
+
+export interface SocialLink {
+  id: string;
+  platform: string;
+  url: string;
+}
+
+
+export interface Testimonial {
+  id: string;
+  clientImage: string;
+  location: string;
+  name: string;
+  rate: number;
+  review: string;
+  show: boolean;
+  subject: string;
+}

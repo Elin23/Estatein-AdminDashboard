@@ -4,7 +4,7 @@ import FormField from '../InputField/FormField';
 import GeneralBtn from '../buttons/GeneralBtn';
 
 interface Props {
-  initialData?: TeamMember;
+  initialData?: TeamMember | null;
   onCancel: () => void;
   onSubmit: (data: Omit<TeamMember, 'id'>, id?: string) => Promise<void>;
 }

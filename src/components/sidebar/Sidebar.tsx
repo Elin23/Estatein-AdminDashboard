@@ -1,20 +1,6 @@
 import React, { useEffect, useRef, useState } from "react"
-import {
-  StepForward,
-  Building2,
-  MapPin,
-  LayoutDashboard,
-  Grid,
-  FormInput,
-  InboxIcon,
-  MessageSquare,
-  LogOut,
-  User,
-  Menu,
-  PersonStanding,
-  CircleQuestionMarkIcon,
-  Info,
-} from "lucide-react"
+import {StepForward,Building2,MapPin,LayoutDashboard,Grid,FormInput,InboxIcon,MessageSquare,
+  LogOut,User,Menu,PersonStanding,CircleQuestionMarkIcon,Info} from "lucide-react"
 import { useLocation, useNavigate } from "react-router-dom"
 import SidebarLink from "./SidebarLink"
 import Switch from "../UI/Switch"
@@ -180,8 +166,8 @@ const Sidebar: React.FC = () => {
   }
 
   return (
-    <div
-      className={`bg-white dark:bg-gray-800 h-screen items-center lg-custom:items-stretch fixed left-0 top-0 shadow-lg flex flex-col transition-all duration-300 z-50
+    <nav
+      className={`bg-white dark:bg-gray-800 h-screen items-center lg-custom:items-stretch fixed left-0 top-0 shadow-lg flex flex-col transition-all duration-300 z-50 
         ${isCollapsed ? "w-16" : "w-64"}
       `}
     >
@@ -248,7 +234,7 @@ const Sidebar: React.FC = () => {
           {!isCollapsed && <span className="font-medium">Logout</span>}
         </button>
       </div>
-    </div>
+    </nav>
   )
 }
 
