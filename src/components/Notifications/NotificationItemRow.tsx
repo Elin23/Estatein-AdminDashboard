@@ -21,7 +21,7 @@ const NotificationItemRow: React.FC<Props> = ({ item, unread, onOpen }) => {
       tabIndex={0}
       onClick={() => onOpen(item.id)}
       onKeyDown={handleKey}
-      className="border border-gray-100 dark:border-gray-800 rounded-xl p-3 cursor-pointer transition hover:bg-gray-50 dark:hover:bg-gray-800/60 outline-none focus:ring-2 focus:ring-purple70"
+      className="border border-gray-400 dark:border-gray-600 rounded-xl p-3 cursor-pointer transition hover:bg-gray-50 dark:hover:bg-gray-800/60 outline-none focus:ring-2 focus:ring-purple70"
       title="Open in Submissions"
     >
       <div className="flex items-center justify-between">

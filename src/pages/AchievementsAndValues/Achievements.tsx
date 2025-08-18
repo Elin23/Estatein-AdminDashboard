@@ -1,14 +1,14 @@
-import type { RootState } from "../redux/store";
-import type { Achievement } from "../types/Achievement"; 
-import AchievementForm from "../components/Achievements/AchievementForm";
+import type { RootState } from "../../redux/store";
+import type { Achievement } from "../../types/Achievement"; 
+import AchievementForm from "../../components/Achievements/AchievementForm";
 import {
   subscribeToAchievements,
   addAchievement,
   updateAchievement,
   deleteAchievement,
-} from "../redux/slices/achievementsSlice";
+} from "../../redux/slices/achievementsSlice";
 import { useSelector } from "react-redux";
-import CrudSection from "../components/CrudSection";
+import CrudSection from "../../components/CrudSection";
 
 function Achievements() {
   const role = useSelector((state: RootState) => state.auth.role) || "";

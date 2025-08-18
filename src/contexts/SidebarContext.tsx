@@ -22,7 +22,7 @@ export const SidebarProvider = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     const handleResize = () => {
-      if (window.innerWidth < 768) {
+      if (window.innerWidth < 992) {
         setIsCollapsed(true)
       } else {
         setIsCollapsed(false)

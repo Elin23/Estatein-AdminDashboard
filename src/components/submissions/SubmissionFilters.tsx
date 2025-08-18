@@ -41,7 +41,7 @@ const SubmissionFilters: React.FC<SubmissionFiltersProps> = ({
   )
 
   return (
-    <div className="flex flex-col sm:flex-row sm:items-center gap-3">
+    <div className="flex flex-col lg-custom:flex-row lg-custom:items-center gap-3">
       <select
         value={selectedStatus}
         onChange={handleStatusChange}

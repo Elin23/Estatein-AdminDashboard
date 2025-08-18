@@ -9,7 +9,6 @@ import {
   InboxIcon,
   MessageSquare,
   LogOut,
-  Aperture,
   User,
   Menu,
   PersonStanding,
@@ -56,8 +55,8 @@ const menuItems = [
   },
   {
     icon: Grid,
-    label: "Achievements",
-    path: "/achievements",
+    label: "Achievements & Values",
+    path: "/achievementsAndValues",
     visible: ["support", "admin"],
   },
   {
@@ -82,12 +81,6 @@ const menuItems = [
     icon: StepForward,
     label: "Steps",
     path: "/steps",
-    visible: ["support", "admin"],
-  },
-  {
-    icon: Aperture,
-    label: "Our Values",
-    path: "/values",
     visible: ["support", "admin"],
   },
   {
@@ -188,27 +181,43 @@ const Sidebar: React.FC = () => {
 
   return (
     <div
-      className={`bg-white dark:bg-gray-800 h-screen fixed left-0 top-0 shadow-lg flex flex-col transition-all duration-300 z-50
+      className={`bg-white dark:bg-gray-800 h-screen items-center lg-custom:items-stretch fixed left-0 top-0 shadow-lg flex flex-col transition-all duration-300 z-50
         ${isCollapsed ? "w-16" : "w-64"}
       `}
     >
-      <div className="p-4 gap-4 flex flex-col md:flex-row items-start md:items-center justify-between">
-        <button className="rounded md:hidden" onClick={toggleSidebar}>
-          <Menu className="w-5 h-5 dark:text-gray-200 text-gray-800" />
-        </button>
+      <div className="p-4 gap-4 flex flex-col lg-custom:flex-row items-start md:items-center justify-between">
 
-        {!isCollapsed && (
-          <div className="flex items-center gap-2">
-            <img
-              src="/assets/imgs/logo.svg"
-              alt="Estatein Logo"
-              className="size-8"
-            />
+
+        <div className="flex items-center gap-2">
+                    {isCollapsed && (
+
+          <img
+            src="/assets/imgs/logo.svg"
+            alt="Estatein Logo"
+            className="size-6"
+          />
+          )}
+
+
+          {!isCollapsed && (
+          <>
+                               <img
+            src="/assets/imgs/logo.svg"
+            alt="Estatein Logo"
+            className="size-8"
+          />
             <h1 className="text-gray-800 dark:text-gray-200 font-bold">
               Estatein
             </h1>
-          </div>
-        )}
+          </>  
+
+          )}
+
+        </div>
+
+        <button className="rounded lg-custom:hidden" onClick={toggleSidebar}>
+          <Menu className="w-5 h-5 dark:text-gray-200 text-gray-800" />
+        </button>
 
         <div className="flex items-center gap-2">
           <Switch />

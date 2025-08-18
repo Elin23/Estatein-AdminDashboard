@@ -89,12 +89,12 @@ const ContactListItem: React.FC<ContactListItemProps> = ({
 
   return (
     <div className="flex flex-col justify-between gap-4 p-6 bg-white dark:bg-gray-800 rounded-lg shadow">
-      <div className="flex justify-between gap-3 flex-wrap">
+      <div className="flex flex-col lg-custom:flex-row justify-between gap-3 flex-wrap">
         <h3 className="text-xl font-medium text-black dark:text-white95">
           {contact.name}
         </h3>
         <span
-          className={`px-2 py-1 rounded-full text-xs font-medium ${
+          className={`px-2 py-1 rounded-full text-xs font-medium text-center ${
             statusColors[contact.status]
           }`}
         >
@@ -121,11 +121,11 @@ const ContactListItem: React.FC<ContactListItemProps> = ({
           {contact.message}
         </p>
       </div>
-      <div className="flex flex-wrap items-center gap-4 pt-2">
+      <div className="flex flex-col lg-custom:flex-row flex-wrap  gap-4 pt-2">
         {contact.status === "new" && (
           <button
             onClick={() => onUpdateStatus(contact.id, "read")}
-            className="flex items-center gap-1 px-3 py-1 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors text-sm cursor-pointer"
+            className="flex justify-center items-center gap-1 px-3 py-1 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors text-sm cursor-pointer"
           >
             <CheckCircle className="w-4 h-4" /> Mark as Read
           </button>
@@ -133,7 +133,7 @@ const ContactListItem: React.FC<ContactListItemProps> = ({
 
         <button
           onClick={() => setIsModalOpen(true)}
-          className="flex items-center gap-1 px-3 py-1 bg-purple65 hover:bg-purple60 text-white rounded-md transition-colors text-sm cursor-pointer"
+          className="flex justify-center items-center gap-1 px-3 py-1 bg-purple65 hover:bg-purple60 text-white rounded-md transition-colors text-sm cursor-pointer"
         >
           <Mail className="w-4 h-4" /> Send Email
         </button>
@@ -141,7 +141,7 @@ const ContactListItem: React.FC<ContactListItemProps> = ({
         {contact.status !== "replied" && (
           <button
             onClick={() => onUpdateStatus(contact.id, "replied")}
-            className="flex items-center gap-1 px-3 py-1 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors text-sm cursor-pointer"
+            className="flex justify-center items-center gap-1 px-3 py-1 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors text-sm cursor-pointer"
             disabled={sending}
           >
             <CheckCircle className="w-4 h-4" /> Mark as Replied

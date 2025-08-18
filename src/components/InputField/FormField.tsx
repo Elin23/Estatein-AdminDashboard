@@ -89,7 +89,7 @@ export default function FormField({
                     defaultValue={defaultValue as string}
                     onChange={onChange}
                     required={required}
-                    className="rounded-lg border-black dark:border-white text-black dark:text-white text-sm/[20px] 2xl:text-lg font-medium border px-5 py-4 bg-transparent w-full"
+                    className="rounded-lg border-black dark:border-white text-black dark:text-white text-sm/[20px] 2xl:text-lg font-medium border px-3 py-2 bg-transparent w-full"
                 >
                     {placeholder && (
                         <option value="" disabled>
@@ -117,7 +117,7 @@ export default function FormField({
                     onChange={onChange}
                     required={required}
                     rows={rows}
-                    className="rounded-lg text-sm/[20px] 2xl:text-lg font-medium border border-black dark:border-white text-black dark:text-white px-5 py-4 bg-transparent w-full resize-none"
+                    className="rounded-lg text-sm/[20px] 2xl:text-lg font-medium border border-black dark:border-white text-black dark:text-white px-3 py-2 bg-transparent w-full resize-none"
                 />
             ) : (
                 <input
@@ -129,7 +129,7 @@ export default function FormField({
                     defaultValue={defaultValue as string | number}
                     onChange={onChange}
                     required={required}
-                    className="rounded-lg text-sm/[20px] 2xl:text-lg font-medium border border-black dark:border-white text-black dark:text-white px-5 py-4 bg-transparent w-full"
+                    className="rounded-lg text-sm/[20px] 2xl:text-lg font-medium border border-black dark:border-white text-black dark:text-white px-3 py-2 bg-transparent w-full"
                 />
             )}
         </div>

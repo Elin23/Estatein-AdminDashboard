@@ -47,7 +47,7 @@ export default function Pagination<T>({
         ))}
       </div>
 
-      <div className="flex flex-col sm:flex-row justify-center items-center gap-2  sm:space-y-0 space-y-3 flex-wrap mt-6">
+      <div className="flex  sm:flex-row justify-center items-center gap-2  sm:space-y-0 space-y-3 flex-wrap mt-6">
         <button
           onClick={() => setCurrentPage(currentPage - 1)}
           disabled={currentPage === 1}
@@ -83,7 +83,7 @@ export default function Pagination<T>({
         <button
           onClick={() => setCurrentPage(currentPage + 1)}
           disabled={currentPage === totalPages}
-          className="flex items-center justify-center bg-white border rounded-full w-8 h-8 sm:w-10 sm:h-10 text-gray-700 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-purple90 transition"
+          className="flex items-center mb-2 lg-custom:mb-0 justify-center bg-white border rounded-full w-8 h-8 sm:w-10 sm:h-10 text-gray-700 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-purple90 transition"
         >
           <ChevronRight size={16} />
         </button>

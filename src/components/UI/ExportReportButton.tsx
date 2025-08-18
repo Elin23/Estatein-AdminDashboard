@@ -36,14 +36,22 @@ function ExportButton<T>({
   };
 
   return (
-    <button
-      onClick={handleExport}
-      className="bg-purple65 text-white px-4 py-2 rounded-lg hover:bg-purple60"
-      disabled={disabled || data.length === 0}
-      title={disabled || data.length === 0 ? "No data to export" : buttonLabel}
-    >
-      {buttonLabel}
-    </button>
+<button
+  onClick={handleExport}
+  className="
+    rounded-xl px-4 py-2
+    bg-purple65 hover:bg-purple60 text-white
+    ring-2 ring-purple65           
+    ring-offset-2                 
+    ring-offset-white dark:ring-offset-gray-900  
+    disabled:opacity-60 disabled:cursor-not-allowed
+    transition-colors
+  "
+  disabled={disabled || data.length === 0}
+  title={disabled || data.length === 0 ? 'No data to export' : buttonLabel}
+>
+  {buttonLabel}
+</button>
   );
 }
 

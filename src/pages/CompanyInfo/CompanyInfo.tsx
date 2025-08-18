@@ -15,11 +15,11 @@ export default function CompanyInfo() {
     "bg-gray-100 text-gray-700 hover:bg-gray-200 hover:text-black dark:bg-gray-800 dark:text-gray-200";
 
   return (
-    <div className="w-full  huge:max-w-[1390px] huge:mx-auto">
+    <div className="w-full p-6  huge:max-w-[1390px] huge:mx-auto ">
       <div
         role="tablist"
         aria-label="Sections"
-        className="flex items-center gap-2  w-full mb-4 m-5"
+        className="flex  items-center gap-2  w-full mb-4 "
       >
         <button
           id="tab-locations-trigger"

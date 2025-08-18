@@ -40,13 +40,13 @@ function Locations() {
   }
 
   return (
-    <div className="p-6 huge:max-w-[1390px] huge:mx-auto">
-      <div className="flex justify-between items-center mb-6">
+    <div className=" huge:max-w-[1390px] huge:mx-auto">
+      <div className="flex flex-col lg-custom:flex-row justify-between lg-custom:items-center mb-6">
         <h1 className="text-3xl font-bold text-gray-700 dark:text-gray-200">
           Our Locations
         </h1>
 
-        <div className="flex gap-3">
+        <div className="flex flex-col lg-custom:flex-row mt-3 lg-custom:mt-0 gap-3">
           {locations.length > 0 && (
             <ExportButton
               data={locations}
@@ -62,7 +62,9 @@ function Locations() {
                 setEditId(null)
                 setShowForm((prev) => !prev)
               }}
-              className="bg-purple60 text-white px-4 py-2 rounded-lg hover:bg-[#5b2fc4]"
+              className="px-4 py-2 rounded-xl text-white bg-blue-600 hover:bg-blue-700 transition-colors
+              ring-2 ring-blue-600  ring-offset-2     ring-offset-white dark:ring-offset-gray-900
+                  disabled:opacity-60 disabled:cursor-not-allowed"
             >
               {showForm ? "Close Form" : "+ Add Location"}
             </button>

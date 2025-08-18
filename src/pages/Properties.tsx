@@ -70,7 +70,7 @@ const Properties = () => {
         <h1 className="text-2xl font-bold text-gray-800 dark:text-white">
           Properties
         </h1>
-        <div className="flex flex-col  sm:flex-row sm:items-center gap-3">
+        <div className="flex flex-col  lg-custom:flex-row lg-custom:items-center gap-3">
           <ExportButton
             data={properties}
             fileName={`properties_report_${new Date()
@@ -87,9 +87,10 @@ const Properties = () => {
                 setEditing(false)
                 setShowForm(!showForm)
               }}
-              className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
-            >
-              {showForm ? "Cancel" : "Add New Property"}
+              className="px-4 py-2 rounded-xl text-white bg-blue-600 hover:bg-blue-700 transition-colors
+              ring-2 ring-blue-600  ring-offset-2     ring-offset-white dark:ring-offset-gray-900
+                  disabled:opacity-60 disabled:cursor-not-allowed">
+              {showForm ? "Cancel" : "+ Add New Property"}
             </button>
           )}
         </div>

@@ -54,19 +54,20 @@ export default function SocialLinks() {
     await dispatch(deleteSocialLink(id))
   }
 
-  return (
-    <div className="min-h-screen dark:bg-gray-900 text-gray-900 dark:text-white">
-      <div className="container mx-auto px-4 py-6">
-        <div className="flex flex-col  lg:flex-row lg:items-center lg:justify-between mb-6 gap-4 lg:gap-0">
-          <div>
-            <h1 className="text-3xl font-extrabold">Social Links</h1>
-            <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-              Manage company social media URLs (per platform).
-            </p>
-          </div>
 
-          <div className="flex flex-col  sm:flex-row sm:items-center gap-3">
-            <div className="flex items-center border border-black dark:border-gray-600 rounded-md px-3 py-1 shadow-sm flex-grow sm:flex-grow-0">
+    return (
+        <div className="min-h-screen dark:bg-gray-900 text-gray-900 dark:text-white">
+            <div className="container mx-auto ">
+                <div className="flex flex-col  lg:flex-row lg:items-center lg:justify-between mb-6 gap-4 lg:gap-0">
+                    <div>
+                        <h1 className="text-3xl font-extrabold">Social Links</h1>
+                        <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                            Manage company social media URLs (per platform).
+                        </p>
+                    </div>
+
+          <div className="flex flex-col  lg-custom:flex-row lg-custom:items-center gap-3">
+            <div className="flex  items-center border border-black dark:border-gray-600 rounded-md px-3 py-2.5 shadow-sm flex-grow sm:flex-grow-0">
               <svg
                 className="w-4 h-4 text-gray-600 dark:text-gray-400 mr-2"
                 viewBox="0 0 24 24"
@@ -101,7 +102,9 @@ export default function SocialLinks() {
                   setEditing(null)
                   window.scrollTo({ top: 0, behavior: "smooth" })
                 }}
-                className="px-4 py-2 bg-purple-600 text-white rounded-lg shadow hover:bg-purple-700 whitespace-nowrap"
+                className="px-4 py-2 rounded-xl text-white bg-blue-600 hover:bg-blue-700 transition-colors
+              ring-2 ring-blue-600  ring-offset-2     ring-offset-white dark:ring-offset-gray-900
+                  disabled:opacity-60 disabled:cursor-not-allowed"
               >
                 + Add Value
               </button>
@@ -109,7 +112,7 @@ export default function SocialLinks() {
           </div>
         </div>
 
-        <div className="flex flex-wrap gap-3 mb-4">
+        <div className="flex flex-col lg-custom:flex-row flex-wrap gap-3 mb-4">
           {PLATFORMS.map((p) => (
             <button
               key={p}
@@ -152,7 +155,7 @@ export default function SocialLinks() {
           </div>
         )}
 
-        <div className="border dark:border-gray-700 border-black rounded-lg shadow-sm  bg-white">
+        <div className="border dark:border-gray-700 border-black rounded-lg shadow-sm  bg-white ">
           <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-600 ">
             <thead className="bg-gray-50 dark:bg-gray-700">
               <tr>
@@ -181,7 +184,7 @@ export default function SocialLinks() {
               ) : (
                 filtered.map((link, idx) => (
                   <tr key={link.id}>
-                    <td className="px-4 sm:px-6 py-4 whitespace-nowrap text-sm text-gray-600 dark:text-gray-400">
+                    <td className="px-4 sm:px-6 py-4 whitespace-nowrap  truncate text-sm text-gray-600 dark:text-gray-400">
                       {idx + 1}
                     </td>
                     <td className="px-4 sm:px-6 py-4 break-words text-sm text-purple-700">

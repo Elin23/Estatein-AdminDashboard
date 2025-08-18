@@ -114,8 +114,8 @@ const UserManagement = () => {
   }
 
   return (
-    <div className="p-6">
-      <div className="flex justify-between items-center gap-5 flex-wrap mb-6">
+    <div className="p-6 max-w-[1430px] mx-auto">
+      <div className="flex flex-col lg-custom:flex-row justify-between lg-custom:items-center gap-5 flex-wrap mb-6">
         <h2 className="text-2xl font-bold text-black dark:text-white">
           User Management
         </h2>
@@ -129,7 +129,9 @@ const UserManagement = () => {
             setRole("admin")
             setMessage("")
           }}
-          className="bg-purple65 text-white px-4 py-2 rounded-lg hover:bg-purple60 cursor-pointer"
+          className="px-4 py-2 rounded-xl text-white bg-blue-600 hover:bg-blue-700 transition-colors
+              ring-2 ring-blue-600  ring-offset-2     ring-offset-white dark:ring-offset-gray-900
+                  disabled:opacity-60 disabled:cursor-not-allowed"
         >
           {showForm ? "Cancel" : "Add User"}
         </button>

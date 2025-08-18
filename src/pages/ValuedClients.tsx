@@ -78,13 +78,15 @@ function ValuedClients() {
 
   return (
     <div className="p-6">
-      <div className="flex justify-between items-center flex-wrap mb-4 huge:max-w-[1390px] huge:mx-auto">
-        <h1 className="text-2xl font-bold text-gray-800 dark:text-white mb-6">
+      <div className="flex flex-col lg-custom:flex-row justify-between lg-custom:items-center flex-wrap mb-4 huge:max-w-[1390px] huge:mx-auto">
+        <h1 className=" text-2xl font-bold text-gray-800 dark:text-white mb-6">
           Valued Clients
         </h1>
         {role === "admin" && (
           <button
-            className="bg-purple60 hover:bg-purple65  text-white px-4 py-2 rounded"
+            className="px-4 py-2 rounded-xl text-white bg-blue-600 hover:bg-blue-700 transition-colors
+              ring-2 ring-blue-600  ring-offset-2     ring-offset-white dark:ring-offset-gray-900
+                  disabled:opacity-60 disabled:cursor-not-allowed"
             onClick={handleAddClick}
           >
             + Add Valued Client

@@ -20,7 +20,7 @@ export default function NotificationSection() {
   };
 
   return (
-    <div className="bg-white dark:bg-gray-900 rounded-2xl shadow p-4 md:p-6">
+    <div className="bg-white dark:bg-gray-800 rounded-2xl shadow p-4 md:p-6 w-full lg-custom:w-1/2">
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
           <h2 className="text-xl font-semibold text-gray-800 dark:text-white">

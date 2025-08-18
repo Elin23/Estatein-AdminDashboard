@@ -92,25 +92,24 @@ const SubmissionCard: React.FC<SubmissionCardProps> = ({
   }
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 huge:max-w-[452px]">
-      <div className="flex justify-between items-start">
+    <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 huge:max-w-[452px] text-wrap">
+      <div className="flex flex-col lg-custom:flex-row justify-between items-start">
         <div>
           <h3 className="text-lg font-semibold text-gray-800 dark:text-white">
             {submission.formName}
           </h3>
-          <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+          <p className="text-sm  text-gray-500 dark:text-gray-400 mt-1">
             {submission.category}
           </p>
         </div>
         <span
-          className={`px-3 py-1 rounded-full text-sm font-medium flex items-center gap-1 ${
-            {
+          className={`px-3 py-1 rounded-full w-full lg-custom:w-fit mt-3 lg-custom:mt-0  text-sm font-medium flex items-center gap-1 ${{
               pending: "bg-yellow-100 text-yellow-800",
               reviewed: "bg-blue-100 text-blue-800",
               approved: "bg-green-100 text-green-800",
               rejected: "bg-red-100 text-red-800",
             }[submission.status]
-          }`}
+            }`}
         >
           {StatusIcon && <StatusIcon className="w-4 h-4" />}
           {submission.status.charAt(0).toUpperCase() +
@@ -120,18 +119,18 @@ const SubmissionCard: React.FC<SubmissionCardProps> = ({
 
       <div className="mt-4 space-y-2">
         {Object.entries(submission.data).map(([key, value]) => (
-          <div key={key} className="flex justify-between">
-            <span className="text-sm text-gray-600 dark:text-gray-400">
+          <div key={key} className="flex gap-3 ">
+            <span className="text-sm text-gray-600 dark:text-gray-400 font-medium">
               {key}:
             </span>
-            <span className="text-sm text-gray-800 dark:text-gray-200">
+            <span className="text-sm text-gray-800 dark:text-gray-200  whitespace-normal break-words truncate">
               {String(value)}
             </span>
           </div>
         ))}
       </div>
       {(role === "admin" || role === "sales") && (
-        <div className="mt-6 flex flex-wrap gap-2">
+        <div className="mt-6 flex flex-col lg-custom:flex-row flex-wrap gap-2">
           {submission.status !== "approved" && (
             <button
               onClick={() => onUpdateStatus(submission.id, "approved")}
@@ -159,9 +158,9 @@ const SubmissionCard: React.FC<SubmissionCardProps> = ({
 
           <button
             onClick={() => setIsModalOpen(true)}
-            className="px-3 py-1 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition-colors text-sm flex items-center gap-1"
+            className="px-3 py-1  bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition-colors text-sm flex items-center justify-center gap-1"
           >
-            <Mail className="w-4 h-4" />
+            <Mail className="w-4 h-4 " />
             Send Email
           </button>
         </div>
