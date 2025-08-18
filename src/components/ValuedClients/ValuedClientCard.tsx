@@ -41,7 +41,7 @@ export default function ValuedClientCard({
   const displayUrl = normalizedWebsite ? normalizedWebsite.replace(/^https?:\/\//i, "") : "";
 
   return (
-    <div className="bg-white dark:bg-gray-800 p-4 rounded shadow huge:max-w-[452px] h-full flex flex-col">
+    <div className="bg-white dark:bg-gray-800 p-4 rounded-2xl shadow huge:max-w-[452px] h-full flex flex-col">
       {since && (
         <h4 className="text-md font-semibold text-purple70">
           Since {since}

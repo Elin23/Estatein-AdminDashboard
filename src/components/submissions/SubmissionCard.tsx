@@ -92,7 +92,7 @@ const SubmissionCard: React.FC<SubmissionCardProps> = ({
   }
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 huge:max-w-[452px] text-wrap">
+    <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 huge:max-w-[452px] text-wrap">
       <div className="flex flex-col lg-custom:flex-row justify-between items-start">
         <div>
           <h3 className="text-lg font-semibold text-gray-800 dark:text-white">

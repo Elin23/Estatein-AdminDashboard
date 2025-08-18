@@ -66,6 +66,7 @@ export const updateMember = createAsyncThunk<
       role: payload.data.role.trim(),
       twitterLink: payload.data.twitterLink.trim(),
       clientImage: payload.data.clientImage.trim(),
+      email: payload.data.email.trim(),
     });
   } catch (err: any) {
     return rejectWithValue(err.message || "Failed to update team");

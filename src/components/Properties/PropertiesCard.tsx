@@ -21,7 +21,7 @@ function PropertiesCard({
   return (
     <div
       key={property.id}
-      className="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden h-full flex flex-col"
+      className="bg-white dark:bg-gray-800 rounded-2xl shadow-md overflow-hidden h-full flex flex-col"
     >
       <div className="relative">
         {property.images?.length > 0 && (

@@ -124,7 +124,7 @@ export default function TeamForm({ initialData, onCancel, onSubmit }: Props) {
         name="email"
         type="email"
         value={email}
-        onChange={(e) => setTwitterLink(e.target.value)}
+        onChange={(e) => setEmail(e.target.value)}
       />
 
       <FormField

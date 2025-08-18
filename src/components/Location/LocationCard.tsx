@@ -11,7 +11,7 @@ function LocationCard({ data, onEdit, onDelete }: LocationCardProps) {
   const role = useSelector((state: RootState) => state.auth.role) || ""
 
 return (
-    <div className="bg-white dark:bg-gray-800 flex flex-col shadow-md rounded-xl p-4 hover:shadow-lg transition w-full huge:max-w-[452px] h-full">
+    <div className="bg-white dark:bg-gray-800 flex flex-col shadow-md rounded-2xl p-4 hover:shadow-lg transition w-full huge:max-w-[452px] h-full">
       <div className="flex flex-col justify-between h-full">
         <div>
           <h3 className="text-xl font-semibold text-purple60">{data.branch}</h3>
