@@ -55,6 +55,7 @@ function ValueForm({ onSubmit, initialData = null, onCancel }: ValueFormProps) {
         value={title}
         onChange={(e) => setTitle(e.target.value)}
         required
+        placeholder="Enter value title"
       />
 
       <FormField
@@ -65,6 +66,7 @@ function ValueForm({ onSubmit, initialData = null, onCancel }: ValueFormProps) {
         value={description}
         onChange={(e) => setDescription(e.target.value)}
         required
+        placeholder="Enter value description"
       />
 
       <div className="flex justify-end space-x-2 mt-4">

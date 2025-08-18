@@ -23,6 +23,15 @@ export default function Pagination<T>({
     getPaginationNumbers,
   } = usePagination(items)
 
+    const baseBtn =
+    "rounded-full flex items-center justify-center " +
+    " hover:bg-purple60 text-white " +
+    "ring-2 ring-purple65 ring-offset-2 ring-offset-white dark:ring-offset-gray-900 " +
+    "disabled:opacity-60 disabled:cursor-not-allowed transition-colors focus:outline-none focus-visible:ring-2";
+
+  const circleSize = "w-9 h-9 ";
+
+
   if (loading) {
     return (
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4 huge:max-w-[1390px] huge:mx-auto">
@@ -47,24 +56,22 @@ export default function Pagination<T>({
         ))}
       </div>
 
-      <div className="flex  sm:flex-row justify-center items-center gap-2  sm:space-y-0 space-y-3 flex-wrap mt-6">
+      <div className="flex  justify-center items-center gap-3  sm:space-y-0 space-y-3 flex-wrap mt-6">
         <button
           onClick={() => setCurrentPage(currentPage - 1)}
           disabled={currentPage === 1}
-          className="flex items-center justify-center bg-white border rounded-full w-8 h-8 sm:w-10 sm:h-10 text-gray-700 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-purple90 transition"
+          className={`${baseBtn} ${circleSize} bg-purple75 lg-custom:mb-0`}
         >
           <ChevronLeft size={16} />
         </button>
-        <div className="flex  items-center justify-center gap-2 ">
+        <div className="flex  items-center justify-center gap-3 ">
           {getPaginationNumbers().map((page, index) =>
             typeof page === "number" ? (
               <button
                 key={index}
                 onClick={() => setCurrentPage(page)}
-                className={`flex  items-center justify-center rounded-full w-8 h-8 sm:w-10 sm:h-10 text-sm font-medium transition-all duration-200 ${
-                  page === currentPage
-                    ? "bg-purple60 text-white shadow-md"
-                    : "bg-white border text-gray-700 hover:bg-purple90"
+                className={`${baseBtn} ${circleSize}  ${
+                  page === currentPage ? "bg-purple60" : "bg-purple75"
                 }`}
               >
                 {page}
@@ -83,7 +90,7 @@ export default function Pagination<T>({
         <button
           onClick={() => setCurrentPage(currentPage + 1)}
           disabled={currentPage === totalPages}
-          className="flex items-center mb-2 lg-custom:mb-0 justify-center bg-white border rounded-full w-8 h-8 sm:w-10 sm:h-10 text-gray-700 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-purple90 transition"
+          className={`${baseBtn} ${circleSize} bg-purple75  lg-custom:mb-0`}
         >
           <ChevronRight size={16} />
         </button>
