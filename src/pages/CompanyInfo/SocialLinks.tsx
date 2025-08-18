@@ -7,8 +7,7 @@ import {
 } from "../../redux/slices/socialLinksSlice";
 import SocialLinkForm from "../../components/SocialMedia/SocialLinksForm";
 import { useAppDispatch, useAppSelector } from "../../hooks/useAppSelector";
-import TablePortal from "../../components/TablePortal";
-import GeneralBtn from "../../components/buttons/GeneralBtn";
+import TablePortal from "../../components/TablePortal"; 
 
 const PLATFORMS = ["facebook", "linkedin", "twitter", "youtube", "instagram"] as const;
 
@@ -171,22 +170,19 @@ export default function SocialLinks() {
                         </td>
 
                         {role === "admin" && (
-                          <td className="px-4 py-4 text-right text-sm font-medium flex justify-end gap-2  min-w-[160px] actions-cell">
-
-                            <GeneralBtn
-                              btnContent="Edit"
-                              btnType="update"
-                              actionToDo={() => {
+                          <td className="px-4 py-4 text-right text-sm font-medium flex justify-end gap-2 flex-wrap min-w-[160px] actions-cell">
+                            <button
+                              onClick={() => {
                                 setEditing(link);
                                 setAdding(false);
                               }}
-                            />
-
-                            <GeneralBtn
-                              btnContent="Delete"
-                              btnType="delete"
-                              actionToDo={() => handleDelete(link.id)}
-                            />
+                              className="px-3 py-1 rounded-md bg-purple-600 text-white hover:bg-purple-700 whitespace-nowrap"
+                            >
+                              Edit
+                            </button>
+                            <button onClick={() => handleDelete(link.id)} className="px-3 py-1 rounded-md bg-red-500 text-white hover:bg-red-600 whitespace-nowrap">
+                              Delete
+                            </button>
                           </td>
                         )}
                       </tr>

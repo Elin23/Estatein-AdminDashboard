@@ -3,7 +3,6 @@ import { createPortal } from "react-dom"
 type ModalComponentProps = {
   closeModal?: () => void;
   actionToDo: ((data?: any, id?: string) => void) | undefined;
-  /** مثال: "user" | "property" | "team" | "newsletter subscription" */
   targetLabel?: string;
 };
 
@@ -41,11 +40,9 @@ function ModalComponent({ actionToDo, closeModal, targetLabel }: ModalComponentP
                    overflow-hidden transition-all duration-200"
         onClick={(e) => e.stopPropagation()}
       >
-        {/* شريط علوي أحمر */}
         <div className={`h-1.5 w-full bg-gradient-to-r ${accentBar}`} />
 
         <div className="px-6 py-6 md:px-8 md:py-8">
-          {/* أيقونة تحذير */}
           <div className="mx-auto mb-5 flex h-12 w-12 items-center justify-center rounded-2xl
                           bg-gray-100 dark:bg-gray-800 ring-1 ring-gray-200/60 dark:ring-gray-700/60">
             <span className="text-lg font-bold text-gray-700 dark:text-gray-200">!</span>

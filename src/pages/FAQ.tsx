@@ -1,9 +1,9 @@
 import {
   subscribeToFaqs,
   addFaq,
-  editFaq,
   deleteFaq,
-  cleanupSubscription,
+  updateFaq,
+  cleanupFaqsSubscription,
 } from "../redux/slices/faqSlice";
 import FaqsFrom from "../components/Faqs/FaqsFrom";
 import type { RootState } from "../redux/store";
@@ -20,12 +20,12 @@ function FAQ() {
       title="Frequently Asked Questions"
       addBtnText="+ Add FAQ"
       role={role}
-      selectList={(state) => state.faqs.list}
+      selectList={(state) => state.faqs.items}
       selectLoading={(state) => state.faqs.loading}
       subscribeAction={subscribeToFaqs}
-      cleanupAction={cleanupSubscription}
+      cleanupAction={cleanupFaqsSubscription}
       addAction={addFaq}
-      updateAction={editFaq}
+      updateAction={updateFaq}
       deleteAction={deleteFaq}
       FormComponent={FaqsFrom}
       renderItem={(item, { onEdit, onDelete }) => (
