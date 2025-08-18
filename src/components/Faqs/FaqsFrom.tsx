@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import type { FaqType } from "../../types/FaqType";
 import GeneralBtn from "../buttons/GeneralBtn";
-import CancleBtn from "../buttons/CancleBtn";
 import FormField from "../InputField/FormField";
 
 interface FaqsFromProps {
@@ -75,8 +74,13 @@ export default function FaqsFrom({ initialData = null, onCancel, onSubmit }: Faq
 
 
       <div className="flex justify-end space-x-2 mt-4">
-        <CancleBtn onCLick={onCancel} disabled={loading} />
         <GeneralBtn
+          btnContent="Cancel"
+          btnType="cancel"
+          actionToDo={onCancel}
+          disabled={loading}
+        />
+                <GeneralBtn
           btnContent={initialData ? "Update" : "Add"}
           btnType={initialData ? 'update' : 'add'}
           actionToDo={formSubmit}

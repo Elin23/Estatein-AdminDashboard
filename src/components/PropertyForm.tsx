@@ -34,6 +34,27 @@ const PropertyForm: React.FC<PropertyFormProps> = ({
     [category]
   );
 
+
+    const baseBtn =
+    "inline-flex items-center justify-center rounded-xl px-3 md:px-4 py-1.5 md:py-2 " +
+    "text-[10px] md:text-sm font-medium transition-transform duration-200 " +
+    "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 " +
+    "disabled:opacity-60 disabled:cursor-not-allowed active:scale-[0.98] shadow-sm";
+
+  const addColors =
+    "text-white bg-gradient-to-b from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 " +
+    "focus-visible:ring-emerald-500 ring-1 ring-emerald-500/40 " +
+    "hover:shadow-[0_8px_20px_rgba(16,185,129,0.35)]";
+
+  const updateColors =
+    "text-white bg-gradient-to-b from-indigo-500 to-indigo-600 hover:from-indigo-600 hover:to-indigo-700 " +
+    "focus-visible:ring-indigo-500 ring-1 ring-indigo-500/40 " +
+    "hover:shadow-[0_8px_20px_rgba(79,70,229,0.35)]";
+
+
+
+
+
   const pricePh = useMemo(() => {
     if (!category) return "Enter listing price";
     if (category === "apartment") return "e.g., 120000";
@@ -442,9 +463,10 @@ const PropertyForm: React.FC<PropertyFormProps> = ({
       </div>
 
       <div className=" text-end">
+
         <button
           type="submit"
-          className="px-4 py-2 bg-purple60 text-white rounded hover:bg-purple70 disabled:opacity-50 disabled:cursor-not-allowed"
+          className={`${baseBtn} ${editing ? updateColors : addColors}`}
           disabled={uploading}
         >
           {editing ? "Update Property" : "Add Property"}

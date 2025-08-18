@@ -1,6 +1,7 @@
 import { useSelector } from "react-redux";
 import type { RootState } from "../../redux/store";
 import type { ValuedClient } from "../../types/ValuedClient";
+import GeneralBtn from "../buttons/GeneralBtn";
 
 interface ValuedClientCardProps {
   client?: ValuedClient;
@@ -86,21 +87,20 @@ export default function ValuedClientCard({
       {role === "admin" && (onEdit || onDelete) && (
         <div className="mt-auto pt-4 flex justify-end space-x-2">
           {onEdit && (
-            <button
-              onClick={onEdit}
-              className="px-3 py-1 bg-purple70 text-white rounded hover:bg-purple60"
-            >
-              Edit
-            </button>
+            <GeneralBtn
+              btnContent="Edit"
+              actionToDo={onEdit}
+              btnType="update"
+            />
           )}
-          {onDelete && (
-            <button
-              onClick={onDelete}
-              className="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700"
-            >
-              Delete
-            </button>
-          )}
+      {onDelete && (
+          <GeneralBtn
+          btnContent="Delete"
+          actionToDo={onDelete}
+          btnType="delete"
+          targetLabel={title}
+          />
+        )}
         </div>
       )}
     </div>

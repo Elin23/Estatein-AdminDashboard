@@ -99,9 +99,11 @@ export default function GenericCard({
       {(role === "admin") && (
       <div className="mt-auto pt-4 flex justify-end items-end space-x-2">
         {onEdit && (
-          <button onClick={onEdit} className="px-3 py-1 bg-purple70 text-white rounded hover:bg-purple60">
-            Edit
-          </button>
+          <GeneralBtn
+          btnContent="Edit"
+          actionToDo={onEdit}
+          btnType="update"
+          />
         )}
         {onDelete && (
           <GeneralBtn

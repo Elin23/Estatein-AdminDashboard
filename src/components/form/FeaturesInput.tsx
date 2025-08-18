@@ -1,6 +1,7 @@
 import { X } from "lucide-react"
 import React, { useState } from "react"
 import FormField from "../InputField/FormField"
+import GeneralBtn from "../buttons/GeneralBtn"
 
 interface FeaturesInputProps {
   features: string[]
@@ -47,13 +48,12 @@ export default function FeaturesInput({
           placeholder="Add a feature..."
           className=" w-full"
         />
-        <button
-          type="button"
-          onClick={addFeature}
-          className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600"
-        >
-          Add
-        </button>
+
+        <GeneralBtn
+          btnContent="Add"
+          actionToDo={addFeature}
+          btnType="add"
+        />
       </div>
 
       <div className="flex flex-col gap-2 mt-3">

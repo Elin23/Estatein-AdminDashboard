@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import type { ValuedClient } from "../../types/ValuedClient";
+import GeneralBtn from "../buttons/GeneralBtn";
 
 type SubmitFn = (data: Omit<ValuedClient, "id">, id?: string) => Promise<void>;
 
@@ -46,20 +47,36 @@ export default function ValuedClientsForm({
     return /^https?:\/\//i.test(u) ? u : `https://${u}`;
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!title.trim() || !since.trim() || !domain.trim() || !category.trim() || !said.trim() || !website.trim()) {
+    const handleSubmit = async () => {
+    const t = title.trim();
+    const s = since.trim();
+    const d = domain.trim();
+    const c = category.trim();
+    const r = said.trim();
+    const wRaw = website.trim();
+
+    if (!t || !s || !d || !c || !r || !wRaw) {
       alert("Please fill all fields");
       return;
     }
+
+    const w = normalizeUrl(wRaw);
+    try {
+      new URL(w);
+    } catch {
+      alert("Invalid website URL");
+      return;
+    }
+
     const payload: Omit<ValuedClient, "id"> = {
-      title: title.trim(),
-      since: since.trim(),
-      domain: domain.trim(),
-      category: category.trim(),
-      review: said.trim(),
-      website: normalizeUrl(website),
+      title: t,
+      since: s,
+      domain: d,
+      category: c,
+      review: r,
+      website: w,
     };
+
     setLoading(true);
     try {
       await onSubmit(payload, initialData?.id);
@@ -78,9 +95,14 @@ export default function ValuedClientsForm({
     }
   };
 
+ 
+
   return (
     <form
-      onSubmit={handleSubmit}
+      onSubmit={(e) => {
+        e.preventDefault();        
+        void handleSubmit();       
+      }}
       className="bg-white dark:bg-gray-800 p-4 rounded shadow huge:max-w-[1390px] huge:mx-auto"
     >
       <div className="mb-2">
@@ -157,21 +179,18 @@ export default function ValuedClientsForm({
       </div>
 
       <div className="flex justify-end space-x-2 mt-4">
-        <button
-          type="button"
-          onClick={onCancel}
-          className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600"
+        <GeneralBtn
+          btnContent="Cancel"
+          btnType="cancel"
+          actionToDo={onCancel}
           disabled={loading}
-        >
-          Cancel
-        </button>
-        <button
-          type="submit"
-          className="px-4 py-2 bg-purple60 text-white rounded hover:bg-purple70 disabled:opacity-50 disabled:cursor-not-allowed"
-          disabled={loading}
-        >
-          {initialData ? "Update" : "Add"}
-        </button>
+        />
+
+        <GeneralBtn
+          btnContent={initialData ? "Update" : "Add"}
+          btnType={initialData ? "update" : "add"}
+          actionToDo={handleSubmit} 
+        />
       </div>
     </form>
   );

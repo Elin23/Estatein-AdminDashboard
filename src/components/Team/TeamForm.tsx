@@ -144,18 +144,16 @@ export default function TeamForm({ initialData, onCancel, onSubmit }: Props) {
       )}
 
       <div className="flex justify-end space-x-2 mt-4">
-        <button
-          type="button"
-          onClick={onCancel}
-          className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600"
-          disabled={loading || uploading}
-        >
-          Cancel
-        </button>
         <GeneralBtn
-        btnContent={initialData ? 'Update' : 'Add'}
-        btnType={initialData ? 'update' : 'add'}
-        actionToDo={()=>fromRef.current?.requestSubmit()}
+          btnContent="Cancel"
+          btnType="cancel"
+          actionToDo={onCancel}
+          disabled={loading}
+        />
+        <GeneralBtn
+          btnContent={initialData ? 'Update' : 'Add'}
+          btnType={initialData ? 'update' : 'add'}
+          actionToDo={() => fromRef.current?.requestSubmit()}
         disabled={loading || uploading}
         />
       </div>

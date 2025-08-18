@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { useNotificationsFeed } from "./useNotificationsFeed";
 import { useUnread } from "./useUnread";
 import NotificationItemRow from "./NotificationItemRow";
+import { ChevronDown } from "lucide-react";
+
 
 export default function NotificationSection() {
   const { items, latestTs, loading } = useNotificationsFeed(100);
@@ -93,25 +95,36 @@ export default function NotificationSection() {
         )}
       </ul>
 
-      {showMoreNeeded && (
-        <div className="mt-2 flex justify-center">
-          {!expanded ? (
-            <button
-              onClick={() => setExpanded(true)}
-              className="px-4 py-2 text-sm font-medium rounded-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700"
-            >
-              Show more
-            </button>
-          ) : (
-            <button
-              onClick={() => setExpanded(false)}
-              className="px-4 py-2 text-sm font-medium rounded-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700"
-            >
-              Show less
-            </button>
-          )}
-        </div>
-      )}
+{showMoreNeeded && (
+  <div className="mt-2 flex justify-center">
+    <button
+      type="button"
+      onClick={() => setExpanded((v) => !v)}
+      aria-expanded={expanded}
+      title={expanded ? "Show less" : "Show more"}
+      className={[
+        "group inline-flex items-center gap-2 rounded-xl px-4 py-2 text-sm font-medium",
+        "bg-white/80 dark:bg-gray-800/80 backdrop-blur",
+        "border border-gray-200 dark:border-gray-700",
+        "text-gray-700 dark:text-gray-200",
+        "shadow-sm hover:shadow-md",
+        "transition-all duration-200 hover:-translate-y-0.5",
+        "focus-visible:outline-none focus-visible:ring-2",
+        "focus-visible:ring-offset-2 focus-visible:ring-purple-500",
+      ].join(" ")}
+    >
+      <span>{expanded ? "Show less" : "Show more"}</span>
+      <ChevronDown
+        className={[
+          "h-4 w-4 transition-transform duration-200",
+          expanded ? "rotate-180" : "rotate-0",
+          "text-gray-500 dark:text-gray-400 group-hover:text-gray-600 dark:group-hover:text-gray-300",
+        ].join(" ")}
+        aria-hidden="true"
+      />
+    </button>
+  </div>
+)}
     </div>
   );
 }
