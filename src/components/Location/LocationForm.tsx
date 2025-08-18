@@ -3,9 +3,11 @@ import FormField from "../InputField/FormField";
 import GeneralBtn from "../buttons/GeneralBtn";
 import type { Location } from "../../types";
 
+type SubmitFn = (data: Omit<Location, "id">, id?: string) => Promise<void>;
+
 interface LocationFormProps {
-  initialData?: Partial<Location> | null;
-  onSubmit: (data: Omit<Location, "id">, id?: string) => Promise<void> | void;
+  initialData?: Location | null;
+  onSubmit: SubmitFn;
   onCancel: () => void;
   loading?: boolean;
 }
