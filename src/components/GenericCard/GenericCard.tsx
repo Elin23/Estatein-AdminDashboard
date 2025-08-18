@@ -13,6 +13,7 @@ interface GenericCardProps {
   loading?: boolean;
   hasImage?: boolean;
   twitterLink?: string;
+  email?: string;
 }
 
 export default function GenericCard({
@@ -26,6 +27,7 @@ export default function GenericCard({
   loading,
   hasImage,
   twitterLink,
+  email,
 }: GenericCardProps) {
   const role = useSelector((state: RootState) => state.auth.role) || '';
 
@@ -51,7 +53,7 @@ export default function GenericCard({
   }
 
   return (
-    <div className="bg-white dark:bg-gray-800 p-4 rounded shadow huge:max-w-[452px] h-full flex flex-col">
+    <div className="bg-white dark:bg-gray-800 p-4 rounded-2xl shadow huge:max-w-[452px] h-full flex flex-col">
       {imageSrc && (
         <img
           src={imageSrc}
@@ -81,13 +83,27 @@ export default function GenericCard({
         </div>
       )}
 
+      {email && (
+        <div className="mt-3">
+          <a
+            href={`mailto:${email}`}
+            className="inline-flex items-center gap-2 hover:underline text-gray-800 dark:text-white "
+            aria-label="Email"
+            title="Email"
+          >
+            <span>Email: {email}</span>
+          </a>
+        </div>
+      )}
 
       {(role === "admin") && (
       <div className="mt-auto pt-4 flex justify-end items-end space-x-2">
         {onEdit && (
-          <button onClick={onEdit} className="px-3 py-1 bg-purple70 text-white rounded hover:bg-purple60">
-            Edit
-          </button>
+          <GeneralBtn
+          btnContent="Edit"
+          actionToDo={onEdit}
+          btnType="update"
+          />
         )}
         {onDelete && (
           <GeneralBtn

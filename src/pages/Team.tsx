@@ -37,6 +37,7 @@ function Team() {
             imageSrc={member.clientImage}
             imageAlt={member.name}
             twitterLink={member.twitterLink}
+            email={member.email}
             onEdit={onEdit}
             onDelete={onDelete}
             hasImage={true}

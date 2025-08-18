@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import type { ValueItem } from "../../types/ValueItem";
 import FormField from "../InputField/FormField";
+import GeneralBtn from "../buttons/GeneralBtn";
+
 interface ValueFormProps {
   onSubmit: (
     data: Pick<ValueItem, "title" | "description">,
@@ -13,6 +15,7 @@ interface ValueFormProps {
 function ValueForm({ onSubmit, initialData = null, onCancel }: ValueFormProps) {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (initialData) {
@@ -24,28 +27,36 @@ function ValueForm({ onSubmit, initialData = null, onCancel }: ValueFormProps) {
     }
   }, [initialData]);
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = async () => {
+    const t = title.trim();
+    const d = description.trim();
 
-    if (initialData?.id) {
-      onSubmit(
-        {
-          title,
-          description,
-        },
-        initialData.id
-      );
-    } else {
-      onSubmit({
-        title,
-        description,
-      });
+    if (!t || !d) {
+      alert("Please fill title and description");
+      return;
+    }
+
+    setLoading(true);
+    try {
+      await onSubmit({ title: t, description: d }, initialData?.id);
+      if (!initialData) {
+        setTitle("");
+        setDescription("");
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Save failed");
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
     <form
-      onSubmit={handleSubmit}
+      onSubmit={(e) => {
+        e.preventDefault();
+        void handleSubmit();
+      }}
       className="bg-white dark:bg-gray-800 p-4 rounded shadow huge:max-w-[1390px] huge:mx-auto"
     >
       <FormField
@@ -70,19 +81,18 @@ function ValueForm({ onSubmit, initialData = null, onCancel }: ValueFormProps) {
       />
 
       <div className="flex justify-end space-x-2 mt-4">
-        <button
-          type="button"
-          onClick={onCancel}
-          className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600"
-        >
-          Cancel
-        </button>
-        <button
-          type="submit"
-          className="px-4 py-2 bg-purple60 text-white rounded hover:bg-purple70"
-        >
-          {initialData ? "Update" : "Add"}
-        </button>
+        <GeneralBtn
+          btnContent="Cancel"
+          btnType="cancel"
+          actionToDo={onCancel}
+          disabled={loading}
+        />
+
+        <GeneralBtn
+          btnContent={initialData ? "Update" : "Add"}
+          btnType={initialData ? "update" : "add"}
+          actionToDo={handleSubmit} 
+        />
       </div>
     </form>
   );

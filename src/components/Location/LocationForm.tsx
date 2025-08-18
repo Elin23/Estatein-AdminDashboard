@@ -13,6 +13,7 @@ interface LocationFormProps {
 function LocationForm({
   initialData = null,
   onSubmit,
+  onCancel,
   loading,
 }: LocationFormProps) {
   const formRef = useRef<HTMLFormElement>(null);
@@ -153,6 +154,12 @@ function LocationForm({
       </div>
 
       <div className="flex justify-end gap-3 mt-4">
+        <GeneralBtn
+          btnContent="Cancel"
+          btnType="cancel"
+          actionToDo={onCancel}
+          disabled={loading}
+        />
         <GeneralBtn
           btnContent={loading ? "Saving..." : isEditing ? "Save Changes" : "Add Location"}
           btnType="add"

@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from "react"
+import  { useEffect, useState } from "react"
 import FormField from "../InputField/FormField"
+import GeneralBtn from "../buttons/GeneralBtn"
 
 export interface SocialLink {
   id?: string
@@ -28,26 +29,47 @@ export default function SocialLinkForm({
     else setUrl("")
   }, [initialData])
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    if (!url.trim()) {
-      alert("Please enter a valid URL")
-      return
+  const handleSubmit = async () => {
+    const raw = url.trim();
+    if (!raw) {
+      alert("Please enter a URL");
+      return;
     }
-    setLoading(true)
+
+    const normalized = normalizeUrl(raw);
+
+    function normalizeUrl(url: string): string {
+      if (!/^https?:\/\//i.test(url)) {
+        return "https://" + url;
+      }
+      return url;
+    }
     try {
-      await onSubmit({ platform, url: url.trim() }, initialData?.id)
-    } catch (err) {
-      console.error(err)
-      alert("Save failed")
-    } finally {
-      setLoading(false)
+      new URL(normalized);
+    } catch {
+      alert("Invalid URL");
+      return;
     }
-  }
+
+    setLoading(true);
+    try {
+      await onSubmit({ platform, url: normalized }, initialData?.id);
+      if (!initialData) setUrl("");
+    } catch (e) {
+      console.error(e);
+      alert("Save failed");
+    } finally {
+      setLoading(false);
+    }
+  };
+
 
   return (
     <form
-      onSubmit={handleSubmit}
+      onSubmit={(e) => {
+        e.preventDefault();     
+        void handleSubmit();    
+      }}
       className="bg-white dark:bg-gray-800 border rounded-lg shadow-sm p-4 mb-6 max-w-2xl"
     >
       <div className="flex items-center justify-between mb-3">
@@ -75,21 +97,18 @@ export default function SocialLinkForm({
       />
 
       <div className="flex justify-end gap-2">
-        <button
-          type="button"
-          onClick={onCancel}
-          className="px-4 py-2 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200"
+        <GeneralBtn
+          btnContent="Cancel"
+          btnType="cancel"
+          actionToDo={onCancel}
           disabled={loading}
-        >
-          Cancel
-        </button>
-        <button
-          type="submit"
-          className="px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 disabled:opacity-60"
-          disabled={loading}
-        >
-          {initialData ? "Update" : "Add"}
-        </button>
+        />
+
+        <GeneralBtn
+          btnContent={initialData ? "Update" : "Add"}
+          btnType={initialData ? "update" : "add"}
+          actionToDo={handleSubmit} 
+        />
       </div>
     </form>
   )

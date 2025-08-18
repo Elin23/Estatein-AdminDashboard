@@ -29,6 +29,23 @@ const UserManagement = () => {
   const db = getDatabase()
   const tableAnchorRef = useRef<HTMLDivElement | null>(null)
 
+    const baseBtn =
+    "inline-flex items-center justify-center rounded-xl px-3 md:px-4 py-1.5 md:py-2 " +
+    "text-[10px] md:text-sm font-medium transition-transform duration-200 " +
+    "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 " +
+    "disabled:opacity-60 disabled:cursor-not-allowed active:scale-[0.98] shadow-sm";
+
+  const deleteColors =
+    "text-white bg-gradient-to-b from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 " +
+    "focus-visible:ring-red-500 ring-1 ring-red-500/40 " +
+    "hover:shadow-[0_8px_20px_rgba(220,38,38,0.35)]";
+
+  const updateColors =
+    "text-white bg-gradient-to-b from-indigo-500 to-indigo-600 hover:from-indigo-600 hover:to-indigo-700 " +
+    "focus-visible:ring-indigo-500 ring-1 ring-indigo-500/40 " +
+    "hover:shadow-[0_8px_20px_rgba(79,70,229,0.35)]";
+
+
   useEffect(() => {
     const usersRef = ref(db, "users")
     const unsubscribe = onValue(usersRef, (snapshot) => {
@@ -261,16 +278,17 @@ const UserManagement = () => {
                                 onClick={() =>
                                   handleEditUser({ uid, email, role })
                                 }
-                                className="px-3 py-1 bg-purple70 text-white rounded hover:bg-purple60 duration-300 cursor-pointer"
+                                className={`${baseBtn} ${updateColors}`}
                               >
                                 Edit
                               </button>
                               <button
                                 onClick={() => handleDeleteClick(uid)}
-                                className="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700 duration-300 cursor-pointer"
+                                className={`${baseBtn} ${deleteColors}`}
                               >
                                 Delete
                               </button>
+                              
                             </div>
                           </td>
                         </tr>

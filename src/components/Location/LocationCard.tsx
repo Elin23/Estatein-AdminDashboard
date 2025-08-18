@@ -2,6 +2,7 @@ import { useSelector } from "react-redux"
 import type { LocationData } from "../../types/forms"
 import { Mail, Phone, MapPin } from "lucide-react"
 import type { RootState } from "../../redux/store"
+import GeneralBtn from "../buttons/GeneralBtn"
 interface LocationCardProps {
   data: LocationData
   onEdit: () => void
@@ -10,8 +11,8 @@ interface LocationCardProps {
 function LocationCard({ data, onEdit, onDelete }: LocationCardProps) {
   const role = useSelector((state: RootState) => state.auth.role) || ""
 
-return (
-    <div className="bg-white dark:bg-gray-800 flex flex-col shadow-md rounded-xl p-4 hover:shadow-lg transition w-full huge:max-w-[452px] h-full">
+  return (
+    <div className="bg-white dark:bg-gray-800 flex flex-col shadow-md rounded-2xl p-4 hover:shadow-lg transition w-full huge:max-w-[452px] h-full">
       <div className="flex flex-col justify-between h-full">
         <div>
           <h3 className="text-xl font-semibold text-purple60">{data.branch}</h3>
@@ -40,18 +41,21 @@ return (
         <div className="flex justify-end space-x-2 mt-4">
           {role === "admin" && (
             <>
-              <button
-                className="px-3 py-1 bg-purple60 text-white rounded hover:bg-purple60/80"
-                onClick={onEdit}
-              >
-                Edit
-              </button>
-              <button
-                className="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600"
-                onClick={onDelete}
-              >
-                Delete
-              </button>
+        {onEdit && (
+          <GeneralBtn
+            btnContent="Edit"
+            actionToDo={onEdit}
+            btnType="update"
+          />
+        )}
+              {onDelete && (
+                <GeneralBtn
+                  btnContent="Delete"
+                  actionToDo={onDelete}
+                  btnType="delete"
+                  targetLabel={data.branch}
+                />
+              )}
             </>
           )}
         </div>
