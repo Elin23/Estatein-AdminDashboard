@@ -100,7 +100,7 @@ export default function FormField({
                         <option
                             key={opt.value}
                             value={opt.value}
-                            className="text-black dark:text-white"
+                            className="text-black dark:text-white dark:bg-gray-800"
                         >
                             {opt.label}
                         </option>

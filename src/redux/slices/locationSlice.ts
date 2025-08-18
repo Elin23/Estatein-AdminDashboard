@@ -89,7 +89,8 @@ export const updateLocation = createAsyncThunk<
       createdAt: payload.data.createdAt,
       details: payload.data.details.trim(),
       email: payload.data.email.trim(),
-      phone: payload.data.phone.trim()
+      phone: payload.data.phone.trim(),
+      mapLink: payload.data.mapLink.trim(),
     });
   } catch (err: any) {
     return rejectWithValue(err.message || "Failed to update team");
@@ -115,7 +116,7 @@ const locationsSlice = createSlice({
   reducers: {
     setLocations(state, action: PayloadAction<Location[]>) {
       state.items = action.payload;
-      state.loading= true;
+      state.loading= false;
     },
     setLoading(state, action: PayloadAction<boolean>) {
       state.loading = action.payload;
