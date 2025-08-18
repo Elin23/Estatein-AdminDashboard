@@ -17,7 +17,9 @@ function PropertiesCard({
   startEditProperty,
 }: Props) {
   const role = useSelector((state: RootState) => state.auth.role) || ""
-
+  
+  const capitalize = (str?: string | null) =>
+    str ? str.charAt(0).toUpperCase() + str.slice(1) : "";
   return (
     <div
       key={property.id}
@@ -42,7 +44,8 @@ function PropertiesCard({
                 : "bg-yellow-500"
             }`}
           >
-            {property.status.charAt(0).toUpperCase() + property.status.slice(1)}
+            {capitalize(property.status)}
+
           </span>
         </div>
       </div>
@@ -63,12 +66,13 @@ function PropertiesCard({
             <div className="flex items-center text-gray-800 dark:text-white mb-1">
               <Building2 className="w-4 h-4 mr-2" />
               <span>
-                {property.type.charAt(0).toUpperCase() + property.type.slice(1)}
+                {capitalize(property.type)}
+
               </span>
             </div>
             <div className="flex items-center text-gray-800 dark:text-white mb-1">
               <IndianRupee className="w-4 h-4 mr-2" />
-              {property.price.toLocaleString("en-IN")}
+              {(property.price ?? 0).toLocaleString("en-IN")}
             </div>
           </div>
 
@@ -113,7 +117,7 @@ function PropertiesCard({
         </div>
       </div>
     </div>
-  )
+  );
 }
 
 export default memo(PropertiesCard)
