@@ -31,7 +31,30 @@
   --color-gray70: #141414;
   --color-gray75: #D4D4D8;
 
-  --font-urbanist       : "Urbanist", sans-serif;
+  --font-urbanist: "Urbanist", sans-serif;
   --breakpoint-lg-custom: 992px;
-  --breakpoint-huge     : 1921px;
+  --breakpoint-huge: 1921px;
+}
+
+.table-scroll-wrapper {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: auto !important;
+  -webkit-overflow-scrolling: touch;
+}
+
+.table-scroll-wrapper table {
+  min-width: 640px;
+  table-layout: auto;
+  word-break: break-word;
+}
+
+.table-scroll-wrapper .actions-cell,
+.table-scroll-wrapper .actions-cell button {
+  white-space: nowrap;
+}
+
+.table-portal-root {
+  pointer-events: auto;
+  background: transparent;
 }

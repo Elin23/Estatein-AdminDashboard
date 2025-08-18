@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react"
+import { useState, useEffect, useCallback, useRef } from "react"
 import { getAuth, createUserWithEmailAndPassword } from "firebase/auth"
 import {
   getDatabase,
@@ -9,6 +9,7 @@ import {
   update,
 } from "firebase/database"
 import Modal from "../components/UI/Modal"
+import TablePortal from "../components/TablePortal"
 
 const UserManagement = () => {
   const [email, setEmail] = useState("")
@@ -26,6 +27,7 @@ const UserManagement = () => {
 
   const auth = getAuth()
   const db = getDatabase()
+  const tableAnchorRef = useRef<HTMLDivElement | null>(null)
 
   useEffect(() => {
     const usersRef = ref(db, "users")
@@ -137,7 +139,6 @@ const UserManagement = () => {
         </button>
       </div>
 
-      <div className="p-5 shadow-lg rounded-lg bg-white dark:bg-gray-800">
         {showForm && (
           <form
             onSubmit={handleCreateOrUpdateUser}
@@ -206,61 +207,77 @@ const UserManagement = () => {
             ))}
           </div>
         ) : (
-          <table className="max-[590px]:min-w-max w-full border-collapse border dark:border-white95 border-gray15 text-center">
-            <thead>
-              <tr className="bg-white95 dark:bg-gray-900">
-                <th className="text-xl text-black dark:text-white border dark:border-white95 border-gray15 p-3.5">
-                  Email
-                </th>
-                <th className="text-xl text-black dark:text-white border dark:border-white95 border-gray15 p-3.5">
-                  Role
-                </th>
-                <th className="text-xl text-black dark:text-white border dark:border-white95 border-gray15 p-3.5">
-                  Actions
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {users.length === 0 && (
-                <tr>
-                  <td
-                    colSpan={3}
-                    className="text-2xl text-black dark:text-white95 text-center p-4"
-                  >
-                    No users found.
-                  </td>
-                </tr>
-              )}
-              {users.map(({ uid, email, role }) => (
-                <tr key={uid}>
-                  <td className="text-black dark:text-white99 border dark:border-white99 border-gray15 p-3.5">
-                    {email}
-                  </td>
-                  <td className="text-black dark:text-white99 border dark:border-white99 border-gray15 p-3.5">
-                    {role}
-                  </td>
-                  <td className=" border dark:border-white99 border-gray15 p-3.5 space-x-2">
-                    <div className="flex justify-center items-center gap-1.5 flex-wrap">
-                      <button
-                        onClick={() => handleEditUser({ uid, email, role })}
-                        className="px-3 py-1 bg-purple70 text-white rounded hover:bg-purple60 duration-300 cursor-pointer"
-                      >
-                        Edit
-                      </button>
-                      <button
-                        onClick={() => handleDeleteClick(uid)}
-                        className="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700 duration-300 cursor-pointer"
-                      >
-                        Delete
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+          <>
+            <div ref={tableAnchorRef} className="w-full" />
+            
+            <TablePortal anchorRef={tableAnchorRef}>
+              <div className="table-scroll-wrapper overflow-x-auto w-full border dark:border-white95 border-gray15 rounded-lg shadow-sm bg-white dark:bg-gray-800">
+                <table className="w-full min-w-[640px] divide-y divide-gray-200 dark:divide-gray-600">
+                  <colgroup>
+                    <col style={{ width: "40%" }} />
+                    <col style={{ width: "30%" }} />
+                    <col style={{ width: "30%" }} />
+                  </colgroup>
+
+                  <thead>
+                    <tr className="bg-white95 dark:bg-gray-900">
+                      <th className="text-xl text-black dark:text-white border dark:border-white95 border-gray15 p-3.5">
+                        Email
+                      </th>
+                      <th className="text-xl text-black dark:text-white border dark:border-white95 border-gray15 p-3.5">
+                        Role
+                      </th>
+                      <th className="text-xl text-black dark:text-white border dark:border-white95 border-gray15 p-3.5">
+                        Actions
+                      </th>
+                    </tr>
+                  </thead>
+
+                  <tbody>
+                    {users.length === 0 && (
+                      <tr>
+                        <td
+                          colSpan={3}
+                          className="text-2xl text-black dark:text-white95 text-center p-4"
+                        >
+                          No users found.
+                        </td>
+                      </tr>
+                    )}
+                    {users.map(({ uid, email, role }) => (
+                      <tr key={uid} className="hover:bg-gray-50 dark:hover:bg-gray-700">
+                        <td className="text-black dark:text-white99 border dark:border-white99 border-gray15 p-3.5">
+                          {email}
+                        </td>
+                        <td className="text-black dark:text-white99 border dark:border-white99 border-gray15 p-3.5">
+                          {role}
+                        </td>
+                        <td className="border dark:border-white99 border-gray15 p-3.5">
+                          <div className="flex justify-center items-center gap-1.5 flex-wrap">
+                            <button
+                              onClick={() => handleEditUser({ uid, email, role })}
+                              className="px-3 py-1 bg-purple70 text-white rounded hover:bg-purple60 duration-300 cursor-pointer"
+                            >
+                              Edit
+                            </button>
+                            <button
+                              onClick={() => handleDeleteClick(uid)}
+                              className="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700 duration-300 cursor-pointer"
+                            >
+                              Delete
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </TablePortal>
+          </>
         )}
-      </div>
+      
+
       <Modal
         title="Delete User"
         message="Delete this user? This action cannot be undone."
