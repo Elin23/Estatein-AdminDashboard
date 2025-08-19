@@ -11,7 +11,7 @@ type Props = {
 export default function TablePortal({
     anchorRef,
     children,
-    zIndex = 1200,
+    zIndex = 40,
     extraClass = ""
 }: Props) {
     const elRef = useRef<HTMLDivElement | null>(null);

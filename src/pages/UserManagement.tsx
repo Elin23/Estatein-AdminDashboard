@@ -200,7 +200,7 @@ const UserManagement = () => {
             <>
               <div ref={tableAnchorRef} className="w-full" />
               <TablePortal anchorRef={tableAnchorRef}>
-                <div className="table-scroll-wrapper overflow-x-auto w-full border dark:border-white95 border-gray15 rounded-lg shadow-sm bg-white dark:bg-gray-800">
+                <div className="table-scroll-wrapper overflow-x-auto w-full border dark:border-white95 border-gray15 rounded-lg shadow-sm bg-white dark:bg-gray-800 !z-[40]">
                   <table className="w-full min-w-[640px] divide-y divide-gray-200 dark:divide-gray-600">
                     <colgroup>
                       <col style={{ width: "40%" }} />
