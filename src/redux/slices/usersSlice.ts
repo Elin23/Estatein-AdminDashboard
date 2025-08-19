@@ -25,6 +25,7 @@ export const subscribeToUsers = createAsyncThunk(
   "users/subscribe",
   async (_, { dispatch, rejectWithValue }) => {
     try {
+      dispatch(setLoading(true));
       const db = getDatabase();
       const usersRef = ref(db, "users");
 
@@ -38,14 +39,17 @@ export const subscribeToUsers = createAsyncThunk(
             role: val.role,
           }));
           dispatch(setUsers(userList));
+          dispatch(setLoading(false));
         },
         (error) => {
           dispatch(setError(error.message || "فشل في تحميل المستخدمين"));
+          dispatch(setLoading(false));
         }
       );
 
       dispatch(setUnsubscribe(() => unsubscribe));
     } catch (err: any) {
+      dispatch(setLoading(false));
       return rejectWithValue(err.message);
     }
   }
