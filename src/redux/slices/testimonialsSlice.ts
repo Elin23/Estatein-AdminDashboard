@@ -124,17 +124,6 @@ const testimonialsSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(subscribeToTestimonials.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-      })
-      .addCase(subscribeToTestimonials.fulfilled, (state) => {
-        state.loading = false;
-      })
-      .addCase(subscribeToTestimonials.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload ?? "Failed to load testimonials";
-      })
 
       .addCase(toggleTestimonialShow.fulfilled, (state, action) => {
         const { id, newValue } = action.payload;
