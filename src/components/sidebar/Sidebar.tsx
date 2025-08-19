@@ -216,7 +216,7 @@ const Sidebar: React.FC = () => {
 
       </div>
 
-      <nav className="flex-1 mt-2 !no-scrollbar">
+      <nav className="flex-1 mt-2 overflow-y-auto">
         {menuItems.map((item) =>
           item.visible.includes(userRole) ? (
             <SidebarLink
