@@ -95,6 +95,19 @@ npm run dev
 
 - Dashboard updates automatically with Firebase listeners.
 
+## Demo Accounts
+
+To test the dashboard features, you can use the following demo accounts:
+
+| Role         | Email                      | Password       |
+|--------------|----------------------------|----------------|
+| Admin        | owner@example.com          | owner123       |
+| Sales Manager| sales_manager@example.com  | sales123       |
+| Support      | new_support@estatien.com   | support123     |
+
+> **Note:** These accounts are for testing purposes only. Some sections are restricted based on user roles.
+
+
 ## Contact
 
 For questions or support, please reach out at:
