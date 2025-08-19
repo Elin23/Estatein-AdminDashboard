@@ -16,6 +16,9 @@ function Team() {
   const role = useSelector((state: RootState) => state.auth.role) || "";
   return (
     <div className="p-6 huge:max-w-[1390px] huge:mx-auto">
+      <h1 className="text-2xl font-bold text-gray-800 dark:text-white">
+         Our Team
+        </h1>
       <CrudSection<TeamMember>
         title=""
         addBtnText="+ Add Member"
