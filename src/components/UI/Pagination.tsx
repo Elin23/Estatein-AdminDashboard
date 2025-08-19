@@ -56,7 +56,7 @@ export default function Pagination<T>({
         ))}
       </div>
 
-      <div className="flex  justify-center items-center gap-3  sm:space-y-0 space-y-3 flex-wrap mt-6">
+      <div className="flex  justify-center gap-3  sm:space-y-0 space-y-3 flex-wrap mt-6">
         <button
           onClick={() => setCurrentPage(currentPage - 1)}
           disabled={currentPage === 1}
@@ -64,7 +64,7 @@ export default function Pagination<T>({
         >
           <ChevronLeft size={16} />
         </button>
-        <div className="flex  items-center justify-center gap-3 ">
+        <div className="flex  !items-center justify-center gap-3 ">
           {getPaginationNumbers().map((page, index) =>
             typeof page === "number" ? (
               <button

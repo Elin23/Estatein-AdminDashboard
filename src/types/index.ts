@@ -94,6 +94,7 @@ export interface Location {
   city: string;
   category: string;
   createdAt: number;
+  mapLink: string;
 }
 
 export type LocationFormData = Omit<Location, 'id' | 'createdAt'>;

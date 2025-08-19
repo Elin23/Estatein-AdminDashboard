@@ -87,7 +87,7 @@ export default function GenericCard({
         <div className="mt-3">
           <a
             href={`mailto:${email}`}
-            className="inline-flex items-center gap-2 hover:underline text-gray-800 dark:text-white "
+    className="inline-flex items-center gap-2 hover:underline text-gray-800 dark:text-white w-full whitespace-normal break-words break-all"
             aria-label="Email"
             title="Email"
           >

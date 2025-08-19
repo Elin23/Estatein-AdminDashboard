@@ -1,6 +1,6 @@
 // Location data structure (matches Firebase fields)
 export interface LocationData {
-  id?: string; 
+  id?: string;
   branch: string;
   address: string;
   details: string;
@@ -9,6 +9,7 @@ export interface LocationData {
   city: string;
   category: "regional" | "international" | string;
   createdAt?: number;
+  mapLink: string;
 }
 
 // Props for LocationCard

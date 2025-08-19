@@ -36,7 +36,7 @@ const SidebarLink: React.FC<SidebarLinkProps> = ({
       {!isCollapsed && <span className="font-medium">{label}</span>}
 
       {showCount && (
-        <span className="ml-2 inline-flex min-w-[18px] h-[18px] px-1 items-center justify-center rounded-full bg-red-500 text-white text-[11px] leading-none font-semibold">
+        <span className=" absolute  right-1 lg-custom:right-3 min-w-[18px] h-[18px] px-1 pt-[3px] items-center justify-center rounded-full bg-red-500 text-white text-[11px] leading-none font-semibold">
           {unreadCount > 99 ? "99+" : unreadCount}
         </span>
       )}

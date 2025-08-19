@@ -37,43 +37,43 @@ const menuItems = [
     icon: Building2,
     label: "Properties",
     path: "/properties",
-    visible: ["sales", "support", "admin"],
+    visible: ["sales", "admin"],
   },
   {
     icon: Grid,
     label: "Achievements & Values",
     path: "/achievementsAndValues",
-    visible: ["support", "admin"],
+    visible: ["admin"],
   },
   {
     icon: FormInput,
     label: "Our Team",
     path: "/team",
-    visible: ["support", "admin"],
+    visible: [ "admin"],
   },
   {
     icon: MapPin,
     label: "Testimonials",
     path: "/testimonials",
-    visible: ["support", "admin"],
+    visible: [ "admin"],
   },
   {
     icon: InboxIcon,
     label: "Submissions",
     path: "/submissions",
-    visible: ["sales", "support", "admin"],
+    visible: ["sales", "admin"],
   },
   {
     icon: StepForward,
     label: "Steps",
     path: "/steps",
-    visible: ["support", "admin"],
+    visible: [ "admin"],
   },
   {
     icon: PersonStanding,
     label: "Valued Clients",
     path: "/clients",
-    visible: ["support", "admin"],
+    visible: [ "admin"],
   },
   {
     icon: MessageSquare,
@@ -85,7 +85,7 @@ const menuItems = [
     icon: Info,
     label: "Company Info",
     path: "/info",
-    visible: ["support", "admin"],
+    visible: ["admin"],
   },
   {
     icon: User,
@@ -166,11 +166,11 @@ const Sidebar: React.FC = () => {
   }
 
   return (
-    <nav
-      className={`bg-white dark:bg-gray-800 h-screen items-center lg-custom:items-stretch fixed left-0 top-0 shadow-lg flex flex-col transition-all duration-300 z-50 
-        ${isCollapsed ? "w-16" : "w-64"}
-      `}
-    >
+<nav
+  className={`fixed left-0 top-0 h-screen bg-white dark:bg-gray-800 shadow-lg flex flex-col transition-all duration-300 z-50
+    ${isCollapsed ? "w-16" : "w-64"}
+  `}
+>
       <div className="p-4 gap-4 flex flex-col lg-custom:flex-row items-start md:items-center justify-between">
 
 
@@ -210,7 +210,7 @@ const Sidebar: React.FC = () => {
         </div>
       </div>
 
-      <nav className="flex-1 mt-2 overflow-y-auto">
+      <nav className="flex-1 mt-2 !no-scrollbar">
         {menuItems.map((item) =>
           item.visible.includes(userRole) ? (
             <SidebarLink
