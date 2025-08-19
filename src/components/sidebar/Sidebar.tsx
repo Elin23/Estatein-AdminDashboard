@@ -1,6 +1,8 @@
 import React, { useEffect, useRef, useState } from "react"
-import {StepForward,Building2,MapPin,LayoutDashboard,Grid,FormInput,InboxIcon,MessageSquare,
-  LogOut,User,Menu,PersonStanding,CircleQuestionMarkIcon,Info} from "lucide-react"
+import {
+  StepForward, Building2, MapPin, LayoutDashboard, Grid, FormInput, InboxIcon, MessageSquare,
+  LogOut, User, Menu, PersonStanding, CircleQuestionMarkIcon, Info
+} from "lucide-react"
 import { useLocation, useNavigate } from "react-router-dom"
 import SidebarLink from "./SidebarLink"
 import Switch from "../UI/Switch"
@@ -49,13 +51,13 @@ const menuItems = [
     icon: FormInput,
     label: "Our Team",
     path: "/team",
-    visible: [ "admin"],
+    visible: ["admin"],
   },
   {
     icon: MapPin,
     label: "Testimonials",
     path: "/testimonials",
-    visible: [ "admin"],
+    visible: ["admin"],
   },
   {
     icon: InboxIcon,
@@ -67,13 +69,13 @@ const menuItems = [
     icon: StepForward,
     label: "Steps",
     path: "/steps",
-    visible: [ "admin"],
+    visible: ["admin"],
   },
   {
     icon: PersonStanding,
     label: "Valued Clients",
     path: "/clients",
-    visible: [ "admin"],
+    visible: ["admin"],
   },
   {
     icon: MessageSquare,
@@ -166,48 +168,52 @@ const Sidebar: React.FC = () => {
   }
 
   return (
-<nav
-  className={`fixed left-0 top-0 h-screen bg-white dark:bg-gray-800 shadow-lg flex flex-col transition-all duration-300 z-50
-    ${isCollapsed ? "w-16" : "w-64"}
-  `}
->
-      <div className="p-4 gap-4 flex flex-col lg-custom:flex-row items-start md:items-center justify-between">
-
-
+    <nav
+      className={`fixed left-0 top-0 h-screen bg-white dark:bg-gray-800 shadow-lg flex flex-col transition-all duration-300 z-50
+    ${isCollapsed ? "w-16" : "w-64"}`}
+    >
+      <div className={`${isCollapsed ? "flex-col" : "justify-between"} p-4 gap-4 flex  lg-custom:flex-row items-start md:items-center 
+      `}>
         <div className="flex items-center gap-2">
-                    {isCollapsed && (
+          {isCollapsed && (
 
-          <img
-            src="/assets/imgs/logo.svg"
-            alt="Estatein Logo"
-            className="size-6"
-          />
+            <img
+              src="/assets/imgs/logo.svg"
+              alt="Estatein Logo"
+              className="size-6"
+            />
           )}
 
 
           {!isCollapsed && (
-          <>
-                               <img
-            src="/assets/imgs/logo.svg"
-            alt="Estatein Logo"
-            className="size-8"
-          />
-            <h1 className="text-gray-800 dark:text-gray-200 font-bold">
-              Estatein
-            </h1>
-          </>  
+            <>
+              <img
+                src="/assets/imgs/logo.svg"
+                alt="Estatein Logo"
+                className="size-8"
+              />
+              <h1 className="text-gray-800 dark:text-gray-200 font-bold">
+                Estatein
+              </h1>
+            </>
 
           )}
 
         </div>
 
-        <button className="rounded lg-custom:hidden" onClick={toggleSidebar}>
-          <Menu className="w-5 h-5 dark:text-gray-200 text-gray-800" />
-        </button>
+        <div className={` flex gap-3 ${isCollapsed ? "flex-col items-center" : ""
+          }`}>
+          <div className="flex items-center gap-2">
+            <Switch />
+          </div>
 
-        <div className="flex items-center gap-2">
-          <Switch />
+          <button className="rounded lg-custom:hidden" onClick={toggleSidebar}>
+            <Menu className="w-5 h-5 dark:text-gray-200 text-gray-800" />
+          </button>
+
+
         </div>
+
       </div>
 
       <nav className="flex-1 mt-2 !no-scrollbar">
