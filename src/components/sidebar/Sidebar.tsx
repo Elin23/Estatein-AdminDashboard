@@ -167,7 +167,7 @@ const Sidebar: React.FC = () => {
 
   return (
     <nav
-      className={`bg-white dark:bg-gray-800 h-screen items-center lg-custom:items-stretch fixed left-0 top-0 shadow-lg flex flex-col transition-all duration-300 z-50 
+      className={`bg-white dark:bg-gray-800 h-screen items-center lg-custom:items-stretch  fixed left-0 top-0 shadow-lg flex flex-col transition-all duration-300 z-50 
         ${isCollapsed ? "w-16" : "w-64"}
       `}
     >
@@ -210,7 +210,7 @@ const Sidebar: React.FC = () => {
         </div>
       </div>
 
-      <nav className="flex-1 mt-2 overflow-y-auto">
+      <nav className="flex-1 mt-2 !no-scrollbar">
         {menuItems.map((item) =>
           item.visible.includes(userRole) ? (
             <SidebarLink

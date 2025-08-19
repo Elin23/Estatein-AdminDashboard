@@ -1,10 +1,14 @@
 import { useEffect, useState } from "react";
 import { ChevronDown } from "lucide-react";
 import { useAppDispatch, useAppSelector } from "../hooks/useAppSelector";
-import { addBotCommand, cleanupSubscription, deleteBotCommand, subscribeToBotCommands, updateBotCommand } from "../redux/slices/botCommandsSlice";
+import {
+  addBotCommand,
+  cleanupSubscription,
+  deleteBotCommand,
+  subscribeToBotCommands,
+  updateBotCommand,
+} from "../redux/slices/botCommandsSlice";
 import GeneralBtn from "./buttons/GeneralBtn";
-
-
 
 const SHOW_LIMIT = 5;
 
@@ -53,8 +57,22 @@ export default function BotCommands() {
     }
   };
 
-  const showMoreNeeded = !loading && items.length > SHOW_LIMIT;
-  const visibleItems = expanded ? items : items.slice(0, SHOW_LIMIT);
+  // ✅ ترتيب العناصر (الجدد بالأعلى)
+  const sortedItems = [...items].sort((a, b) => {
+    const aTime = a.createdAt ?? 0;
+    const bTime = b.createdAt ?? 0;
+
+    if (aTime && bTime) {
+      return bTime - aTime; // الأحدث أولاً
+    }
+    // fallback حسب id
+    return b.id.localeCompare(a.id);
+  });
+
+  const showMoreNeeded = !loading && sortedItems.length > SHOW_LIMIT;
+  const visibleItems = expanded
+    ? sortedItems
+    : sortedItems.slice(0, SHOW_LIMIT);
 
   return (
     <div className="bg-white dark:bg-gray-800 rounded-2xl shadow p-4 md:p-6 w-full lg-custom:w-1/2">
@@ -104,7 +122,7 @@ export default function BotCommands() {
             </div>
           ))}
 
-        {!loading && items.length === 0 && (
+        {!loading && sortedItems.length === 0 && (
           <div className="p-4 text-gray-500 border border-gray-400 dark:border-gray-600 rounded-xl">
             No commands yet.
           </div>

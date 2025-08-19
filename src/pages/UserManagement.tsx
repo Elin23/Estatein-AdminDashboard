@@ -1,13 +1,7 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import Modal from "../components/UI/Modal";
 import TablePortal from "../components/TablePortal";
-import {
-  subscribeToUsers,
-  createUser,
-  deleteUser,
-  cleanupSubscription,
-  type User,
-} from "../redux/slices/usersSlice";
+import { subscribeToUsers, createUser, deleteUser, cleanupSubscription, type User} from "../redux/slices/usersSlice";
 import { useAppDispatch, useAppSelector } from "../hooks/useAppSelector";
 
 const UserManagement = () => {

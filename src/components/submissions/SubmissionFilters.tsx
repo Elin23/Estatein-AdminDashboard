@@ -33,7 +33,7 @@ const SubmissionFilters: React.FC<SubmissionFiltersProps> = ({
   const categoryOptions = useMemo(
     () =>
       categories.map((category) => (
-        <option key={category} value={category}>
+        <option key={category} value={category} className="bg-purple90" >
           {category}
         </option>
       )),
