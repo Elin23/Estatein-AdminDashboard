@@ -22,24 +22,26 @@ function Reporting() {
     ];
 
     return (
-        <ul className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 p-0 w-full">
-            {cards.map((item, index) => (
-                <li
-                    key={index}
-                    className={`flex items-center gap-0.5 p-3 bg-white dark:bg-gray-800 rounded-xl w-full shadow-sm duration-300 `}
-                >
-                    <div className="flex items-center justify-center w-12 h-12 rounded-lg bg-primary">
-                        {item.icon}
-                    </div>
+      <ul className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 p-0 w-full">
+        {cards.map((item, index) => (
+          <li
+            key={index}
+            className={`flex items-center gap-0.5 max-[390px]:p-1 min-[391px]:p-3 bg-white dark:bg-gray-800 rounded-xl w-full shadow-sm duration-300 `}
+          >
+            <div className="flex items-center justify-center w-12 h-12 rounded-lg bg-primary">
+              {item.icon}
+            </div>
 
-                    <div className="text-left">
-                        <h3 className="text-md font-bold text-gray-800 dark:text-white">{item.label}</h3>
-                        <p className="text-gray-800 dark:text-white">{item.value}</p>
-                    </div>
-                </li>
-            ))}
-        </ul>
-    )
+            <div className="text-left">
+              <h3 className="text-md font-bold text-gray-800 dark:text-white">
+                {item.label}
+              </h3>
+              <p className="text-gray-800 dark:text-white">{item.value}</p>
+            </div>
+          </li>
+        ))}
+      </ul>
+    );
 }
 
 export default Reporting

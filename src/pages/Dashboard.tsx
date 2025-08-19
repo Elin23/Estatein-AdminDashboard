@@ -7,16 +7,17 @@ const Dashboard = () => {
 
 
   return (
-    <div className="p-6 space-y-6 mx-auto huge:max-w-[1930px]">
+    <div className="max-[390px]:p-2 min-[391px]:p-6 space-y-6 mx-auto huge:max-w-[1930px]">
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold text-gray-800 dark:text-white">Dashboard Overview</h1>
+        <h1 className="text-2xl font-bold text-gray-800 dark:text-white">
+          Dashboard Overview
+        </h1>
       </div>
       <Reporting />
-      <div className="flex flex-col lg-custom:flex-row w-full gap-4">      
+      <div className="flex flex-col lg-custom:flex-row w-full lg-custom:space-x-4 gap-4 lg-custom:gap-4">
         <NotificationSection />
         <BotCommands />
       </div>
-
     </div>
   );
 };
