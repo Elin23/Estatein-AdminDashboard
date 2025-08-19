@@ -7,7 +7,7 @@ const Dashboard = () => {
 
 
   return (
-    <div className="max-[390px]:p-2 min-[391px]:p-6 space-y-6 mx-auto huge:max-w-[1930px]">
+    <div className="p-2 sm:p-6 space-y-6 mx-auto huge:max-w-[1930px]">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold text-gray-800 dark:text-white">
           Dashboard Overview

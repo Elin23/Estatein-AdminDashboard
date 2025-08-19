@@ -75,7 +75,7 @@ export default function BotCommands() {
     : sortedItems.slice(0, SHOW_LIMIT);
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-2xl shadow max-[390px]:p-1 min-[391px]:p-4 md:p-6 w-full lg-custom:w-1/2 min-w-0">
+    <div className="bg-white dark:bg-gray-800 rounded-2xl shadow p-1 sm:p-4 md:p-6 w-full lg-custom:w-1/2 min-w-0">
       <h1 className="text-xl font-semibold text-gray-800 dark:text-white mb-5">
         ChatBot Commands
       </h1>

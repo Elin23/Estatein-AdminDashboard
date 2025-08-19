@@ -26,7 +26,7 @@ function Reporting() {
         {cards.map((item, index) => (
           <li
             key={index}
-            className={`flex items-center gap-0.5 max-[390px]:p-1 min-[391px]:p-3 bg-white dark:bg-gray-800 rounded-xl w-full shadow-sm duration-300 `}
+            className={`flex items-center gap-0.5 p-1 sm:p-3 bg-white dark:bg-gray-800 rounded-xl w-full shadow-sm duration-300 `}
           >
             <div className="flex items-center justify-center w-12 h-12 rounded-lg bg-primary">
               {item.icon}
