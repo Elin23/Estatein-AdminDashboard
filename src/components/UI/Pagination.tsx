@@ -29,7 +29,7 @@ export default function Pagination<T>({
     "ring-2 ring-purple65 ring-offset-2 ring-offset-white dark:ring-offset-gray-900 " +
     "disabled:opacity-60 disabled:cursor-not-allowed transition-colors focus:outline-none focus-visible:ring-2";
 
-  const circleSize = "w-9 h-9 ";
+  const circleSize = "w-6 h-6 md:w-9 md:h-9 ";
 
 
   if (loading) {
