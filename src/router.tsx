@@ -27,7 +27,7 @@ const router = createBrowserRouter([
     children: [
       { index: true, element: <Dashboard /> },
       {
-        element: <ProtectedRoute allowedRoles={["sales", "support", "admin"]} />,
+        element: <ProtectedRoute allowedRoles={["sales", "admin"]} />,
         children: [
           { path: "properties", element: <Properties /> },
           { path: "submissions", element: <Submissions /> },
@@ -36,21 +36,21 @@ const router = createBrowserRouter([
       {
         element: <ProtectedRoute allowedRoles={["support", "admin"]} />,
         children: [
-          { path: "achievementsAndValues", element: <AchievementsAndValues /> },
           { path: "contact", element: <Contact /> },
-          { path: "testimonials", element: <Testimonials /> },
-          { path: "team", element: <Team /> },
-          { path: "steps", element: <Steps /> },
-          { path: "clients", element: <ValuedClients /> },
-          { path: "info", element: <CompanyInfo /> },
-          {path: "faqs" , element:<FAQ />}
-
         ],
       },
       {
         element: <ProtectedRoute allowedRoles={["admin"]} />,
         children: [
+          { path: "achievementsAndValues", element: <AchievementsAndValues /> },
+          { path: "testimonials", element: <Testimonials /> },
+          { path: "team", element: <Team /> },
+          { path: "steps", element: <Steps /> },
+          { path: "clients", element: <ValuedClients /> },
+          { path: "info", element: <CompanyInfo /> },
+          {path: "faqs" , element:<FAQ />},
           { path: "user-management", element: <UserManagement /> },
+
         ],
       },
       {
