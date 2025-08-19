@@ -4,7 +4,7 @@ import GeneralBtn from "../buttons/GeneralBtn";
 import type { Location } from "../../types";
 
 interface LocationFormProps {
-  initialData?: Partial<Location> | null;
+  initialData?: Location | null;
   onSubmit: (data: Omit<Location, "id">, id?: string) => Promise<void> | void;
   onCancel: () => void;
   loading?: boolean;
@@ -33,12 +33,36 @@ function LocationForm({
     const phone = get("phone");
     const city = get("city");
     const category = get("category");
+    const mapLink = get("mapLink");
 
-    if (!branch || !address || !details || !email || !phone || !city || !category) {
+
+    if (!branch || !address || !details || !email || !phone || !city || !category ||
+      !mapLink) {
       alert("Please fill in all fields before saving.");
       return;
     }
 
+     const normalizedMapLink = mapLink.startsWith("http")
+       ? mapLink
+       : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+           mapLink
+         )}`;
+
+    await onSubmit(
+      
+      {
+        branch,
+        address,
+        details,
+        email,
+        phone,
+        city,
+        category,
+        createdAt: initialData?.createdAt ?? Date.now(),
+         mapLink: normalizedMapLink,
+      },
+      initialData?.id
+    );
     const payload: Omit<Location, "id"> = {
       branch,
       address,
@@ -47,6 +71,7 @@ function LocationForm({
       phone,
       city,
       category,
+       mapLink,
       createdAt: initialData?.createdAt ?? Date.now(),
       ...(initialData?.id ? { updatedAt: Date.now() } : {}),
     };
@@ -130,27 +155,32 @@ function LocationForm({
           />
         </div>
 
-        <div className="flex flex-col w-full relative">
-          <FormField
-            id="phone"
-            name="phone"
-            label="Phone Number"
-            defaultValue={initialData?.phone}
-            placeholder="Phone Number"
-            required
-          />
-        </div>
+        <FormField
+          id="phone"
+          name="phone"
+          label="Phone Number"
+          defaultValue={initialData?.phone}
+          placeholder="Phone Number"
+          required
+        />
 
-        <div className="flex flex-col w-full relative">
-          <FormField
-            id="city"
-            name="city"
-            label="City"
-            defaultValue={initialData?.city}
-            placeholder="City"
-            required
-          />
-        </div>
+        <FormField
+          id="city"
+          name="city"
+          label="City"
+          defaultValue={initialData?.city}
+          placeholder="City"
+          required
+        />
+
+        <FormField
+          id="mapLink"
+          name="mapLink"
+          label="Map Link"
+          defaultValue={initialData?.mapLink}
+          placeholder="Map Link"
+          required
+        />
       </div>
 
       <div className="flex justify-end gap-3 mt-4">
